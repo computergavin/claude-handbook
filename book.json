@@ -1,0 +1,19 @@
+{
+  "title": "Working With Claude",
+  "subtitle": "A field handbook for agentic engineering",
+  "author": "Gavin",
+  "edition": "First edition",
+  "chapters": [
+    "00-preface.md",
+    "01-operating-model.md",
+    "02-project-memory.md",
+    "03-subagents.md",
+    "04-hooks.md",
+    "05-agent-teams.md",
+    "06-mcp-and-tools.md",
+    "07-prompting.md",
+    "08-building-on-the-api.md",
+    "09-field-notes-ganbei.md",
+    "10-appendix.md"
+  ]
+}
