@@ -14,6 +14,13 @@
     "07-prompting.md",
     "08-building-on-the-api.md",
     "09-field-notes-ganbei.md",
-    "10-appendix.md"
+    "11-field-notes-kaitaku.md",
+    "12-evals.md",
+    "13-retrieval.md",
+    "14-agent-security.md",
+    "15-cost-and-latency.md",
+    "16-structured-output.md",
+    "17-sources.md",
+    "18-appendix.md"
   ]
 }
