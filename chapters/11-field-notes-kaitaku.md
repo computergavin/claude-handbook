@@ -324,36 +324,6 @@ fully-shaped test-out feature was filed to TODO as "user call: file, don't build
 is the user's decision, and the log should distinguish "chose not to" from "ran
 out of time."
 
-## Schema windows
-
-> [!FIELD] 2026-06-24 — Schema fields are free until first ship, then cost a migration
-> **What happened.** Before TestFlight, adding a field to a SwiftData `@Model`
-> costs nothing — no persisted users to migrate. After, every field needs a
-> `VersionedSchema` plus `MigrationPlan`. A granular `ReviewLog` history table,
-> needed only by stats features months away, landed in a pre-ship schema bump
-> specifically because the free window was closing; `SDCard.createdAt` later rode
-> the same bump at marginal cost near zero.
->
-> **Why it happened.** The cost of a schema change is not constant over a
-> project's life — near-zero pre-ship, materially higher after. The right time to
-> add a foreseeable field is set by the external deadline, not by when the
-> consuming feature gets built.
->
-> **What changed.** "Batch foreseeable fields into the last unlocked bump" became
-> the standing policy. The corollary cut the other way too: when the pet feature
-> was killed (2026-07-22), its speculative empty schemas were explicitly voided
-> before first ship rather than left to become permanent migration baggage.
-
-Copyleft data got its own structural rule: any CC BY-SA dataset (KanjiVG stroke
-order, the JMdict-derived AR dictionary) lives in its own file with license
-metadata embedded in the JSON itself, so even an out-of-context copy of that one
-file stays attributed while the rest of the app's data keeps its own provenance.
-And where a dataset ships as two copies — `Data/` for tests, `App/Resources/` for
-the bundle — a sync test enforces byte-identity across *all* of them:
-`BundledCopySyncTests` generalised a one-dataset guard to all four and caught real
-drift in `ar-object-dictionary.json` on its first run (2026-07-04). An invariant
-tested only for the dataset that motivated it lets every other dataset drift.
-
 ## Session hygiene
 
 > [!FIELD] 2026-07-05 — Git facts in a handoff doc are worse than no facts
