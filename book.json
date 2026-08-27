@@ -20,7 +20,10 @@
     "14-agent-security.md",
     "15-cost-and-latency.md",
     "16-structured-output.md",
-    "17-sources.md",
-    "18-appendix.md"
+    "18-fine-tuning.md",
+    "19-multimodal.md",
+    "20-computer-use.md",
+    "21-sources.md",
+    "22-appendix.md"
   ]
 }
