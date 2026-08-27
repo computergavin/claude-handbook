@@ -36,6 +36,8 @@ Never hand-edit `build/handbook.html`. It is generated. Edit `chapters/*.md`,
   before they go in. Cite the URL in `sources`. Blog posts are leads, not sources.
 - New chapters must be registered in `book.json` or they will not render.
 - Section headings (`##`) auto-number into the margin rail. Don't number manually.
+- Audit checklists live under `.claude/skills/handbook-audit/checklists/`. They are
+  never registered in `book.json` and never moved under `chapters/`.
 
 ## Callout semantics — enforced, not stylistic
 

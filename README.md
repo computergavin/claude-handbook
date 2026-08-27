@@ -53,3 +53,4 @@ sources:
 - `/new-chapter <topic>` — scaffold a chapter and register it
 - `/capture-lesson` — file whatever just happened as a dated field note
 - `handbook-researcher` subagent — re-verify a chapter against primary sources
+- `/handbook-audit <path>` — audit a repo's Claude-workflow setup against the book
