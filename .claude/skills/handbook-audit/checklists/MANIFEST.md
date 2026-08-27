@@ -46,7 +46,12 @@ update `source-hash`, or leave it and let every audit flag it.
 | `02-project-memory.md` | `chapters/02-project-memory.md` | always |
 | `03-subagents.md` | `chapters/03-subagents.md` | agents |
 | `04-hooks.md` | `chapters/04-hooks.md` | always |
+| `06-mcp-and-tools.md` | `chapters/06-mcp-and-tools.md` | mcp |
 | `14-agent-security.md` | `chapters/14-agent-security.md` | always |
 
-Planned, not yet extracted: 06-mcp-and-tools (gate: mcp), then 05, 07, 12, 15,
-22 — several of their assertions dedupe into the five above.
+Nothing further is planned. 05, 07, 12, 15 and 22 were assessed on 2026-08-27
+and left unextracted on purpose: 05 gates on an env flag almost nobody sets, 07
+is judgment rather than anything greppable, and 15 and 22 largely restate OM-10
+and OM-13. The rest of the book — 08, 13, 16, 18, 19, 20, 21 — is about what you
+build with Claude, which this skill does not audit. Extract another chapter only
+when a real audit names a gap it would have caught, not to raise coverage.
