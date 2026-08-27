@@ -25,7 +25,7 @@ plane.
 | `~/.claude/settings.json` | every project on this machine |
 | `.claude/settings.json` | one project, committable |
 | `.claude/settings.local.json` | one project, gitignored |
-| managed policy settings | organisation-wide, admin controlled |
+| managed policy settings | organization-wide, admin controlled |
 | plugin `hooks/hooks.json` | whenever the plugin is enabled |
 | skill or subagent front matter | scoped to that skill or agent |
 
@@ -54,7 +54,7 @@ A hook returning `deny` blocks the tool even under `bypassPermissions` or
 The reverse does not hold: a hook returning `allow` cannot loosen a deny rule from
 settings. Hooks tighten, never loosen.
 
-> [!WARNING] This is your last line of defence
+> [!WARNING] This is your last line of defense
 > Because a hook survives bypass mode, it is the only mechanism that holds when
 > someone — including you at 1am — decides to skip permissions to move faster. Put
 > the genuinely destructive commands here and nowhere else.
@@ -97,7 +97,7 @@ tests actually pass:
   "timeout":120}]}]}}
 ```
 
-**Re-inject context after compaction.** Compaction summarises the conversation and
+**Re-inject context after compaction.** Compaction summarizes the conversation and
 can lose things that mattered. A `SessionStart` hook matched on `compact` puts them
 back:
 

@@ -7,9 +7,9 @@ sources:
   - https://www.anthropic.com/engineering/multi-agent-research-system
 ---
 
-A subagent is a task delegated to a separate Claude Code session with its own
-context window, its own system prompt, and optionally its own tool allowlist and
-model. It reports back a summary. Everything it read to produce that summary stays
+A subagent is a separate Claude Code session you delegate a task to, with its
+own context window, its own system prompt, and optionally its own tool
+allowlist and model. It reports back a summary. Everything it read to produce that summary stays
 behind.
 
 The common framing is parallelism. The real value is **isolation**: a subagent
@@ -54,7 +54,7 @@ You verify. You do not fix.
 Read the requirement, read the implementation, and report only:
 1. Requirements demonstrably met, with the evidence.
 2. Requirements not met or unverifiable.
-3. Behaviour present in the code that no requirement asked for.
+3. Behavior present in the code that no requirement asked for.
 
 Never edit a file. Never suggest an approach. Report and stop.
 ```
@@ -99,7 +99,7 @@ restart, except for the first agent in a brand-new `agents/` directory.
 ## What the subagent actually sees
 
 Context isolation is precise, and knowing the exact boundary changes how you write
-delegations. A subagent starts with: its own system prompt, the delegation message
+delegations. A subagent starts with its own system prompt, the delegation message
 Claude writes, the full CLAUDE.md hierarchy, and a git-status snapshot from parent
 session start. It does not get the conversation history, the main session's auto
 memory, or anything the main session has read. The built-in Explore and Plan agents
@@ -110,7 +110,7 @@ reports that agents use about 4× the tokens of a chat interaction, and multi-ag
 systems about 15× — you are buying fresh context windows, and they are not free.
 What you get for it: their multi-agent system (Opus 4 lead, Sonnet 4 subagents)
 outperformed single-agent Opus 4 by 90.2% on their internal research eval, and on
-the BrowseComp eval token spend alone explained 80% of performance variance.
+the BrowseComp eval, token spend alone explained 80% of performance variance.
 Spending more tokens across more context windows is, mechanically, how multi-agent
 buys capability — so the task's value has to be high enough to pay for it.
 
@@ -118,11 +118,11 @@ buys capability — so the task's value has to be high enough to pay for it.
 
 Route grunt work — file search, log scanning, API polling — to a cheaper model and
 keep the expensive one for architectural reasoning. This is the single easiest cost
-reduction available. The concrete mechanism at project scale is the Sonnet fleet,
-which on one shipped iOS project ran five parallel Sonnet builders repeatedly
-with zero collisions.
+reduction available. The concrete mechanism at project scale is a fleet of parallel Sonnet
+builders. On one shipped iOS project, five of them ran repeatedly with zero
+collisions.
 
-> [!CAUTION] Summarisation is lossy on purpose
+> [!CAUTION] Summarization is lossy on purpose
 > A subagent returns a summary, and the summary is written by a model that decided
 > what mattered. For anything where a specific detail matters, say so explicitly in
 > the delegation: "return the exact error strings, not a description of them."
@@ -144,7 +144,7 @@ agent's work.
 — search, then synthesize, then verify — and is right when stages genuinely depend.
 A barrier fans out, waits for all agents, then does one integration step. Prefer
 the barrier whenever you can make the work disjoint: pipelines serialize latency
-and compound each stage's summarisation loss, while a barrier pays it once.
+and compound each stage's summarization loss, while a barrier pays it once.
 
 **Result contracts.** Prose summaries are where delegation value dies. Specify the
 return shape in the delegation prompt as if you were designing an API response:
@@ -170,8 +170,9 @@ tool guidance, and explicit task boundaries.
 ## Background agents
 
 Foreground agents block the conversation; background agents run concurrently and
-report back when done. Backgrounding is the default when fork mode is on, and any
-agent can opt in permanently with `background: true`. Two limits to know: 20
+report back when done. Backgrounding is the default when fork mode is on (delegation to forks that
+inherit the main conversation's context), and any agent can opt in permanently
+with `background: true`. Two limits to know: 20
 concurrent subagents (raise with `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) and a
 spawn depth of 3 (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Background agents also
 run with a reduced built-in tool set — file tools, Bash, web tools, and messaging
@@ -192,9 +193,8 @@ The three things a subagent needs that the main session forgets to give it:
 ## Findings are candidates, not facts
 
 Treat everything a subagent returns as candidate findings requiring verification,
-not as ground truth. The agent had less context than you, summarised aggressively,
-and — if it was a reviewer — was prompted to find problems, which biases it toward
-finding some. The working ritual from one project's first end-of-week review: check
+not as ground truth. The agent has less context than you, summarizes aggressively, and, if it is a
+reviewer, is prompted to find problems, which biases it toward finding some. The working ritual from one project's first end-of-week review: check
 each finding against source before filing it, and explicitly log what you dropped
 and why. Two reviewer claims in that pass were checked, found wrong, and dropped;
 unverified, they would have driven two pointless fixes. The verification cost is

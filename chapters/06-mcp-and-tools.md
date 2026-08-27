@@ -25,7 +25,7 @@ Two transports matter:
 - **stdio** — the server is a local process; messages go over stdin/stdout. No
   network, no auth layer, best latency. Use for anything that runs on your machine.
 - **Streamable HTTP** — HTTP POST with optional server-sent events for streaming.
-  Use for remote services; supports OAuth, bearer tokens, and custom headers. Plain
+  Use for remote services; it supports OAuth, bearer tokens, and custom headers. Plain
   SSE as a transport is deprecated — use `--transport sse` only when a service
   exposes nothing else.
 
@@ -63,19 +63,19 @@ Project-scoped servers require an interactive approval prompt on first use.
 ## When a CLI beats an MCP server
 
 An MCP server is not automatically the right integration. A CLI called through
-Bash costs zero schema tokens — `gh`, `psql`, `aws`, and `stripe` are already
-documented in the model's weights, compose with pipes, and let Claude filter
-output with `grep` and `jq` before it ever enters context. An MCP tool's schema
-is loaded into context, and every intermediate result must pass through the
-model. Anthropic's own engineering measurement: an agent wired to thousands of
-MCP tools processes hundreds of thousands of tokens of tool definitions before
-it even reads the request. Their fix was code execution against a filesystem
-of tool definitions — the agent lists `./servers/` and reads only the files
-it needs for the task at hand — which cut one Google Drive-to-Salesforce
-workflow from 150,000 tokens to 2,000, a 98.7% reduction. That number comes
-from loading fewer tool definitions, not from filtering data server-side;
-letting the execution environment filter a result before it reaches the model
-is a separate benefit of the same technique, not what produced this figure.
+Bash costs zero schema tokens. Tools such as `gh`, `psql`, `aws`, and `stripe`
+are already documented in the model's weights, compose with pipes, and let
+Claude filter output with `grep` and `jq` before it ever enters context. An
+MCP tool's schema is loaded into context, and every intermediate result must
+pass through the model. Anthropic's own engineering team measured this: an
+agent wired to thousands of MCP tools processes hundreds of thousands of
+tokens of tool definitions before it even reads the request. Their fix was
+code execution against a filesystem of tool definitions. The agent lists
+`./servers/` and reads only the files it needs for the task at hand, which cut
+one Google Drive-to-Salesforce workflow from 150,000 tokens to 2,000, a 98.7%
+reduction. That number comes from loading fewer tool definitions, not from
+filtering data. Letting the execution environment filter a result before it
+reaches the model is a separate benefit of the same technique.
 
 > [!PATTERN] CLI first
 > If a capable CLI exists, use it and skip the server. Reach for MCP when you
@@ -117,27 +117,27 @@ server-side instead.
 MCP tools are named `mcp__<server>__<tool>`; plugin-bundled servers use a scoped
 segment such as `mcp__plugin_<plugin>_<server>__<tool>`. This matters because hook
 matchers are regexes over those names — `mcp__github__.*` scopes to one server,
-`mcp__.*__write.*` cuts across all of them. A matcher written against the bare
+while `mcp__.*__write.*` cuts across all of them. A matcher written against the bare
 server key never fires for a plugin-bundled server — you must include the
 `plugin_<plugin-name>_` segment.
 
 ## Deferred loading: tool search
 
-Tool search is on by default and is why "too many MCP tools" stopped being a
-context problem: only tool *names* and server instructions load at session start,
+Tool search is on by default, and it is the reason "too many MCP tools" is no
+longer a context problem: only tool *names* and server instructions load at session start,
 and full schemas are fetched by a `ToolSearch` call when Claude actually needs
 them. Two settings most people miss:
 
 - `ENABLE_TOOL_SEARCH=auto:5` — threshold mode. Tools load upfront while their
-  definitions total under 5% of the context window, and defer once they cross it
-  (`auto` alone uses 10%). Upfront tools skip the search round-trip, so this is
+  definitions total under 5% of the context window, and defer once the total
+  crosses the threshold (`auto` alone uses 10%). Upfront tools skip the search round-trip, so this is
   the right setting when you run one or two small servers.
 - `"alwaysLoad": true` on a server entry pins that server's tools into context
   regardless of tool search — for the handful of tools Claude needs every turn.
   A server can pin a single tool by setting `"anthropic/alwaysLoad": true` in
   that tool's `_meta`.
 
-If you author a server, the *server instructions* field is now doing the job a
+If you author a server, the *server instructions* field does the job a
 skill description does: it is what Claude reads to decide whether to search your
 tools at all. State the task category, the trigger conditions, and the key
 capabilities. Claude Code truncates tool descriptions and server instructions at
@@ -146,15 +146,15 @@ capabilities. Claude Code truncates tool descriptions and server instructions at
 ## Trust is the price of admission
 
 An MCP server ships text that goes straight into the model's context, which makes
-it a supply chain: tool *descriptions* can carry hidden instructions (tool
-poisoning), and a malicious server can shadow the behaviour of a trusted one.
+it a supply-chain risk: tool *descriptions* can carry hidden instructions (tool
+poisoning), and a malicious server can shadow the behavior of a trusted one.
 Claude Code prompts for trust on first use of a new server, but that dialog rates
 the server as of that moment — a `tools/list_changed` notification can swap in
 different definitions later. Write permission rules against exact tool names
 (`mcp__github__search_issues`, not `mcp__github__.*`), and give each agent only
-the servers its task needs. The full treatment — including the lethal-trifecta
-framing that decides which servers may coexist in one session — is in the Agent
-security chapter.
+the servers its task needs. The Agent security chapter has the full treatment, including the
+lethal-trifecta framing (private data, untrusted content, and an exfiltration
+path) that decides which servers may coexist in one session.
 
 ## Building your own
 
@@ -197,7 +197,8 @@ fights. Log to stderr, never stdout — stdout is the transport.
 > hard wall-clock cap per tool call; progress notifications don't extend it. Set
 > it below 1000 and it's ignored — Claude Code falls through to
 > `MCP_TOOL_TIMEOUT`, whose own default is roughly 28 hours when unset.
-> Separately, a call that stays silent — no response, no progress — aborts on an
-> idle timeout: five minutes for HTTP/SSE/WebSocket servers, 30 for stdio. A slow
+> Separately, a call that stays silent, sending no response and no progress,
+> aborts on an idle timeout: five minutes for HTTP/SSE/WebSocket servers, 30
+> for stdio. A slow
 > server that never reports progress dies at the idle wall long before the
 > wall-clock one. The idle timeout requires Claude Code v2.1.187 or later.

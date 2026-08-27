@@ -8,7 +8,7 @@ sources:
 ---
 
 Agent teams coordinate multiple full Claude Code sessions. One acts as lead,
-assigning work and synthesising results; teammates each work in their own context
+assigning work and synthesizing results; teammates each work in their own context
 window and message each other directly.
 
 Experimental and off by default. Enable with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
@@ -31,8 +31,9 @@ eight characters of the session ID:
 - Task list: `~/.claude/tasks/{team-name}/` — persists across resume, swept by the
   same `cleanupPeriodDays` as transcripts.
 
-Tasks have three states — pending, in progress, completed — plus dependencies: a
-pending task with unresolved dependencies can't be claimed until they complete.
+Tasks have three states: pending, in progress, and completed. Tasks can also
+declare dependencies, and a pending task with unresolved dependencies can't be
+claimed until they complete.
 Claiming uses file locking, so two teammates racing for the same task is handled;
 two teammates editing the same file is not. The lead assigns tasks, or teammates
 self-claim the next unblocked one when they finish.
@@ -40,19 +41,19 @@ self-claim the next unblocked one when they finish.
 Messages are delivered automatically — the lead never polls. When a teammate goes
 idle it notifies the lead, but the notification carries no output: results only
 travel by message or task-list update. Write that into your prompts, or the lead
-synthesises from nothing.
+synthesizes from nothing.
 
-Teammates load project context — `CLAUDE.md`, MCP servers, skills — but they do not
-inherit the lead's conversation history. Anything the lead worked out has to be
+Teammates load project context such as `CLAUDE.md`, MCP servers, and skills,
+but they do not inherit the lead's conversation history. Anything the lead worked out has to be
 written into the assignment.
 
 ## Teams versus subagents
 
-A subagent is a function call. A team is an organisation. The difference that matters
-in practice is communication: subagents are fire-and-forget workers that report
-upward and never talk to each other, while teammates are long-lived peers that
-negotiate directly, claim work from a shared list, and can be messaged by you
-individually without going through the lead. That makes teams worth the overhead
+A subagent is a function call. A team is an organization. The difference that matters
+in practice is communication. Subagents are fire-and-forget workers that report
+upward and never talk to each other. Teammates are long-lived peers that
+negotiate directly and claim work from a shared list, and you can message any
+of them without going through the lead. That makes teams worth the overhead
 only when the work has genuine interfaces to agree on.
 
 | Use a subagent | Use a team |
@@ -102,12 +103,12 @@ Other things that matter:
   the main source of team failures.
 - State dependencies as instructions: who waits for whom, who confirms before the
   next starts.
-- Require the lead to wait for all completions before synthesising.
+- Require the lead to wait for all completions before synthesizing.
 - Start with 3–5 teammates and 5–6 tasks each. Three focused teammates outperform
   five scattered ones, and small task grain lets the lead reassign when someone
   stalls.
 - Reuse subagent definitions as roles: "spawn a teammate using the
-  `security-reviewer` agent type." The teammate honours that definition's `tools`
+  `security-reviewer` agent type." The teammate honors that definition's `tools`
   allowlist and model; its body is appended to the system prompt. The `skills` and
   `mcpServers` frontmatter fields are ignored for teammates.
 - For risky work, require plan approval: the teammate stays read-only until the lead
@@ -118,11 +119,11 @@ If the lead starts writing code instead of coordinating, there's no dedicated
 coordination-only mode to switch it into — redirect it in plain language: "wait
 for your teammates to complete their tasks before proceeding."
 
-Display is `teammateMode` in `settings.json` (or `--teammate-mode` per session):
-`"in-process"` — the default — keeps everyone in one terminal behind an agent panel
-(arrows to select, Enter to view and message, `x` to stop, Ctrl+T for the task
-list); `"tmux"` gives each teammate its own split pane via tmux or iTerm2's `it2`
-CLI. In-process works everywhere; split panes don't work in VS Code's terminal,
+Display is `teammateMode` in `settings.json`, or `--teammate-mode` per
+session. The default, `"in-process"`, keeps everyone in one terminal behind an
+agent panel: arrows to select, Enter to view and message, `x` to stop, Ctrl+T
+for the task list. `"tmux"` gives each teammate its own split pane via tmux or
+iTerm2's `it2` CLI. In-process works everywhere; split panes don't work in VS Code's terminal,
 Windows Terminal, or Ghostty.
 
 ## Quality gates
@@ -130,9 +131,14 @@ Windows Terminal, or Ghostty.
 Instructions to "check your work" are advisory. Two mechanisms are not:
 
 **Hooks on team events.** Three events exist for exactly this (see the Hooks
-chapter for mechanics): `TeammateIdle` fires before a teammate goes idle — exit 2
-sends feedback and keeps it working; `TaskCreated` can block a malformed task at
-creation; `TaskCompleted` can refuse the completion. A `TaskCompleted` hook that
+chapter for mechanics):
+
+- `TeammateIdle` fires before a teammate goes idle. Exit 2 sends feedback and
+  keeps it working.
+- `TaskCreated` can block a malformed task at creation.
+- `TaskCompleted` can refuse the completion.
+
+A `TaskCompleted` hook that
 runs the test suite and exits 2 on failure means no teammate can mark work done
 that doesn't build.
 
@@ -143,22 +149,21 @@ what's wrong. It writes no code, so it conflicts with no one.
 ## Why multi-agent systems fail
 
 The MAST taxonomy ("Why Do Multi-Agent LLM Systems Fail?", arXiv 2503.13657v3)
-analysed 1,642 execution traces across 7 open-source multi-agent frameworks and
+analyzed 1,642 execution traces across seven open-source multi-agent frameworks and
 found failure rates from 41% to 86.7%. The taxonomy itself was built from an
 initial 150 traces across five of those frameworks, coded by six human experts,
 with the resulting scheme checked for inter-annotator agreement at κ = 0.88. It
-derives 14 failure modes in three categories:
-**system design issues** (~44% of failures — disobeyed task or role specifications,
-step repetition, unawareness of stopping conditions), **inter-agent misalignment**
-(~32% — task derailment, information withholding, ignoring other agents' input,
-failing to ask for clarification), and **task verification** (~24% — premature
-termination, missing or incorrect verification).
+derives 14 failure modes in three categories. **System design issues** cause
+~44% of failures: disobeyed task or role specifications, step repetition,
+unawareness of stopping conditions. **Inter-agent misalignment** causes ~32%:
+task derailment, information withholding, ignoring other agents' input,
+failing to ask for clarification. **Task verification** causes ~24%: premature
+termination, missing or incorrect verification.
 
 The headline: "many MAS failures arise from the challenges in organizational design
 and agent coordination rather than the limitations of individual agents." Same
-models, better structure, better results — adding a task-verification stage to
-ChatDev improved task success by 15.6 points on the ProgramDev benchmark, same
-underlying model throughout. Design the org chart, not just the prompts.
+models, better structure, better results. Adding a task-verification stage to
+ChatDev improved task success by 15.6 points on the ProgramDev benchmark. Design the org chart, not just the prompts.
 
 The taxonomy maps directly onto team practice:
 
@@ -168,11 +173,12 @@ The taxonomy maps directly onto team practice:
   cookies, then mark the task complete" doesn't.
 - **Inter-agent misalignment → messaging discipline.** Require teammates to message
   findings, not just finish; require the lead to wait for those messages before
-  synthesising. Idle notifications carry no content — silence is not agreement.
+  synthesizing. Idle notifications carry no content — silence is not agreement.
 - **Verification failures → a verifier that isn't the author.** MAST's third
-  category is why "no or incomplete verification" and "incorrect verification"
-  together account for roughly a sixth of all failures. The verifier teammate and
-  the `TaskCompleted` hook above are the structural fix.
+  category covers "no or incomplete verification" and "incorrect
+  verification", which together account for roughly a sixth of all failures.
+  The verifier teammate and the `TaskCompleted` hook above are the structural
+  fix.
 
 > [!NOTE] The failure is usually yours, not the model's
 > When a team run goes sideways, reread your spawn prompt before blaming the
@@ -188,14 +194,14 @@ The taxonomy maps directly onto team practice:
 > for five teammates as a working estimate, not a documented figure. Reserve
 > teams for work that genuinely benefits from multiple perspectives running at
 > once. For anything else, subagents or a single session are the right call. One
-> recovery: in-process teammates fall
-> outside the main conversation's prompt-cache TTL bucket, so their cache holds
-> five minutes by default — set `subagentPromptCacheTtl` to `1h` for long runs
-> (the API bills 1-hour cache writes at a higher rate).
+> way to claw cost back: in-process teammates fall outside the main
+> conversation's prompt-cache TTL bucket, so their cache holds five minutes by
+> default. Set `subagentPromptCacheTtl` to `1h` for long runs (the API bills
+> 1-hour cache writes at a higher rate).
 
 > [!CAUTION] Experimental means experimental
 > Known rough edges: `/resume` and `/rewind` do not restore in-process teammates —
-> the lead will message ghosts until told to respawn; task status can lag, blocking
+> the lead messages ghosts until told to respawn; task status can lag, blocking
 > dependents; shutdown waits for the current tool call; one team per session, no
 > nested teams, and the lead is fixed for the session's lifetime. Start on
 > read-only work — a multi-angle code review — before letting a team write to a

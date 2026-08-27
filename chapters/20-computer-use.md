@@ -20,8 +20,8 @@ until something stops you.
 Four ways to get data out of, or actions into, someone else's system, in
 descending order of reliability:
 
-1. **An official API.** Typed, versioned, rate-limited on purpose, and it fails
-   loudly.
+1. **An official API.** Typed, versioned, rate-limited on purpose, and loud
+   when it fails.
 2. **Scraping a stable endpoint.** The JSON the page's own frontend fetches, an
    RSS feed, a sitemap. No session, no rendering, `curl`-testable.
 3. **DOM and accessibility-tree automation.** Playwright, CDP, or the browser
@@ -34,21 +34,21 @@ descending order of reliability:
 > for the layer-2 endpoint. A job board that renders listings client-side is
 > fetching them from somewhere; a lead source with no public API usually has an
 > internal one. Every rung you climb removes an entire failure class: layer 2
-> can't suffer selector drift, layer 3 can't misclick a moved button. The
+> can't suffer selector drift, and layer 3 can't misclick a moved button. The
 > job-application and lead-scraper pipelines in this stack each started one rung
 > lower than they run today — the first maintenance cycle is what teaches you the
 > rung was wrong.
 
 ## The computer use tool: pixels and coordinates
 
-The current tool is `computer_toolset_20260801` — no beta header — supported on
-Claude Fable 5, Mythos 5, Opus 5, Sonnet 5, and Opus 4.8. Opus 4.7, Opus 4.6,
-Sonnet 4.6, and Opus 4.5 support computer use only through the legacy beta
-`computer_20251124`. You declare the toolset; Claude emits 17 member tool calls
-(`screenshot`, `left_click`, `type`, `key`, `scroll`, `zoom`, and eleven
-others); your executor performs them against a real display and returns
-results with `"toolset_name": "computer"`. The loop is: screenshot, act,
-screenshot, act, until Claude stops requesting tools.
+The current tool is `computer_toolset_20260801`, which needs no beta header
+and is supported on Claude Fable 5, Mythos 5, Opus 5, Sonnet 5, and Opus 4.8.
+Opus 4.7, Opus 4.6, Sonnet 4.6, and Opus 4.5 support computer use only through
+the legacy beta `computer_20251124`. You declare the toolset. Claude emits 17
+member tool calls (`screenshot`, `left_click`, `type`, `key`, `scroll`,
+`zoom`, and eleven others). Your executor performs them against a real display
+and returns results with `"toolset_name": "computer"`. The loop is screenshot,
+act, screenshot, act, until Claude stops requesting tools.
 
 Claude batches multiple actions per turn. Run them sequentially, stop at the
 first failure, and return the exact halt text
@@ -73,7 +73,7 @@ returned to this toolset with a validation error instead of silently downscaling
 
 ## Browsers deserve better than pixels
 
-A browser is not an opaque screen; it will tell you its structure if you ask.
+A browser is not an opaque screen; it tells you its structure if you ask.
 Three forms of the same idea:
 
 **The browser use toolset** (`browser_toolset_20260801`, same models as
@@ -93,11 +93,11 @@ Coordinate-based tools exist but are opt-in via `--caps=vision`.
 
 **Claude in Chrome** is the packaged form for Claude Code: `claude --chrome`
 with the extension installed connects your session to your real browser,
-including its login state. Site-level permissions from the extension gate what
-Claude can touch; it pauses and hands you the keyboard at login pages and
-CAPTCHAs; in plan mode, read-only calls (`read_page`, `get_page_text`,
-screenshots, console reads) run without prompts while clicks, typing, and
-navigation require approval. See the MCP and tools chapter for where this sits
+including its login state. Site-level permissions from the extension gate what Claude can touch. Claude
+in Chrome pauses and hands you the keyboard at login pages and CAPTCHAs. In
+plan mode, read-only calls (`read_page`, `get_page_text`, screenshots, console
+reads) run without prompts, while clicks, typing, and navigation require
+approval. See the MCP and tools chapter for where this sits
 in the tool stack.
 
 > [!PATTERN] Accessibility-tree-first prompting
@@ -116,17 +116,17 @@ in the tool stack.
 > did. The script runs on every subsequent execution at zero model cost; the
 > agent is re-invoked only when the script's assertions fail, to re-explore and
 > re-emit. When the same task repeats, the durable artifact is a script with
-> assertions, not a resolution that the agent will "do it the same way" next
+> assertions, not a promise that the agent will "do it the same way" next
 > time. A model in the loop is for the unknown; the known belongs in code.
 
 ## How browser agents fail
 
-The failure modes are boring and you will hit all of them: selectors and
-coordinates drift when the site ships a redesign; dynamic content renders after
-the agent reads the page (wait for a specific element, never a fixed delay);
-login walls and 2FA end autonomy — Claude in Chrome's answer, pausing for the
-human, is the correct one to copy; and aggressive parallel fetching gets your
-IP rate-limited or bot-flagged.
+The failure modes are boring and you hit all of them. Selectors and
+coordinates drift when the site ships a redesign. Dynamic content renders
+after the agent reads the page, so wait for a specific element, never a fixed
+delay. Login walls and 2FA end autonomy, and Claude in Chrome's answer of
+pausing for the human is the correct one to copy. And aggressive parallel
+fetching gets your IP rate-limited or bot-flagged.
 
 On the last point, stay descriptive rather than evasive: check for an official
 API first, respect `robots.txt` and the site's terms, identify your client
@@ -138,16 +138,15 @@ race is a maintenance treadmill you lose by default.
 
 A browser agent holds all three legs from the Agent security chapter: it reads
 untrusted content (every page), touches your private data (your logged-in
-sessions), and can communicate externally (any form on the web). A hostile page
-— or one hostile ad, or one hidden form field — is a prompt injection delivery
-vehicle aimed at an agent that can act as you.
+sessions), and can communicate externally (any form on the web). A hostile page, a hostile ad, or a single hidden form field is a prompt
+injection delivery vehicle aimed at an agent that can act as you.
 
 Anthropic's own red-teaming of Claude for Chrome puts numbers on it: 23.6% of
 deliberate injection attacks succeeded in autonomous mode without mitigations,
 11.2% with them, and a challenge set of four browser-specific attack types
-(hidden DOM form fields, URL-text and tab-title injection) dropped from 35.7%
-to 0% after targeted defenses. Read that as: mitigations work, and
-the residual is still double digits. Architecture, not vigilance, is the
+(including hidden DOM form fields and URL-text and tab-title injection)
+dropped from 35.7% to 0% after targeted defenses. Read it this way:
+mitigations work, and the residual is still double digits. Architecture, not vigilance, is the
 defense — assume the injection lands and limit what it finds.
 
 ## Gates and sandboxes
@@ -155,11 +154,11 @@ defense — assume the injection lands and limit what it finds.
 > [!WARNING] Submissions and purchases don't have an undo
 > A submitted application, a completed purchase, a published post, a sent email
 > — these are irreversible the moment the browser fires the request. Gate every
-> such action on human confirmation: in Claude Code, a `PreToolUse` hook that
-> blocks state-changing browser calls matching submit/checkout/send patterns
-> (see the Hooks chapter — hooks survive bypass mode; instructions don't); on
-> the API, an executor that returns "confirmation required" instead of
-> performing the click. Claude for Chrome ships this shape as policy: purchases,
+> such action on human confirmation. In Claude Code, use a `PreToolUse` hook
+> that blocks state-changing browser calls matching submit/checkout/send
+> patterns, because hooks survive bypass mode and instructions don't (see the
+> Hooks chapter). On the API, use an executor that returns "confirmation
+> required" instead of performing the click. Claude for Chrome ships this shape as policy: purchases,
 > publishing, and sharing personal data require explicit confirmation, and
 > financial-services sites are blocked outright.
 

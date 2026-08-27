@@ -26,7 +26,7 @@ or unit economics at volume — and treat everything else as a hobby.
 The hobby is fine. Pulling an 8B model onto your laptop and watching it stream
 tokens with the network cable unplugged teaches you more about how these systems
 work than a month of API calls. But this is a handbook about shipping, so the
-chapter is organised around the shipping question: when does a model you hold beat
+chapter is organized around the shipping question: when does a model you hold beat
 a model you rent?
 
 ## The three honest reasons
@@ -44,18 +44,19 @@ binary. The model becomes an asset in your bundle, like a font.
 
 **Unit economics at volume.** A per-token API price that is negligible at
 prototype scale becomes a line item at millions of calls per day. If a task is
-narrow enough that a small model handles it — classification, extraction,
-routing — self-hosting converts a variable cost into fixed hardware. Do the
-arithmetic against your actual volume before believing this applies to you; for
-most solo-scale products it doesn't, and the cascade in *Cost and latency* gets
-you most of the saving with none of the ops.
+narrow enough that a small model handles it, such as classification,
+extraction, or routing, self-hosting converts a variable cost into fixed
+hardware. Do the arithmetic against your actual volume before believing this
+applies to you. For most solo-scale products it doesn't, and the cascade in
+the Cost and latency chapter gets you most of the saving with none of the ops.
 
-The honest other side — asserted here without a benchmark citation, so treat it as
-a claim to test rather than a fact: on open-ended reasoning, agentic coding, and
-long-context work, frontier API models beat anything you can run on a workstation,
-and the gap is largest exactly where Claude Code lives — multi-step tool use.
-Local models win narrow, well-specified tasks. Run your own evals (see *Evals*) on
-your task before trusting either this sentence or a leaderboard.
+The honest other side comes without a benchmark citation, so treat it as a
+claim to test rather than a fact. On open-ended reasoning, agentic coding, and
+long-context work, frontier API models beat anything you can run on a
+workstation. The gap is largest in multi-step tool use, which is exactly where
+Claude Code lives. Local models win narrow, well-specified tasks. Run your own
+evals (see the Evals chapter) on your task before trusting either this claim
+or a leaderboard.
 
 ## The runtime landscape
 
@@ -63,8 +64,8 @@ Three runtimes cover the practical territory.
 
 **llama.cpp** is the substrate. It defines GGUF, the single-file quantized model
 format everything else consumes, and provides the CLI and server binaries. When
-you need control — custom sampling, grammars, exact quantization choice — you are
-here.
+you need control over custom sampling, grammars, or exact quantization choice,
+you are here.
 
 **Ollama** is the ergonomic wrapper: model registry, lifecycle management, and a
 local API. `ollama pull qwen3:8b && ollama run qwen3:8b` and you're talking to a
@@ -77,7 +78,7 @@ more than it sounds — see the cascade section below.
 models against the M-series unified memory pool. On a Mac, MLX is typically the
 faster path. `mlx-lm` itself is Python and desktop-only, but `mlx-swift` is the
 bridge to on-device iOS inference — the same weights you evaluate on your desk can
-ship to the phone (see *Multimodal* for the on-device vision variants).
+ship to the phone (see the Multimodal chapter for the on-device vision variants).
 
 > [!NOTE] Memory math
 > A GGUF file at Q4_K_M weighs roughly 0.6 bytes per parameter. Measured on
@@ -89,9 +90,9 @@ ship to the phone (see *Multimodal* for the on-device vision variants).
 ## What 4-bit actually costs
 
 Quantization folklore runs hot in both directions — "lossless" and "lobotomy" are
-both wrong. The llama.cpp perplexity tables give measured numbers for Llama 3 8B:
-F16 baseline perplexity 6.2332; Q8_0 is 6.2343 — indistinguishable; Q4_K_M with an
-importance matrix is 6.3829, about a 2.4% degradation. That is real but small:
+both wrong. The llama.cpp perplexity tables give measured numbers for Llama 3 8B. The F16
+baseline perplexity is 6.2332. Q8_0 is 6.2343, which is indistinguishable.
+Q4_K_M with an importance matrix is 6.3829, about a 2.4% degradation. That is real but small:
 Q4_K_M is the sensible default, which is why every registry ships it as the
 standard download.
 
@@ -119,11 +120,11 @@ Verified against the license files and model cards as of 2026-08:
 | DeepSeek-R1 | MIT | none |
 | Llama 4 | Llama Community License | not open source in the OSI sense |
 
-The Llama license is workable but conditional: over 700M monthly active users you
-must request a separate license from Meta; you must "prominently display 'Built
+The Llama license is workable but conditional: past 700M monthly active users,
+you must request a separate license from Meta; you must "prominently display 'Built
 with Llama'" in your product; derivative models must include "Llama" at the start
 of their name; and use is bound to Meta's Acceptable Use Policy. None of that
-blocks a typical product — but each condition is a clause your future acquirer's
+blocks a typical product, but each condition is a clause your future acquirer's
 lawyers will read.
 
 > [!PATTERN] The license-first shortlist
@@ -136,18 +137,18 @@ lawyers will read.
 ## Serving beyond the laptop
 
 If local graduates from your machine to a product backend, the runtime changes:
-llama.cpp and Ollama optimise for one user, not for concurrent load. vLLM is the
-standard server — continuous batching of incoming requests plus PagedAttention
-for KV-cache memory management, behind an OpenAI-compatible endpoint (it speaks
-the Anthropic Messages API too). Continuous batching is the headline: requests
-join and leave the batch mid-generation instead of waiting for the slowest
-sequence, which is where the throughput that makes self-hosting economical comes
-from. That's the one paragraph; if you are provisioning GPUs for vLLM you have
-left this handbook's scope and entered ops.
+llama.cpp and Ollama optimize for one user, not for concurrent load. vLLM is the
+standard server. It does continuous batching of incoming requests and
+PagedAttention for KV-cache memory management, behind an OpenAI-compatible
+endpoint, and it speaks the Anthropic Messages API too. Continuous batching is
+the headline: requests join and leave the batch mid-generation instead of
+waiting for the slowest sequence, which is where the throughput that makes
+self-hosting economical comes from. That's the one paragraph. If you are
+provisioning GPUs for vLLM you have left this handbook's scope and entered ops.
 
 ## The bottom tier of the cascade
 
-*Cost and latency* builds a model cascade: cheap models handle the easy majority,
+The Cost and latency chapter builds a model cascade: cheap models handle the easy majority,
 expensive models get the escalations. A local model is the natural floor —
 per-token cost of zero, no rate limits, no egress. Because Ollama speaks the
 OpenAI wire format, the floor is a config change, not a code change: point the
@@ -156,25 +157,25 @@ Claude for everything that thinks. This also gives you an offline dev loop — y
 test suite's LLM calls run free and disconnected, and only staging touches the
 metered API.
 
-Structured output is where local runtimes are quietly ahead of most APIs:
+Structured output is where local runtimes are quietly ahead of most APIs.
 llama.cpp supports GBNF, a BNF-style grammar format that constrains decoding
-itself — the sampler can only emit tokens the grammar allows, so conformance is
+itself. The sampler can only emit tokens the grammar allows, so conformance is
 guaranteed rather than requested. Pass `--grammar-file` to `llama-cli`, or a
 `grammar` or `json_schema` field to `llama-server`; a converter
 (`json_schema_to_grammar.py`) compiles JSON Schema to GBNF ahead of time. The
 schema shapes only the output, not the prompt. For the parse-or-retry discipline
-this replaces, see *Structured output*.
+this replaces, see the Structured output chapter.
 
 > [!FIELD] 2026-08 — the phone is a deployment target, not a demo
-> Working offline-first on iOS from an M-series Mac: the loop that works is
+> Working offline-first on iOS from an M-series Mac: the loop that works is to
 > evaluate with `mlx-lm` on the desktop, then ship the same small quantized model
-> on-device via `mlx-swift` (mlx-lm itself is desktop-only Python; CoreML is the
-> alternative route). The desktop Mac is an honest preview because it shares the
-> unified-memory architecture — but it is
-> not an honest preview of thermals or RAM ceilings on a phone, so budget a
-> device-testing pass for sustained generation, not just first-token demos.
+> on-device via `mlx-swift` (CoreML is the alternative route). The desktop Mac
+> is a faithful preview because it shares the unified-memory architecture, but
+> it is not a faithful preview of thermals or RAM ceilings on a phone, so
+> budget a device-testing pass for sustained generation, not just first-token
+> demos.
 
-The summary you can act on: local is a floor and a fence — a cost floor under
-your cascade and a fence around data that can't leave. For everything above the
-floor and outside the fence, *Building on the API* is still the chapter that
-matters.
+The summary you can act on is that local is a floor and a fence. It puts a
+cost floor under your cascade and a fence around data that can't leave. For
+everything above the floor and outside the fence, the Building on the API
+chapter is still the one that matters.

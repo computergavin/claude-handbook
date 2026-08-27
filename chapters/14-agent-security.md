@@ -16,7 +16,7 @@ An agent that reads untrusted content will eventually follow instructions hidden
 in it, so security comes from limiting what the agent *can do* when that happens
 — never from hoping it won't.
 
-Every scraper pipeline in this stack qualifies as a target: lead-gen tools feed
+Every scraper pipeline in your stack qualifies as a target: lead-gen tools feed
 raw web pages into a model, market-intel tools feed Reddit threads, browser
 automation reads whatever the page serves, and MCP servers add tools whose
 descriptions you didn't write. Any of those inputs can carry instructions.
@@ -26,8 +26,8 @@ descriptions you didn't write. Any of those inputs can carry instructions.
 The two get conflated, and the conflation causes bad threat models.
 
 - **Jailbreaking**: the *user* tricks the model into violating its own policies.
-  The victim is the model vendor. If you aren't hosting a chatbot for strangers,
-  this is mostly not your problem.
+  The victim is the model vendor. Unless you are hosting a chatbot for
+  strangers, this is not your problem.
 - **Prompt injection**: *content* the agent processes carries instructions that
   the model executes with the agent's privileges. The victim is you. This is
   your problem the moment a tool result contains text you didn't write.
@@ -46,7 +46,7 @@ an exotic attack. It is a comment in HTML.
 
 > [!NOTE] Practitioner lead
 > "Lethal trifecta" is Simon Willison's term, from his June 2025 post. It is a
-> framing, not a spec — but it is the single most useful triage question for any
+> framing, not a spec, but it is the single most useful triage question for any
 > agent you run.
 
 An agent is exploitable for data theft when it combines all three of:
@@ -66,8 +66,8 @@ holds your `.env` and an unrestricted `curl` has all three.
 > [!PATTERN] Trifecta triage
 > Before adding any tool to an agent, name which legs the agent now has. Two
 > legs is a design decision. Three legs is an incident with a variable-length
-> fuse. Split the workload into separate agents — one that touches untrusted
-> content, one that touches secrets — before reaching for cleverer defenses.
+> fuse. Split the workload into two agents, one that touches untrusted content
+> and one that touches secrets, before reaching for cleverer defenses.
 
 ## MCP is a supply chain
 
@@ -81,33 +81,34 @@ by Invariant Labs in April 2025:
 - **Rug pulls.** A server changes its tool descriptions *after* you approved it.
   Yesterday's audit proves nothing about today's session.
 - **Cross-server shadowing.** A malicious server's descriptions redirect the
-  behaviour of a *different, trusted* server's tools — their demo rerouted
+  behavior of a *different, trusted* server's tools — their demo rerouted
   outgoing email written via a legitimate mail tool to an attacker's address.
 
 The MCP spec's own security-best-practices document adds the server-side list:
-confused-deputy OAuth proxies, token passthrough (flatly forbidden by the spec),
-session hijacking, and scope minimisation — wildcard scopes like `files:*` are
-called out as an anti-pattern because a stolen token inherits the whole grant.
+confused-deputy OAuth proxies, token passthrough (flatly forbidden by the
+spec), and session hijacking. It also demands scope minimization. Wildcard
+scopes like `files:*` are called out as an anti-pattern because a stolen token
+inherits the whole grant.
 
 Concrete hygiene: pin server versions, diff tool descriptions against a stored
-hash on every session start (a `SessionStart` hook does this well), prefer
-servers whose source you can read, and give each server the narrowest
-permission rule that works — `mcp__github__search_issues`, not `mcp__github__*`.
-Claude Code prompts for trust on first use of a new MCP server; note that this
-check is skipped under `-p` non-interactive mode, which is exactly the mode
-your cron-driven scrapers run in.
+hash on every session start (a `SessionStart` hook does this well), and prefer
+servers whose source you can read. Give each server the narrowest permission
+rule that works. That means `mcp__github__search_issues`, not `mcp__github__*`.
+Claude Code prompts for trust on first use of a new MCP server. That check is
+skipped under `-p` non-interactive mode, which is exactly the mode your
+cron-driven scrapers run in.
 
 ## Defenses that hold
 
-**Least-privilege tool scoping.** The agent that summarises scraped pages needs
+**Least-privilege tool scoping.** The agent that summarizes scraped pages needs
 Read and one fetch tool. It does not need Bash, your mail MCP server, or write
 access outside its output directory. Every tool you leave attached is a
 capability you have granted to whoever wrote the page it reads.
 
 **Human approval gates on irreversible actions.** Deterministic gates, not
-instructions. This handbook's hooks chapter covers the mechanics; the property
-that matters here is that a `PreToolUse` hook returning deny blocks the tool
-even under `--dangerously-skip-permissions`. Instructions are advisory and
+instructions. This handbook's hooks chapter covers the mechanics. The property that matters
+here is that a `PreToolUse` hook returning deny blocks the tool even under
+`--dangerously-skip-permissions`. Instructions are advisory and
 injectable. Hooks are neither.
 
 > [!FIELD] The push guardrail — 2026-08-26
@@ -121,11 +122,11 @@ injectable. Hooks are neither.
 > without explicit per-action approval, and the hooks directory itself is
 > off-limits to the agent — a guardrail the agent can edit is a suggestion.
 
-**Treat fetched content as data, not instructions.** Structurally, where
-possible: fetch in one process, extract the fields you need with plain code,
-and hand the model only the extracted fields. When the model must see raw
-content, have it *quote and label*, never *obey* — and keep the session that
-reads it stripped of legs 1 and 3. Claude Code applies the same idea
+**Treat fetched content as data, not instructions.** Do this structurally
+where you can. Fetch in one process, extract the fields you need with plain
+code, and hand the model only the extracted fields. When the model must see
+raw content, have it *quote and label*, never *obey*, and keep the session
+that reads it stripped of legs 1 and 3. Claude Code applies the same idea
 internally: web fetch runs in an isolated context window so page content
 never lands directly in the main agent's context.
 
@@ -143,11 +144,12 @@ egress through a domain allowlist:
 ```
 
 A command that tries to POST your data to `attacker.example` never connects. A
-lesser-known layer on top: credential masking (`"mode": "mask"` under
+lesser-known layer sits on top. Credential masking (`"mode": "mask"` under
 `sandbox.credentials`) shows sandboxed commands a per-session sentinel instead
 of the real token, and the sandbox proxy substitutes the real value only on
-requests to listed `injectHosts`. The command — and anything injected into it —
-never holds the credential at all, which weakens leg 1 as well as leg 3.
+requests to listed `injectHosts`. The command never holds the credential at
+all, and neither does anything injected into it, which weakens leg 1 as well
+as leg 3.
 
 ## Defenses that don't hold
 
@@ -172,8 +174,8 @@ content into typed values but can never invoke tools. A capability system
 tracks where every value came from and blocks flows that would ship tainted or
 private data to an unauthorized sink. Untrusted text can corrupt a *value*; it
 cannot add a step. On the AgentDojo benchmark, CaMeL solves 77% of tasks with
-provable security, against 84% for the same system undefended — security cost:
-seven points of task completion.
+provable security, against 84% for the same system undefended. The security
+costs seven points of task completion.
 
 The poor-man's version fits a scraper pipeline in an afternoon: one model call
 plans the run from your trusted config, plain code executes the fetches, a

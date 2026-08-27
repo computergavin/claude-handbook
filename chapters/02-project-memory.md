@@ -10,12 +10,13 @@ sources:
   - https://platform.claude.com/docs/en/build-with-claude/prompt-caching
 ---
 
-How Claude Code knows what it knows at session start, and how to spend the
-finite context that knowledge competes with.
+What Claude Code knows at session start comes from files you control, and
+every line those files load competes for the same finite context the work
+needs.
 
 Two mechanisms carry knowledge across sessions: CLAUDE.md files you write, and
-auto memory Claude writes for itself. Both are context, not enforcement — an
-instruction that must hold every time belongs in Hooks, not here.
+auto memory Claude writes for itself. Both are context, not enforcement. An
+instruction that must hold every time belongs in a hook, not here.
 
 ## The hierarchy Claude Code actually reads
 
@@ -42,12 +43,12 @@ containing them, and nest four hops deep. Wrap a path in backticks —
 that resolves outside the working directory triggers a one-time approval
 dialog; your own user-scope imports load without one.
 
-> [!CAUTION] Imports organise, they don't economise
+> [!CAUTION] Imports organize, they don't economize
 > Imported files are expanded into context at launch alongside the CLAUDE.md
 > that references them. Splitting a 400-line file into imports costs exactly
 > the same tokens. Only path-scoped rules and skills actually defer loading.
 
-Keep each file under roughly 200 lines — the documented target, and past it
+Keep each file under roughly 200 lines, the documented target. Past that,
 adherence drops. Claude Code loads a CLAUDE.md up to 4 MiB and
 silently skips anything larger. Run `/init` to generate a starting point in a
 new repo, `/context` to confirm what actually loaded, and `/doctor` to propose
@@ -74,15 +75,15 @@ Skills package a repeatable procedure as `.claude/skills/<name>/SKILL.md` — a
 directory, not a loose markdown file. The former custom-commands system was
 merged into skills. The dividing line against CLAUDE.md: rules are facts
 Claude should hold in every session; skills are procedures that load on
-invocation. Anything multi-step moves to a skill; the tokens it would have
-cost every session are the argument.
+invocation. Anything multi-step moves to a skill. The argument is the tokens it would
+have cost every session.
 
 ## Auto memory
 
 Claude writes its own notes to `~/.claude/projects/<project>/memory/` — a
-`MEMORY.md` index plus one topic file per memory. The first 200 lines or 25KB
-of the index, whichever comes first, load into every session; everything past
-that threshold silently doesn't. Topic files never load at startup — Claude
+`MEMORY.md` index plus one topic file per memory. The index loads into every
+session up to the first 200 lines or 25KB, whichever comes first. Everything
+past that threshold silently doesn't. Topic files never load at startup — Claude
 reads them on demand. The directory is keyed to the git repo, so all worktrees
 share one memory, and it is exempt from the transcript retention sweep.
 
@@ -109,7 +110,7 @@ that is exactly the content `/doctor` proposes cutting.
 
 ## Compaction
 
-Compaction summarises the conversation to free space. What survives is
+Compaction summarizes the conversation to free space. What survives is
 mechanical, not lucky:
 
 - The system prompt is untouched. Project-root CLAUDE.md, unscoped rules, auto
@@ -124,17 +125,17 @@ mechanical, not lucky:
   keeping the start of the file and cutting the end, and once invoked skills
   together exceed 25,000 tokens the oldest-invoked ones are dropped whole —
   put a skill's critical instructions at the top of `SKILL.md`.
-- Anything given only in conversation is summarised with everything else.
+- Anything given only in conversation is summarized with everything else.
 
-A `## Compact Instructions` section in `CLAUDE.md` tells the summariser what
+A `## Compact Instructions` section in `CLAUDE.md` tells the summarizer what
 to preserve, and `/compact focus on the auth bug` does it per-run. Worth
-pairing with the `SessionStart`/`compact` re-injection hook — see Hooks for
-the config. `/autocompact 500k` moves the automatic threshold earlier, and
+pairing with the `SessionStart`/`compact` re-injection hook — see the Hooks
+chapter for the config. `/autocompact 500k` moves the automatic threshold earlier, and
 `/rewind` → "Summarize from here" compacts part of a conversation instead of
 all of it.
 
 > [!CAUTION] Compaction is itself a large request
-> `/compact` reads the entire conversation it summarises, so compacting a
+> `/compact` reads the entire conversation it summarizes, so compacting a
 > full context is one of the most expensive single requests you can make.
 > `/clear` costs nothing. When the next task doesn't need the history, clear;
 > compact only when continuity is worth paying for. `/rename` before
@@ -147,7 +148,7 @@ decisions, "resume by" — and never caches what a command can answer. Git
 state is the canonical violation: a prose snapshot of push status goes stale
 the instant anything pushes from another terminal, and a stale claim actively
 misleads where an absent one would just prompt a lookup. Re-derive git facts
-live at resume, `git fetch` before `git status`.
+live at resume. Run `git fetch` before `git status`.
 
 ## Context budgets for long-horizon work
 
@@ -167,11 +168,11 @@ match, so one changed byte invalidates everything after it. Keep the stable
 material stable and let only the conversation tail vary. The cache lives an
 hour on a subscription and five minutes on an API key or while drawing usage
 credits, which is why the first message after a long break reprocesses your
-whole context. Cost and latency covers the API-side numbers; Building on the
-API covers breakpoint placement.
+whole context. The Cost and latency chapter covers the API-side numbers, and the Building on
+the API chapter covers breakpoint placement.
 
 For work that outlives any single window, the same guidance gives three
-levers, all of which this handbook already institutionalises: compaction
+levers, all of which this handbook already institutionalizes: compaction
 (above), structured notes outside the window (auto memory, handoff docs), and
 subagents that burn their own context and return a 1,000–2,000-token summary
 — see Subagents. Long-horizon capacity is not a bigger window; it is a

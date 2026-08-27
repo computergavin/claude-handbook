@@ -9,9 +9,9 @@ sources:
   - https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost
 ---
 
-Prompt structure — what goes where, in what order, backed by which examples — has
-measurable effects on output quality, and a prompt that matters belongs in version
-control like any other artifact. These are the techniques that hold up across models
+Prompt structure has measurable effects on output quality. What goes where, in
+what order, and which examples back it all change the result. A prompt that
+matters belongs in version control like any other artifact. These are the techniques that hold up across models
 and surfaces.
 
 Anthropic consolidated its per-technique docs (XML tags, long-context tips, extended
@@ -50,7 +50,7 @@ Role and durable behavior go in the `system` prompt; the task goes in the user t
 For long inputs the ordering inside the user turn matters more than most people
 expect: put documents and data at the top, query and instructions at the bottom.
 Anthropic reports that with 20k+ token inputs, placing the query at the end improves
-response quality by up to 30% in their tests, especially for multi-document inputs.
+response quality by up to 30% in its tests, especially for multi-document inputs.
 
 Wrap each document in `<document>` tags with `<source>` and `<document_content>`
 subtags so Claude can cite and distinguish them.
@@ -68,7 +68,7 @@ chapter covers the mechanics.
 
 ## Few-shot examples
 
-Examples are the highest-leverage single move for output format, tone, and structure —
+Examples are the single most effective move for output format, tone, and structure —
 the docs call them "one of the most reliable ways to steer Claude's output." Use 3–5,
 wrapped in `<example>` tags (multiple inside `<examples>`), and make them relevant to
 your actual inputs and diverse across edge cases.
@@ -94,9 +94,9 @@ prescriptive steps" — "think thoroughly" often beats a hand-written plan, beca
 Claude's own decomposition frequently exceeds what you would prescribe.
 
 > [!CAUTION] Prompts tuned for old models overtrigger on new ones
-> Aggressive phrasing that fixed undertriggering on earlier models — "CRITICAL: You
-> MUST use this tool when..." — causes overtriggering specifically on Claude Opus 4.5
-> and Opus 4.6, per the docs; dial back to plain "Use this tool when...". The
+> Aggressive phrasing such as "CRITICAL: You MUST use this tool when..." fixed
+> undertriggering on earlier models, but per the docs it causes overtriggering
+> on Claude Opus 4.5 and Opus 4.6. Dial back to plain "Use this tool when...". The
 > self-check instruction ("verify your work before finishing") runs the other
 > direction and is model-specific in the opposite sense: the docs still recommend it
 > for most models, but call out Claude Opus 5 as the one exception that self-checks
@@ -132,8 +132,8 @@ API parameter and remains the fallback when thinking is off. You can also put
 Claude generalizes the style into its own thinking.
 
 **Thinking as an API feature** is a separate pre-response channel, billed as output
-tokens. The old form — extended thinking with a manual `budget_tokens` — is legacy:
-deprecated on 4.6 models, a 400 error on 4.7 and later. Current models use *adaptive*
+tokens. The old form, extended thinking with a manual `budget_tokens`, is legacy. It is
+deprecated on 4.6 models and returns a 400 error on 4.7 and later. Current models use *adaptive*
 thinking (`thinking: {"type": "adaptive"}`), where Claude decides per request whether
 and how deeply to think, and you steer with `output_config.effort` (`low` through
 `max`; default `high`). Anthropic's internal evaluations found adaptive thinking
@@ -142,14 +142,15 @@ reliably outperforms fixed-budget extended thinking.
 It pays for math, debugging, multi-step analysis, and long agentic loops — tasks
 where the answer depends on intermediate work. It is wasted on extraction,
 classification, and formatting: lower the effort there, or steer per message. The
-documented per-message steering phrases are underused: append "Please think hard
-before responding." to a planning step, "Answer directly without deliberating." to a
-routine one — an agent harness can switch per turn without touching any parameter.
+documented per-message steering phrases are underused. Append "Please think hard
+before responding." to a planning step and "Answer directly without
+deliberating." to a routine one. An agent harness can switch per turn without
+touching any parameter.
 
 There is no thinking budget to set anymore. `max_tokens` is the hard cap on thinking
 plus response combined; `effort` is soft guidance on the split. If you hit
 `stop_reason: "max_tokens"`, raise the cap when the truncated requests needed the
-reasoning, lower the effort when they didn't.
+reasoning, and lower the effort when they didn't.
 
 > [!CAUTION] Thinking bills invisibly, and effort changes break the cache
 > With `display: "omitted"` (the default on the newest models) you see no reasoning
@@ -172,33 +173,38 @@ Use the model to improve the prompt. Three levels:
    generic padding.
 3. **The Console prompt improver** (Anthropic Console → Workbench). Per [Anthropic's
    announcement](https://claude.com/blog/prompt-improver) — vendor-reported, treat as
-   a lead, not a doc fact — it rewrites the prompt, adds a chain-of-thought section,
-   standardizes examples into XML, and lifted a multilabel classification test's
-   accuracy 30%. Audit its output before shipping: the announcement still lists
-   prefill addition as one of the improver's five steps (re-checked, page last
+   a lead, not a doc fact — it rewrites the prompt, adds a chain-of-thought section, and
+   standardizes examples into XML. In Anthropic's test it lifted multilabel
+   classification accuracy by 30%. Audit its output before shipping: the
+   announcement still lists prefill addition as one of the improver's steps
+   (re-checked, page last
    updated mid-2026), and a generated prefill now targets a feature current models
    reject with a 400.
 
 ## Prompts as versioned artifacts
 
 A prompt that earns its keep is a file, not a string literal: checked in, diffed in
-review, deployed like code. This buys three things. Diffs — most prompt regressions
-come from a well-intentioned wording tweak, and a one-line diff is findable where an
-edited string in a dashboard is not. Byte-stability — identical files produce
-identical cache prefixes (Cost and Latency chapter). Regression testing — the docs'
-own instruction for prompt-based steering is "measure before you ship": run a
-representative sample with and without the change. That harness is the Evals chapter;
-the discipline is that no prompt edit merges without a run against the fixtures.
+review, deployed like code. This buys three things.
+
+- **Diffs.** Most prompt regressions come from a well-intentioned wording
+  tweak, and a one-line diff is findable where an edited string in a dashboard
+  is not.
+- **Byte-stability.** Identical files produce identical cache prefixes (see
+  the Cost and Latency chapter).
+- **Regression testing.** The docs' own instruction for prompt-based steering
+  is "measure before you ship": run a representative sample with and without
+  the change. The Evals chapter covers that harness. The discipline is that no
+  prompt edit merges without a run against the fixtures.
 
 *To capture:* your own reusable prompt skeletons, and before/after pairs from real
 sessions.
 
 ## Delegation prompts
 
-Different discipline from conversational prompting — a subagent needs goal, return
-contract, and boundary, because it has no shared history to fall back on. The
-Subagents chapter covers the mechanics; the prompt shape is: what done looks like,
-what to return and in what format, and what not to touch.
+Delegation is a different discipline from conversational prompting. A subagent
+has no shared history to fall back on, so it needs a goal, a return contract,
+and a boundary. The Subagents chapter covers the mechanics. The prompt shape is
+what done looks like, what to return and in what format, and what not to touch.
 
 *To capture:* your standard delegation preamble, and the phrasings that reliably
 produced bad output, with the fix.

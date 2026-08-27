@@ -13,7 +13,7 @@ sources:
   - https://code.claude.com/docs/en/agent-sdk/overview
 ---
 
-For the things that outgrow a Claude Code session and become software.
+The API is for the things that outgrow a Claude Code session and become software.
 
 Every agent framework, including Claude Code itself, wraps the same loop: send a
 messages array, execute what comes back, append, repeat. Learn the loop first and
@@ -37,13 +37,13 @@ parallel calls), and return failures as a `tool_result` with `is_error: true` ra
 than dropping them. A dropped result is a protocol violation; an error result is
 information Claude adapts to.
 
-`stop_reason` is your control flow, and there are more values than `tool_use` and
-`end_turn`: `max_tokens` (truncated — raise the cap or continue), `stop_sequence`,
-`refusal` (HTTP 200, check `stop_details` before reading content), and
-`model_context_window_exceeded`. The odd one is `pause_turn`: a server-tool loop hit
-its iteration limit mid-turn. The handling inverts the tool_use rule — send the
-entire `response.content` back as an assistant message, with no tool results, and
-the model resumes.
+`stop_reason` is your control flow, and there are more values than `tool_use`
+and `end_turn`. `max_tokens` means the response was truncated, so raise the cap
+or continue. `refusal` arrives as an HTTP 200, so check `stop_details` before
+reading content. `stop_sequence` and `model_context_window_exceeded` mean what
+they say. The odd one is `pause_turn`: a server-tool loop hit its iteration
+limit mid-turn. To handle it, send the entire `response.content` back as an
+assistant message with no tool results, and the model resumes.
 
 ## Four rungs, one decision rule
 
@@ -58,18 +58,18 @@ scope you no longer maintain.
 | Claude Agent SDK (`claude-agent-sdk`) | a prompt and options | Claude Code's harness: built-in file/bash/search tools, context management, permissions, hooks, subagents, sessions |
 | Claude Code headless (`claude -p`) | a shell command | everything above plus your installed skills and config |
 
-The rule: **default to the tool runner; move down only for control flow it cannot
-express, move up only when you want tools you didn't write.** The raw loop earns its
-keep when you need a beta-free dependency or a loop shape the runner's hooks don't
-fit. The Agent SDK earns its keep the moment your agent needs to read files, run
-commands, or manage its own context — reimplementing Claude Code's harness by hand
-is weeks of work the SDK ships as `query(prompt, options)`. It's the answer to where
-a headless `-p` run stops being enough and the SDK's permission callbacks and
-session control start earning their complexity. Note the SDK is Python and
+The rule: **default to the tool runner. Move down only for control flow it
+cannot express. Move up only when you want tools you didn't write.** The raw
+loop earns its keep when you need a beta-free dependency or a loop shape the
+runner's hooks don't fit. The Agent SDK pays for itself the moment your agent
+needs to read files, run commands, or manage its own context — reimplementing
+Claude Code's harness by hand is weeks of work the SDK ships as
+`query(prompt, options)`. The SDK is where you land when a headless `-p` run
+stops being enough and you need permission callbacks and session control. Note the SDK is Python and
 TypeScript only; from other languages, drive the CLI as a subprocess with `-p
 --output-format json`.
 
-The tool runner is less known than it deserves. In Python, decorate a typed,
+The tool runner is less well known than it deserves to be. In Python, decorate a typed,
 docstringed function with `@beta_tool` and the SDK derives the JSON schema from the
 signature. `runner.until_done()` runs the loop to completion; iterating the runner
 instead yields each assistant message, which is where the interesting control lives:
@@ -81,7 +81,7 @@ instead yields each assistant message, which is where the interesting control li
 > runner skips its automatic append for that iteration. This is how you build
 > approval gates, audit logging, and result rewriting (e.g. adding `cache_control`)
 > without abandoning the runner for a hand-rolled loop. Pass `max_iterations` to
-> bound it. Beta, supported across all seven SDKs.
+> bound it. The runner is in beta and supported across all of Anthropic's SDKs.
 
 ## Streaming tool calls
 
@@ -91,8 +91,8 @@ placeholder. Accumulate fragments per block index, parse on `content_block_stop`
 SDK accumulator helpers do this for you.
 
 By default the API buffers and validates each parameter server-side before
-streaming it, so a large parameter — a whole file, a long document — shows nothing
-until it's finished. Set `eager_input_streaming: true` on the tool definition (a
+streaming it, so a large parameter, such as a whole file or a long document,
+shows nothing until it's finished. Set `eager_input_streaming: true` on the tool definition (a
 per-tool field, no beta header; it replaces the legacy
 `fine-grained-tool-streaming-2025-05-14` header) and fragments arrive as Claude
 writes them. That's the difference between a live-updating editor pane and a
@@ -110,19 +110,20 @@ frozen spinner.
 
 The retryable set: 429 `rate_limit_error`, 500 `api_error`, 529 `overloaded_error`
 (platform-wide load, not your fault), plus connection errors and timeouts. The SDKs
-already retry these with exponential backoff — twice by default, honoring
-`retry-after` — so write custom retry logic only for behavior beyond that, and catch
+already retry these with exponential backoff, twice by default, and they honor
+`retry-after`. Write custom retry logic only for behavior beyond that, and catch
 typed exception classes most-specific-first rather than string-matching messages.
 Log `response._request_id` on every failure; it's what support can act on.
 
-Two 429s are not retryable and look like ones that are: the monthly spend-cap 429
-carries no `retry-after` header and fails until access resumes, and a sharp usage
-ramp can trip acceleration limits — ramp traffic gradually instead of retrying
-harder. A backoff loop pointed at either burns time for nothing.
+Two 429s are not retryable and look like ones that are. The monthly spend-cap
+429 carries no `retry-after` header and fails until access resumes. A sharp
+usage ramp can trip acceleration limits, so ramp traffic gradually instead of
+retrying harder. A backoff loop pointed at either burns time for nothing.
 
 > [!PATTERN] Idempotency keys come free
-> Every `tool_use` block has a unique `id`. For side-effecting tools — send email,
-> create invoice, push commit — record the `tool_use_id` before executing and no-op
+> Every `tool_use` block has a unique `id`. For side-effecting tools such as
+> sending email, creating an invoice, or pushing a commit, record the
+> `tool_use_id` before executing and no-op
 > on replay. Crashes mid-loop, resumed sessions, and the model re-calling a tool
 > after an ambiguous error all become safe, because the same id never fires the
 > side effect twice. Store the original result and return it, so the conversation
@@ -130,20 +131,20 @@ harder. A backoff loop pointed at either burns time for nothing.
 
 ## Count before you send
 
-`client.messages.count_tokens()` takes the same shape as `messages.create` — system,
-tools, images, PDFs included — and returns `input_tokens`. It's free, with a
+`client.messages.count_tokens()` takes the same shape as `messages.create`,
+including system, tools, images, and PDFs, and returns `input_tokens`. It's free, with a
 separate rate limit (2,000 requests/minute at the lowest tier) that doesn't touch
 your message quota. Use it as a pre-flight gate: route small jobs to a cheaper
 model, refuse inputs that won't fit, and price work before running it. The count is
-an estimate, and models from Opus 4.7 on use a tokenizer that produces roughly 35%
-more tokens for the same text (the docs' own numbers: ~750k words per 1M tokens
-before Opus 4.7 vs. ~555k words per 1M tokens on the current tokenizer) — always
-count against the model you'll actually call.
+an estimate, and models from Opus 4.7 on use a tokenizer that produces roughly
+35% more tokens for the same text. The docs' own numbers are ~750k words per 1M
+tokens before Opus 4.7 and ~555k on the current tokenizer. Always count against
+the model you'll actually call.
 
 ## Structured output
 
 When you need JSON, say so unambiguously in the system prompt, strip code fences
-defensively, and parse inside a try/catch. Assume the wrapper will occasionally
+defensively, and parse inside a try/catch. Assume a code-fence wrapper will occasionally
 appear anyway. The stronger mechanism is the API's structured outputs
 (`output_config.format` and `strict: true` on tool schemas) — the Structured Output
 chapter covers when each applies.
@@ -153,9 +154,9 @@ chapter covers when each applies.
 Current API IDs: `claude-opus-5` ($5/$25 per MTok in/out), `claude-sonnet-5`
 ($2/$10), `claude-haiku-4-5` ($1/$5), `claude-fable-5` ($10/$50). Dateless IDs from
 the 4.6 generation on are pinned snapshots, not floating aliases — pinning to a
-date-suffixed ID is no longer a thing you do. Batch API requests run at 50% off;
+date-suffixed ID is obsolete. Batches API requests run at 50% off;
 cache reads at 10% of input price. Verify current model IDs, limits, and pricing
-against the docs rather than memory — this is the fastest-moving page in the
+against the docs rather than memory — this is the fastest-moving section in the
 handbook. Per-task tier selection and the caching math live in the Cost and Latency
 chapter.
 

@@ -12,7 +12,7 @@ sources:
   - https://hamel.dev/blog/posts/llm-judge/
 ---
 
-An eval is a test suite for model behaviour: without one, every prompt change is a
+An eval is a test suite for model behavior: without one, every prompt change is a
 deploy on vibes, and you cannot tell an improvement from a regression.
 
 This is the largest gap in this handbook's own practice. The quote-drafter, the
@@ -28,8 +28,9 @@ evals starts to break down." And the cost curve is asymmetric — "evals get har
 build the longer you wait," because the failure modes you would have harvested into
 test cases evaporate if you never logged them.
 
-So: prototyping a one-off script, skip the harness. Shipping a pipeline whose output
-someone else consumes — a drafted quote, an extracted lead list — build it. The
+Skip the harness when you are prototyping a one-off script. Build it when you
+ship a pipeline whose output someone else consumes, such as a drafted quote or
+an extracted lead list. The
 payoff compounds at model-upgrade time: with a harness, swapping models is an
 afternoon of runs instead of a week of nervous spot-checks.
 
@@ -44,10 +45,10 @@ afternoon of runs instead of a week of nervous spot-checks.
 > **What changed.** Trace logging (below) goes into every pipeline as of now, because
 > it is the precondition for everything else in this chapter.
 
-## Traces first — the cheap precondition
+## Traces are the cheap precondition
 
-Everything downstream — golden sets, judges, regression gates — is built from
-production traces. Capturing them costs one function:
+Golden sets, judges, and regression gates are all built from production
+traces. Capturing them costs one function:
 
 ```python
 def log_trace(input, output, prompt_version, model, path="traces.jsonl"):
@@ -63,7 +64,7 @@ file beats a generic dashboard you never open.
 
 ## Golden sets come from failures, not imagination
 
-Anthropic's guidance for a starting set: "20–50 simple tasks drawn from real
+Anthropic's guidance for a starting set is "20–50 simple tasks drawn from real
 failures," not hundreds of synthetic ones. The quality bar for each task: "a good
 task is one where two domain experts would independently reach the same pass/fail
 verdict." Ambiguous tasks produce noisy scores that teach you nothing.
@@ -78,7 +79,7 @@ committee averaging Likert scores.
 > Label 30ish traces pass/fail with a one-sentence critique each. Build an LLM judge
 > prompted with those critiques as examples. Measure its agreement against your
 > labels, fix the biggest disagreement, repeat. In his Honeycomb case study this hit
-> >90% judge–human agreement in three prompt iterations. The critiques are the
+> over 90% judge–human agreement in three prompt iterations. The critiques are the
 > asset; the judge is compiled from them.
 
 ## Assertions before judges
@@ -92,9 +93,9 @@ ordinary unit tests that happen to wrap a model call. Rechat ran hundreds of suc
 assertions, including one that just checked no raw UUID leaked into user-facing
 output (Husain, lead).
 
-Graded evals — a judge scoring tone, faithfulness, coverage — are for the outputs
-assertions can't reach: the quote-drafter's register, the summarizer's selection of
-what mattered. Use them second, and calibrate them (below), because a judge you
+Graded evals use a judge to score tone, faithfulness, and coverage. They cover
+the outputs assertions can't reach, such as the quote-drafter's register and
+the summarizer's selection of what mattered. Use them second, and calibrate them (below), because a judge you
 haven't checked is an opinion, not a metric.
 
 Anthropic's design principle for the set as a whole: "more questions with slightly
@@ -103,25 +104,26 @@ human hand-graded evals." Volume of automated checks beats artisanal ones.
 
 ## LLM-as-judge and its documented failure modes
 
-The MT-Bench paper (Zheng et al., 2023, arXiv:2306.05685) established both the case
-for LLM judges — GPT-4 agreed with human preferences over 80% of the time, matching
-human–human agreement — and their systematic biases:
+The MT-Bench paper (Zheng et al., 2023, arXiv:2306.05685) made the case for
+LLM judges: GPT-4 agreed with human preferences over 80% of the time, which
+matches human–human agreement. The same paper documented their systematic
+biases:
 
-- **Position bias** — in pairwise comparison, the judge favours an answer because of
+- **Position bias** — in pairwise comparison, the judge favors an answer because of
   where it appears, not what it says.
 - **Verbosity bias** — longer answers score higher independent of quality.
-- **Self-enhancement bias** — judges favour outputs from models like themselves.
+- **Self-enhancement bias** — judges favor outputs from models like themselves.
 - **Weak grading of math and reasoning** — the judge can't grade what it can't solve.
 
-The self-preference result was sharpened by Panickssery et al. (2024,
-arXiv:2404.13076): an LLM's ability to recognise its own outputs correlates linearly
-with how strongly it favours them, and fine-tuning for better self-recognition
-increases the bias — it's causal, not coincidental. Anthropic's practical
+Panickssery et al. (2024, arXiv:2404.13076) sharpened the self-preference
+result. An LLM's ability to recognize its own outputs correlates linearly with
+how strongly it favors them, and fine-tuning for better self-recognition
+increases the bias. The link is causal, not coincidental. Anthropic's practical
 translation: grade with a different model than the one that generated the output.
 
-Mitigations from the MT-Bench paper: run every pairwise comparison twice with
-positions swapped and count only consistent verdicts; provide a reference answer
-when one exists; ask for reasoning before the verdict.
+The MT-Bench paper offers three mitigations. Run every pairwise comparison
+twice with positions swapped and count only consistent verdicts. Provide a
+reference answer when one exists. Ask for reasoning before the verdict.
 
 > [!CAUTION] A judge inflates the metric it's biased toward
 > Verbosity bias means "make the summary more thorough" prompt changes will score
@@ -133,17 +135,17 @@ when one exists; ask for reasoning before the verdict.
 Pairwise ("which of A/B is better?") is the right shape for choosing between two
 prompt versions or models, and it inherits position bias — always swap and re-run.
 Rubric grading (score one output against written criteria) is the right shape for CI,
-because it needs no baseline output to compare against. Two refinements from
-Anthropic's agent guide: grade each dimension separately rather than asking for one
-holistic score, and give the judge an escape hatch — an explicit "Unknown" option —
-so it doesn't hallucinate a verdict. And per Husain (lead): make each dimension
+because it needs no baseline output to compare against. Anthropic's agent guide adds two refinements. Grade each dimension separately
+rather than asking for one holistic score, and give the judge an explicit
+"Unknown" option so it doesn't hallucinate a verdict. And per Husain (lead): make each dimension
 binary. "Tracking a bunch of scores on a 1-5 scale is often a sign of a bad eval
 process" — nobody can act on the difference between a 3 and a 4.
 
 ## Calibrate the judge against a human-labeled sample
 
-The lesser-known step that turns a judge from vibes into an instrument: before
-trusting it, run it over the 30–50 traces you hand-labeled and measure agreement.
+The lesser-known step that turns a judge from vibes into an instrument is
+calibration. Before trusting it, run it over the 30–50 traces you hand-labeled
+and measure agreement.
 Report precision and recall separately, not raw agreement — if 90% of your traces
 pass, a judge that says "pass" unconditionally scores 90% agreement while catching
 nothing. Iterate on the judge prompt until disagreements are ones you'd concede.
@@ -152,11 +154,11 @@ modes drift.
 
 ## Regression-gating prompt changes in CI
 
-The structure OpenAI's Evals API formalises is worth copying even if you never use
+The structure OpenAI's Evals API formalizes is worth copying even if you never use
 the API: an *eval* is the fixed part (dataset schema plus grading criteria); a *run*
 is one prompt version executed against it. Their regression cookbook demonstrates
-the loop — baseline prompt and candidate prompt as two runs against the same eval,
-scores compared. The CI translation for any stack:
+the loop: baseline prompt and candidate prompt as two runs against the same
+eval, with the scores compared. The CI translation for any stack:
 
 ```bash
 python run_evals.py --prompt prompts/quote_v14.txt --golden golden/quotes.jsonl

@@ -24,6 +24,8 @@ Never hand-edit `build/handbook.html`. It is generated. Edit `chapters/*.md`,
 - **Every chapter opens with the one-sentence version** of what it's about, then
   earns the detail.
 - **Concrete over abstract.** Real config, real commands, real numbers.
+- **American spelling throughout.** behavior, defense, summarize, labeled —
+  never the British forms. Direct quotes keep their source's spelling.
 
 ## Structural rules
 
@@ -52,7 +54,7 @@ point of the system.
 
 The visual direction is an orange wireframe notebook: graph-paper ground, white
 sheets with a hard offset shadow, die-cut index tabs, margin rail for procedure
-numbers. All colour and type decisions live in `:root` in `assets/book.css`. Change
+numbers. All color and type decisions live in `:root` in `assets/book.css`. Change
 tokens there rather than adding one-off rules.
 
 ## Compact instructions

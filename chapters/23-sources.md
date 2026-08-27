@@ -145,7 +145,7 @@ poisoning), or distills real engagement volume into heuristics worth testing. Wh
 it never does is settle a factual claim on its own.
 
 > [!PATTERN] The blog-post test
-> A claim that exists only in a blog post is unverified, house rule. Either trace it
+> By house rule, a claim that exists only in a blog post is unverified. Either trace it
 > to a primary source or a paper, reproduce it yourself and file it as a dated FIELD
 > note, or label it a lead inline. Citing a practitioner post as if it were
 > documentation is the one way a chapter fails review outright.
@@ -224,8 +224,8 @@ drop.
   **primary**. Scopes and precedence, transports, tool naming, output limits, tool
   search config, timeouts, headless approval behavior.
 - [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents)
-  — **primary**. Namespacing, parameter naming, description, consolidation, error,
-  and `response_format` guidance, with token figures.
+  — **primary**. Namespacing, parameter naming, description, consolidation,
+  error-handling, and `response_format` guidance, with token figures.
 - [Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp)
   — **primary**. The 150,000→2,000-token (98.7%) context-cost measurement for
   loading tools as code instead of definitions.
@@ -387,7 +387,8 @@ drop.
   — **primary**. Zero Claude mentions in the raw HTML, supporting the claim that
   Bedrock distillation excludes Claude.
 - [AWS Bedrock — prerequisites for model distillation](https://docs.aws.amazon.com/bedrock/latest/userguide/prequisites-model-distillation.html)
-  — **primary**. Teacher/student pairing rules, and the explicit notice that
+  — **primary**. The "prequisites" spelling is AWS's own live URL (sic — do not
+  correct it). Teacher/student pairing rules, and the explicit notice that
   distillation "is not currently available for Anthropic models on Amazon Bedrock"
   with no confirmed restoration timeline.
 - [LoRA: Low-Rank Adaptation of Large Language Models — Hu et al., 2021](https://arxiv.org/abs/2106.09685)
@@ -451,7 +452,7 @@ drop.
   command.
 - [Claude for Chrome](https://claude.com/blog/claude-for-chrome) — **primary**.
   Anthropic's first-party publication of its own red-team evaluation — the sole
-  publisher of the 23.6%/11.2%/35.7%→0% attack-success numbers and the
+  source of the 23.6%/11.2%/35.7%→0% attack-success numbers and the
   blocked-category and confirmation policies. Vendor-reported figures,
   authoritative for the vendor's own product only.
 

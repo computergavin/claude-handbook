@@ -70,13 +70,17 @@ Every tool call passes through a gate before it runs. The gate has two parts: a
 mode setting the session's baseline, and allow/ask/deny rules in `settings.json`
 overriding it per tool or command pattern.
 
-The modes, cycled with `Shift+Tab`: `default` (labeled Manual — prompts before
-most actions), `acceptEdits` (file edits and common filesystem commands run
-unprompted), `plan` (file edits blocked until you approve the plan; reads run
-free, other shell commands still prompt unless auto mode's classifier is
-covering the session), `auto` (a classifier model reviews actions instead of
-you; the built-in starting mode on Pro, Max, and Team), `dontAsk` (auto-denies
-anything not pre-approved), and `bypassPermissions`.
+The modes, cycled with `Shift+Tab`:
+
+- `default` — labeled Manual. Prompts before most actions.
+- `acceptEdits` — file edits and common filesystem commands run unprompted.
+- `plan` — file edits are blocked until you approve the plan. Reads run free,
+  and other shell commands still prompt unless auto mode's classifier is
+  covering the session.
+- `auto` — a classifier model reviews actions instead of you. The built-in
+  starting mode on Pro, Max, and Team.
+- `dontAsk` — auto-denies anything not pre-approved.
+- `bypassPermissions` — skips the gate entirely.
 
 Rules evaluate deny, then ask, then allow — first match wins, and specificity does
 not change the order, so a deny like `Bash(git push *)` beats any narrower allow.
@@ -95,19 +99,18 @@ wrappers like `timeout` and `nohup` are stripped before matching. The space in
 
 Sandboxed Bash is the OS-level backstop. On macOS (Seatbelt) and Linux/WSL2, it
 confines every Bash command and its child processes to declared filesystem and
-network boundaries — enforcement that holds even for a Python script that opens
+network boundaries. That enforcement holds even for a Python script that opens
 files itself, which path-based deny rules cannot see. Enable it with `/sandbox` or
 `sandbox.enabled: true`. Rules gate what Claude may attempt; the sandbox gates what
 a command can reach once running. Use both.
 
 ## Plan mode is a cheap dry-run
 
-Plan mode tells Claude to research and propose without editing: it reads files
+Plan mode tells Claude to research and propose without editing. It reads files
 and runs shell commands to explore, but file edits stay blocked until you
-approve the plan. Non-read-only shell commands still prompt for approval during
-planning — plan mode isn't a read-only sandbox, it's an edit block — unless
-auto mode's classifier is reviewing the session, in which case it approves or
-rejects those commands for you.
+approve the plan. Plan mode is an edit block, not a read-only sandbox: shell
+commands that write still prompt for approval during planning. Under auto
+mode, the classifier reviews those commands for you.
 `Ctrl+G` opens the plan in your editor before approval — the cheapest possible code
 review, because you are editing intent before any tokens are spent executing it.
 
@@ -119,8 +122,8 @@ cautious, set `"permissions": {"defaultMode": "plan"}` in `.claude/settings.json
 
 ## Checkpoints are the undo layer
 
-Every prompt you send creates a checkpoint — snapshots of the files Claude edits,
-100 most recent per session. `/rewind` (or `Esc` `Esc` on an empty prompt) restores
+Every prompt you send creates a checkpoint of the files Claude edits. Claude
+Code keeps the 100 most recent per session. `/rewind` (or `Esc` `Esc` on an empty prompt) restores
 code, conversation, or both, independently. Restoring code alone is the underrated
 combination: throw away a bad implementation while keeping everything the session
 learned about the problem.
@@ -150,9 +153,10 @@ needs it.
 ## Sessions have a lifecycle
 
 Every session is a JSONL transcript under `~/.claude/projects/`. `claude --continue`
-reopens the most recent; `claude --resume <id>` reopens a specific one;
-`--fork-session` or `/branch` copies history into a new ID so you can try a second
-approach without contaminating the first — anchoring insurance, priced at one flag.
+reopens the most recent one, and `claude --resume <id>` reopens a specific one.
+`--fork-session` or `/branch` copies history into a new ID, so you can try a
+second approach without contaminating the first. That is anchoring insurance,
+priced at one flag.
 
 Headless mode, `claude -p "prompt"`, runs the same harness non-interactively and
 exits — the building block for agents that run without you. It composes like any
@@ -190,7 +194,7 @@ after `/clear` or a new session, because the system prompt is read once at start
 
 **Context pollution.** Failed approaches don't leave the window when they stop being
 relevant. Twenty minutes into a bad debugging path, the session is reasoning against
-a transcript full of things that didn't work, and it will keep proposing neighbours
+a transcript full of things that didn't work, and it will keep proposing neighbors
 of those things. The fix is isolation — a fresh subagent, or `/clear` and a written
 handoff — not a better prompt.
 
@@ -208,7 +212,7 @@ fixes this and almost nobody sets it up (see the hooks chapter for the
 
 Plan in the main session. Explore in subagents. Enforce in hooks. Reserve the main
 context for decisions and their reasoning, and push anything that produces volume —
-test output, codebase searches, log analysis — somewhere it can be summarised before
+test output, codebase searches, log analysis — somewhere it can be summarized before
 it comes back.
 
 > [!CAUTION] Cost is real

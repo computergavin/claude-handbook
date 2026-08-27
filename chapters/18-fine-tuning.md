@@ -17,10 +17,10 @@ sources:
 ---
 
 Fine-tuning is the last rung on the optimization ladder, and as a solo practitioner
-on frontier APIs you will almost never need to climb that high — but when you do, it
+on frontier APIs you will almost never need to climb that high. When you do, it
 is for cost at volume, not for capability.
 
-The rest of this chapter is the ladder, the two failure modes gradient descent
+The rest of this chapter is the ladder, the failure modes gradient descent
 actually fixes, and a worked cost comparison showing where the crossover really sits.
 
 ## The ladder
@@ -28,11 +28,11 @@ actually fixes, and a worked cost comparison showing where the crossover really 
 Climb in this order. Each rung is cheaper to try, faster to iterate, and easier to
 undo than the one above it.
 
-1. **Prompting.** Rewrite the instructions. See *Prompting*.
+1. **Prompting.** Rewrite the instructions. See the Prompting chapter.
 2. **Few-shot examples.** Paste three to ten worked examples into the prompt. With
    prompt caching they cost 0.1x input price per request after the first.
 3. **Retrieval.** If the model lacks facts, give it facts at request time. See
-   *Retrieval*.
+   the Retrieval chapter.
 4. **Fine-tuning.** Change the weights.
 
 > [!PATTERN] The 50-example gate
@@ -48,9 +48,9 @@ undo than the one above it.
 Fine-tuning reliably fixes three things:
 
 - **Format and style adherence.** A tuned model emits your exact JSON shape, your
-  house tone, your label taxonomy, without being told each time. (Check *Structured
-  output* first — schema enforcement at the API level solves most format problems
-  for free.)
+  house tone, your label taxonomy, without being told each time. (Check the
+  Structured output chapter first — schema enforcement at the API level solves
+  most format problems for free.)
 - **Narrow classification at volume.** One task, fixed labels, millions of rows.
 - **Cost and latency.** A small tuned model replaces a large prompted one, and drops
   the per-request instruction overhead: the instructions move into the weights.
@@ -66,10 +66,9 @@ reasoning — it fails precisely on the inputs that weren't in distribution.
 
 ## No golden set, no fine-tune
 
-Fine-tuning is an eval-first activity twice over. The training set *is* a golden
-set — hundreds of labeled input/output pairs — so if you can't produce one, you
-can't fine-tune, and if you can produce one, run it as few-shot and eval first
-(see *Evals*). Second, you need a held-out eval to know whether the tune worked,
+Fine-tuning is an eval-first activity twice over. The training set *is* a golden set of hundreds of labeled input/output pairs.
+If you can't produce one, you can't fine-tune. If you can, run it as few-shot
+and eval first (see the Evals chapter). Second, you need a held-out eval to know whether the tune worked,
 and a broader one to know what it broke.
 
 > [!CAUTION] Tuning causes regressions, not just improvements
@@ -100,20 +99,21 @@ in the 50–100 range.
 > fine-tuning platform. The platform is no longer accessible to new users." Existing
 > users can still create jobs "for the coming months." Read that as the market
 > agreeing with this chapter's thesis: for most workloads, prompt caching plus a
-> cheap base model beat a tuned one, and the vendor with the most fine-tuning
+> cheap base model beats a tuned one, and the vendor with the most fine-tuning
 > customers concluded the product wasn't worth running.
 
 **Claude.** Anthropic's first-party API has no fine-tuning endpoint — everything
 goes through `/v1/messages`. The only supported path is supervised fine-tuning of
 Claude 3 Haiku (`anthropic.claude-3-haiku-20240307-v1:0:200k`) on Amazon Bedrock,
 us-west-2 only. Distillation is off the table too, and more definitively than a
-missing table row: AWS's prerequisites page for Bedrock Model Distillation states
+missing table row. AWS's prerequisites page for Bedrock Model Distillation states
 outright that "distillation is not currently available for Anthropic models on
 Amazon Bedrock. There is no confirmed timeline for when Anthropic distillation
-will be restored" — a leftover line elsewhere on the same page, about which
-region runs "Claude and Llama" distillation jobs, is the only trace that it once
-worked. Tuning a 2024-era Haiku 3 when Haiku 4.5 exists off the shelf is rarely the
-right trade. Practically: you prompt Claude, you don't tune it.
+will be restored." The only trace that it once worked is a leftover line
+elsewhere on the same page about which region runs "Claude and Llama"
+distillation jobs. Tuning a 2024-era Claude 3 Haiku when Haiku 4.5 exists off
+the shelf is rarely the right trade. In practice you prompt Claude, and you
+don't tune it.
 
 **Open weights with LoRA/QLoRA.** This is the route that still makes sense in 2026,
 because you own the artifact. LoRA (Hu et al., arXiv:2106.09685) freezes the base
@@ -124,8 +124,8 @@ those adapters on top of a 4-bit-quantized base, enough to fine-tune a 65B model
 a single 48GB GPU while matching 16-bit fine-tuning performance; its Guanaco model
 took 24 hours on one GPU. For an 8B model the same recipe fits on a rented consumer
 card, and the data requirement is the same hundreds-to-low-thousands range: 50–100
-examples show measurable gains (OpenAI's numbers), 1,000 curated examples produced
-LIMA. The adapter is a file you version, eval, and roll back — no vendor can wind
+examples show measurable gains (OpenAI's numbers), and 1,000 curated examples
+produced LIMA. The adapter is a file you version, eval, and roll back — no vendor can wind
 it down.
 
 ## Distillation: the one that pays
@@ -133,10 +133,10 @@ it down.
 Distillation is fine-tuning where the frontier model writes your training data: run
 Claude Opus over a few thousand representative inputs, keep the outputs that pass
 your eval, and train a small model on the pairs. It is the natural endpoint of the
-model cascade in *Cost and latency* — the frontier model graduates from serving
-requests to labeling them. The underrated version: if you already run an extraction
-or classification pipeline on a frontier model, log every request/response pair from
-day one. You are accumulating a distillation set at zero marginal cost, and the day
+model cascade in the Cost and latency chapter, where the frontier model
+graduates from serving requests to labeling them. The underrated version is
+passive logging: if you already run an extraction or classification pipeline
+on a frontier model, log every request/response pair from day one. You are accumulating a distillation set at zero marginal cost, and the day
 volume justifies a small model, the training data already exists.
 
 > [!CAUTION] Read the terms before you distill
@@ -148,10 +148,10 @@ volume justifies a small model, the training data already exists.
 
 ## Worked example: classifying 10,000 scraped leads
 
-Task: label each scraped lead qualified/unqualified with a 500-token rubric prompt,
+Task: label each scraped lead as qualified/unqualified with a 500-token rubric prompt,
 ~250 tokens of lead text, ~20 tokens out.
 
-**Route A — Haiku 4.5, Batch API + prompt caching.** Batch pricing is $0.50/$2.50
+**Route A — Haiku 4.5, Batches API + prompt caching.** Batch pricing is $0.50/$2.50
 per MTok (50% off $1/$5), and the 0.1x cache-read multiplier stacks with it. The
 rubric is 5M cached tokens across 10k rows at $0.05/MTok = $0.25; unique lead text
 2.5M × $0.50 = $1.25; output 0.2M × $2.50 = $0.50. **Total ≈ $2.00**, no training
@@ -164,8 +164,8 @@ labeling 300 examples, an eval harness, and a dependency on a platform that has
 announced its wind-down.
 
 At 10k rows, gradient descent saves about ninety cents. Run the same arithmetic at
-10M rows and route A costs ~$2,000 against route B's ~$660 — now the tune pays,
-and an open-weight LoRA (route B's economics without the platform risk) pays more.
-That is the whole decision in one number: fine-tune when *volume × per-request
-savings* clears the fixed cost of data, training, and a regression eval suite by
-an order of magnitude — and not before.
+10M rows and route A costs ~$2,000 against route B's ~$660. Now the tune pays,
+and an open-weight LoRA (route B's economics without the platform risk) pays
+more. That is the whole decision in one number. Fine-tune when *volume ×
+per-request savings* clears the fixed cost of data, training, and a regression
+eval suite by an order of magnitude, and not before.

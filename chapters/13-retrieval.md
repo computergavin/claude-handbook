@@ -13,12 +13,13 @@ sources:
 ---
 
 Most RAG failures are retrieval failures, and retrieval is the one part of the
-pipeline you can measure and fix in isolation — so measure it first, then spend on
-improvements in order of cost.
+pipeline you can measure and fix in isolation. So measure it first, then spend
+on improvements in order of cost.
 
-The naive pipeline — chunk on a fixed size, embed, cosine top-k, stuff into the
-prompt — is where the quote-generator sits today. Every upgrade below is judged the
-same way: does recall@k on a labeled set go up, and what does it cost per query.
+The naive pipeline chunks on a fixed size, embeds, takes the cosine top-k, and
+stuffs the results into the prompt. That is where the quote-generator sits
+today. Every upgrade below is judged the same way: whether recall@k on a
+labeled set goes up, and what it costs per query.
 
 ## Measure retrieval before touching generation
 
@@ -41,8 +42,8 @@ failures are invisible until you count them.
 
 Small chunks embed crisply but lose context ("the payment terms are net 30" — of
 which quote?). Large chunks keep context but blur the embedding across topics and
-burn prompt tokens per retrieved result. There is no universal number; there is a
-structure in your documents, and chunking that ignores it loses.
+burn prompt tokens per retrieved result. There is no universal number; there is structure
+in your documents, and chunking that ignores it loses.
 
 Quotes have strong structure: header, scope of work, line items, exclusions, terms.
 Chunk on those boundaries, not on 512 tokens. A line-item table split mid-row is
@@ -54,10 +55,10 @@ it.
 
 The BEIR benchmark (Thakur et al., NeurIPS 2021) evaluated retrieval systems
 zero-shot across 18 datasets and found BM25 a robust baseline that dense models
-often fail to beat out of domain. Your corpus is out of domain — no embedding model
-was trained on construction quotes. Dense retrieval finds "moisture mitigation"
-when the query says "vapor barrier"; BM25 finds the exact SKU, the model number,
-the "G702" that embeddings smear into generic similarity. You want both.
+often fail to beat out of domain. Your corpus is out of domain, because no embedding model was trained on
+construction quotes. Dense retrieval finds "moisture mitigation" when the query
+says "vapor barrier". BM25 finds the exact SKU, the model number, and the
+"G702" that embeddings smear into generic similarity. You want both.
 
 Merge the two ranked lists with reciprocal rank fusion (Cormack, Clarke & Büttcher,
 SIGIR 2009): score each document by Σ 1/(k + rank) across the lists (k = 60 in the
@@ -91,14 +92,14 @@ One-time cost with prompt caching: $1.02 per million document tokens. For a corp
 of a few hundred quotes that is pocket change, and the context generation is exactly
 one Haiku call per chunk with the full document cached. For quote chunks, the
 generated context is where "this line item is from a 2024 commercial re-roof in a
-coastal zone" gets attached to a bare price row — which is precisely what a query
-needs to find it.
+coastal zone" gets attached to a bare price row, which is precisely what a query
+needs in order to find it.
 
 ## Rerankers: pay latency for the last mile
 
 A reranker is a cross-encoder that reads the query *together with* each candidate
 document and scores actual relevance, instead of comparing two independently
-computed vectors. BEIR found re-ranking among the best-performing approaches
+computed vectors. BEIR found reranking among the best-performing approaches
 zero-shot — at higher compute cost. That cost is one extra API round-trip per query
 over your top ~50–150 candidates.
 
@@ -119,16 +120,17 @@ already-good pipeline.
 Two verified reference points. OpenAI: `text-embedding-3-small` (1536 dims, 62.3%
 MTEB) and `text-embedding-3-large` (3072 dims, 64.6% MTEB), both with a
 `dimensions` parameter that truncates the vector — `3-large` cut to 256 dims still
-outperforms full-size `ada-002`. Voyage: newer models — `voyage-4-large` is Voyage's
-named example, not a blanket claim about every current model — train Matryoshka-style,
-so one stored 2048-dim vector contains valid 256/512/1024-dim prefixes, selectable via
-`output_dimension`, plus `output_dtype` quantization down to int8 (4× smaller) or
-binary (32× smaller). Check the specific model's page before assuming an older Voyage
+outperforms full-size `ada-002`. Voyage's newer models are trained Matryoshka-style (`voyage-4-large` is the
+named example, not a blanket claim about every current model). One stored
+2048-dim vector therefore contains valid 256-, 512-, and 1024-dim prefixes,
+selectable via `output_dimension`. A separate `output_dtype` knob quantizes
+down to int8 (4× smaller) or binary (32× smaller). Check the specific model's page before assuming an older Voyage
 model supports either knob.
 
-The practical reading: dimension count is a storage/speed knob, not a quality
-identity — and at a few thousand documents, storage is irrelevant, so default to the
-strongest model at moderate dimensions and stop thinking about it. Model choice
+The practical reading is that dimension count is a storage and speed knob, not
+a measure of quality. At a few thousand documents storage is irrelevant, so
+default to the strongest model at moderate dimensions and stop thinking about
+it. Model choice
 matters more than dimension choice, and neither matters as much as chunking or
 hybrid search. Re-run your recall@k eval when you switch models; embeddings from
 different models are not comparable, so a switch means a full re-index.
@@ -160,8 +162,8 @@ no labels or fine-tuning. Try it when query rewriting plateaus.
 > [!NOTE] The 200k threshold
 > Anthropic's guidance in the same post: under ~200,000 tokens of corpus (roughly
 > 500 pages), skip RAG — put the whole corpus in the prompt and rely on prompt
-> caching. A few hundred one-page quotes may sit under this line today. Build the
-> eval set anyway; it tells you the day you cross it.
+> caching. Count the corpus tokens; a few hundred one-page quotes sit under
+> this line today. Build the eval set anyway; it tells you the day you cross it.
 
 The other exit is agentic search: give Claude grep/read tools over the corpus and
 let it search iteratively, the way Claude Code searches a repo. It costs more tokens
