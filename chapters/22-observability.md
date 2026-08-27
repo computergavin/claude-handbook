@@ -116,10 +116,10 @@ shape, not the content inside it — tool arguments and raw model output
 only appear under a further gate, `ENABLE_BETA_TRACING_DETAILED=1` plus
 `BETA_TRACING_ENDPOINT`, and interactive CLI sessions additionally need the
 organization allowlisted for it (the Agent SDK and non-interactive `-p` runs
-are not gated). If you route work by cost the way the Kaitaku project did,
+are not gated). If you already route grunt work to cheaper models by policy,
 this is the measured version of that instinct — actual dollars per session
-type instead of vibes. It composes with the verbatim master-log `Stop` hook
-from Hooks: OTel for the numbers, the hook for the replayable text.
+type instead of vibes. It composes with a transcript-logging `Stop` hook (see
+Hooks for the event): OTel for the numbers, the hook for the replayable text.
 
 ## Sampling: you probably shouldn't
 
@@ -147,8 +147,8 @@ Minimum policy: scrub credential-shaped strings (API keys, `Bearer` tokens,
 JWTs, anything matching a `sk-`/`pk-` prefix) at write time, before storage;
 hash user identifiers instead of storing them raw; set a retention window —
 30 days of raw content is a defensible default for a solo product — and let
-it expire while keeping the derived metrics indefinitely. The trap is composition — see the
-2026-07-05 field note in Field notes — Kaitaku, where two individually sensible
+it expire while keeping the derived metrics indefinitely. The trap is composition —
+on one project (2026-07-05), two individually sensible
 policies (log full transcripts verbatim; exempt `.md` files from the secret
 scanner) combined into a path that would have committed any pasted credential to
 plaintext. A trace pipeline is exactly such an exempted copy-machine. Audit it

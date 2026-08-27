@@ -39,11 +39,10 @@ structure; the vision docs say so explicitly, and it matches the long-documents-
 first rule from the Prompting chapter.
 
 A screenshot is a claim about what the harness can see, not about what ships.
-Kaitaku's `/sim-verify` ritual produced a green screenshot of a broken-looking
-paywall because `simctl launch` bypasses Xcode's scheme machinery, so the StoreKit
-configuration never attached — the harness had a structural blind spot for an
-entire subsystem (2026-07-18). The Field notes — Kaitaku chapter documents that
-scar in full. The rule it left behind: enumerate what your screenshot loop
+On one shipped iOS app, a `/sim-verify` ritual produced a green screenshot of a
+broken-looking paywall because `simctl launch` bypasses Xcode's scheme machinery,
+so the StoreKit configuration never attached — the harness had a structural blind
+spot for an entire subsystem (2026-07-18). The rule it left behind: enumerate what your screenshot loop
 structurally cannot see — permission dialogs, purchase sheets, gesture feel — and
 route those to an explicit human device pass instead of letting a green image imply
 coverage.
@@ -137,7 +136,7 @@ at the price of a network round-trip, per-character billing, and an outage mode
 your offline app now owns.
 
 > [!FIELD] 2026-08-25 — Ship the voice your users will actually hear
-> Kaitaku ships Japanese TTS through platform voices, and the quality question
+> A Japanese-learning app in this stack ships TTS through platform voices, and the quality question
 > was settled by ear, not by spec sheet: the "fast" preset voices read N5
 > vocabulary in a robotic cadence that a learner would imitate, and the
 > "enhanced voice" upgrade path had already hit Apple's ceiling — a ruling that

@@ -147,8 +147,7 @@ decisions, "resume by" — and never caches what a command can answer. Git
 state is the canonical violation: a prose snapshot of push status goes stale
 the instant anything pushes from another terminal, and a stale claim actively
 misleads where an absent one would just prompt a lookup. Re-derive git facts
-live at resume, `git fetch` before `git status`. The full failure history
-behind this rule is in Field notes — Kaitaku.
+live at resume, `git fetch` before `git status`.
 
 ## Context budgets for long-horizon work
 

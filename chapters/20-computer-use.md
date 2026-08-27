@@ -115,8 +115,7 @@ in the tool stack.
 > your review — then have it emit a deterministic Playwright script of what it
 > did. The script runs on every subsequent execution at zero model cost; the
 > agent is re-invoked only when the script's assertions fail, to re-explore and
-> re-emit. This is the Field notes — Kaitaku master-log philosophy applied to
-> browsers: when the same task repeats, the durable artifact is a script with
+> re-emit. When the same task repeats, the durable artifact is a script with
 > assertions, not a resolution that the agent will "do it the same way" next
 > time. A model in the loop is for the unknown; the known belongs in code.
 

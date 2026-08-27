@@ -118,9 +118,9 @@ buys capability — so the task's value has to be high enough to pay for it.
 
 Route grunt work — file search, log scanning, API polling — to a cheaper model and
 keep the expensive one for architectural reasoning. This is the single easiest cost
-reduction available. The concrete mechanism at project scale is the Sonnet fleet:
-see the file-partition pattern in Field notes — Kaitaku, which ran five parallel
-Sonnet builders repeatedly with zero collisions.
+reduction available. The concrete mechanism at project scale is the Sonnet fleet,
+which on one shipped iOS project ran five parallel Sonnet builders repeatedly
+with zero collisions.
 
 > [!CAUTION] Summarisation is lossy on purpose
 > A subagent returns a summary, and the summary is written by a model that decided
@@ -136,7 +136,7 @@ files, dispatch N agents that each own a non-overlapping set of files, forbid th
 from committing or building, and run exactly one integration build afterward.
 Partition by file, never by finding: findings overlap on shared files and produce
 write collisions; file ownership guarantees zero collisions by construction. The
-integration build exists to catch *your* edits too — in the Kaitaku fleet runs, the
+integration build exists to catch *your* edits too — in one project's fleet runs, the
 one failure it caught was the orchestrator's own pre-wired plumbing, not any
 agent's work.
 
@@ -194,7 +194,7 @@ The three things a subagent needs that the main session forgets to give it:
 Treat everything a subagent returns as candidate findings requiring verification,
 not as ground truth. The agent had less context than you, summarised aggressively,
 and — if it was a reviewer — was prompted to find problems, which biases it toward
-finding some. The working ritual from Kaitaku's first end-of-week review: check
+finding some. The working ritual from one project's first end-of-week review: check
 each finding against source before filing it, and explicitly log what you dropped
 and why. Two reviewer claims in that pass were checked, found wrong, and dropped;
 unverified, they would have driven two pointless fixes. The verification cost is
@@ -202,7 +202,7 @@ small because the result contract already gives you file-and-line claims that ar
 cheap to check — one more reason to demand structured returns.
 
 > [!FIELD] 2026-07-30 — Convergence as free cross-validation
-> Kaitaku's pre-launch audit ran five read-only Sonnet agents, each owning one
+> A pre-launch audit ran five read-only Sonnet agents, each owning one
 > orthogonal dimension (copy truthfulness, store paperwork, licensing, dependency
 > graph, StoreKit compliance). Two agents independently converged on the same
 > unlisted gap — no privacy-policy URL existed. When agents with disjoint briefs
