@@ -60,7 +60,10 @@ and never write into the target repo unless the user asks for a report file.
    memory files for the topic — a documented reason changes the disposition.
    For every `warning` finding, open the cited chapter section and quote one
    sentence of rationale; `caution` and `note` findings cite without loading
-   prose.
+   prose. Tag every assertion that does not fail as `pass` or `vacuous` at the
+   moment you run it — decided by whether the artifact held anything the
+   assertion could bite on — rather than reconstructing the split at report
+   time.
 
 ## Finding format
 
@@ -84,14 +87,30 @@ and never write into the target repo unless the user asks for a report file.
 
 ## Report
 
-1. Verdict line: `sound` (0 warnings, 0 cautions) / `needs work` (0 warnings) /
-   `at risk` (any warning), with counts per severity and applicable-chapter
-   count.
+1. Verdict line, first match wins:
+   - `at risk` — any warning finding. A warning outranks everything below,
+     including a thin layer: never suppress one because little else ran.
+   - `too thin to grade` — no warnings, and graded assertions (pass + fail) are
+     under half of the assertions that ran. This is not a passing grade and
+     must not be reported as one: name the gates that came back empty and what
+     would have to exist before a verdict could mean anything. Report whatever
+     cautions and notes did fire, marked provisional. A target with a
+     `CLAUDE.md` and no `.claude/` normally lands here.
+   - `needs work` — any caution finding, no warnings.
+   - `sound` — no warnings, no cautions, and graded assertions are at least
+     half of those that ran.
+
+   Follow the verdict with counts per severity, the graded/vacuous split, and
+   the applicable-chapter count.
 2. Findings by severity, warnings first, in the block format above.
-3. Coverage table: one row per checklist — APPLIED (n pass / n fail), SKIPPED
-   (reason), STALE flag. Count only assertions that ran: `applies:`-skipped
-   and absent-artifact n/a assertions are excluded from both numbers; a check
-   that ran and found nothing to flag counts as a pass, vacuous or not.
+3. Coverage table: one row per checklist — APPLIED (n pass / n fail / n
+   vacuous), SKIPPED (reason), STALE flag. Count only assertions that ran:
+   `applies:`-skipped and absent-artifact n/a assertions are excluded from all
+   three numbers. A check that ran against a present artifact and found it
+   conformant is a **pass**. A check that ran but found nothing of the kind it
+   is about — no rules in a five-line `CLAUDE.md`, no entries in an empty
+   memory file — is **vacuous**: it could not have failed, so it never counts
+   toward `sound`.
 4. Deviations and handbook feedback: the JUSTIFIED-DEVIATION and HANDBOOK-BUG?
    items, separated from failures.
 

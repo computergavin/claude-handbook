@@ -14,6 +14,14 @@ carry their own `applies:`. Browser-automation MCP servers count as
 untrusted-content sources here — this file absorbs the computer-use chapter's
 trifecta advice, so chapter 20 gets no separate checklist.
 
+<!-- SC-01 severity turns on provenance, fixed 2026-08-27 after a thin-repo
+test run: the stock interactive default (Read + unscoped WebFetch) satisfies all
+three legs in every repo without a permissions block, so a flat `warning` fired
+on repos that had configured nothing at all. The chapter frames the trifecta as
+design-time triage for agents you assemble — "Before adding any tool to an
+agent" — and says nothing about grading the untouched default. Do not restore a
+flat warning on re-extraction. -->
+
 ### SC-01: No agent or default config assembles the lethal trifecta
 - severity: warning
 - missing-is: n/a
@@ -30,7 +38,13 @@ trifecta advice, so chapter 20 gets no separate checklist.
   URL can carry data out in its query string — so Read + unscoped WebFetch is
   already a full trifecta; committed `WebFetch(domain:...)` allow rules with
   no broader WebFetch allow remove leg 3 and drop the finding to caution.
-  Flag any single agent, or the default config, that holds all three legs.
+  Flag any single agent, or the default config, that holds all three legs, and
+  set severity by provenance: `warning` when the repo configured a leg — an
+  agent's `tools:`, a blanket `Bash` or `WebFetch` allow, an `.mcp.json`
+  server — and `caution` when every leg arrives from the untouched interactive
+  default. The stock default is a trifecta in every repo that has no
+  permissions block; reporting that as a warning grades Claude Code, not the
+  target. Quote the configured leg in the evidence line of any warning.
 - source-line: "Two legs is a design decision. Three legs is an incident with a
   variable-length fuse."
 - why: chapters/14-agent-security.md > "The lethal trifecta"
