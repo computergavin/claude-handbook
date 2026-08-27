@@ -613,7 +613,7 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
     <div><dt>Compiled by</dt><dd>Gavin</dd></div>
     <div><dt>Edition</dt><dd>First edition</dd></div>
     <div><dt>Built</dt><dd>2026-08-26</dd></div>
-    <div><dt>Chapters</dt><dd>21</dd></div>
+    <div><dt>Chapters</dt><dd>23</dd></div>
   </dl>
   <p class="cover__note">This handbook describes tools that change monthly. Every chapter
   carries a verification date. Anything older than 90 days is suspect until re-checked
@@ -622,7 +622,7 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
 
 <nav class="sheet toc" id="contents">
   <h2 class="toc__head">Contents</h2>
-  <ol class="toc__list"><li class="toc__chapter"><a href="#ch0"><span class="toc__num">—</span><span class="toc__title">How to use this handbook</span></a><ol class="toc__sections"><li><span class="toc__num">0.1</span>The four signals</li><li><span class="toc__num">0.2</span>Building it</li><li><span class="toc__num">0.3</span>Adding to it</li></ol></li><li class="toc__chapter"><a href="#ch1"><span class="toc__num">01</span><span class="toc__title">The operating model</span></a><ol class="toc__sections"><li><span class="toc__num">1.1</span>The four layers</li><li><span class="toc__num">1.2</span>Three failure modes worth naming</li><li><span class="toc__num">1.3</span>The default posture</li></ol></li><li class="toc__chapter"><a href="#ch2"><span class="toc__num">02</span><span class="toc__title">Project memory and context engineering</span></a><ol class="toc__sections"><li><span class="toc__num">2.1</span>The hierarchy Claude Code actually reads</li><li><span class="toc__num">2.2</span>Rules files</li><li><span class="toc__num">2.3</span>Skills</li><li><span class="toc__num">2.4</span>Auto memory</li><li><span class="toc__num">2.5</span>What belongs in memory versus the repo</li><li><span class="toc__num">2.6</span>Compaction</li><li><span class="toc__num">2.7</span>Handoff docs</li><li><span class="toc__num">2.8</span>Context budgets for long-horizon work</li></ol></li><li class="toc__chapter"><a href="#ch3"><span class="toc__num">03</span><span class="toc__title">Subagents</span></a><ol class="toc__sections"><li><span class="toc__num">3.1</span>When to delegate</li><li><span class="toc__num">3.2</span>Definition</li><li><span class="toc__num">3.3</span>Model tiering</li><li><span class="toc__num">3.4</span>Prompting a delegation</li></ol></li><li class="toc__chapter"><a href="#ch4"><span class="toc__num">04</span><span class="toc__title">Hooks</span></a><ol class="toc__sections"><li><span class="toc__num">4.1</span>Where they live</li><li><span class="toc__num">4.2</span>The events that earn their keep</li><li><span class="toc__num">4.3</span>Enforcement, not suggestion</li><li><span class="toc__num">4.4</span>Communication</li><li><span class="toc__num">4.5</span>Beyond shell</li><li><span class="toc__num">4.6</span>Three to install today</li><li><span class="toc__num">4.7</span>Debugging</li></ol></li><li class="toc__chapter"><a href="#ch5"><span class="toc__num">05</span><span class="toc__title">Agent teams</span></a><ol class="toc__sections"><li><span class="toc__num">5.1</span>Teams versus subagents</li><li><span class="toc__num">5.2</span>The technique that justifies the feature</li><li><span class="toc__num">5.3</span>Running one</li></ol></li><li class="toc__chapter"><a href="#ch6"><span class="toc__num">06</span><span class="toc__title">MCP and the tool layer</span></a><ol class="toc__sections"><li><span class="toc__num">6.1</span>The architecture in one screen</li><li><span class="toc__num">6.2</span>Three scopes, strict precedence</li><li><span class="toc__num">6.3</span>When a CLI beats an MCP server</li><li><span class="toc__num">6.4</span>Tool definitions are the lever</li><li><span class="toc__num">6.5</span>Tool naming</li><li><span class="toc__num">6.6</span>Deferred loading: tool search</li><li><span class="toc__num">6.7</span>Trust is the price of admission</li><li><span class="toc__num">6.8</span>Building your own</li></ol></li><li class="toc__chapter"><a href="#ch7"><span class="toc__num">07</span><span class="toc__title">Prompting</span></a><ol class="toc__sections"><li><span class="toc__num">7.1</span>Structure</li><li><span class="toc__num">7.2</span>Placement and ordering</li><li><span class="toc__num">7.3</span>Few-shot examples</li><li><span class="toc__num">7.4</span>Specification over instruction</li><li><span class="toc__num">7.5</span>Prefilling is dead — migrate</li><li><span class="toc__num">7.6</span>Thinking: when it pays and how to budget it</li><li><span class="toc__num">7.7</span>Meta-prompting</li><li><span class="toc__num">7.8</span>Prompts as versioned artifacts</li><li><span class="toc__num">7.9</span>Delegation prompts</li></ol></li><li class="toc__chapter"><a href="#ch8"><span class="toc__num">08</span><span class="toc__title">Building on the API</span></a><ol class="toc__sections"><li><span class="toc__num">8.1</span>The loop every framework wraps</li><li><span class="toc__num">8.2</span>Four rungs, one decision rule</li><li><span class="toc__num">8.3</span>Streaming tool calls</li><li><span class="toc__num">8.4</span>Errors, retries, and idempotency</li><li><span class="toc__num">8.5</span>Count before you send</li><li><span class="toc__num">8.6</span>Structured output</li><li><span class="toc__num">8.7</span>Models and cost</li></ol></li><li class="toc__chapter"><a href="#ch9"><span class="toc__num">09</span><span class="toc__title">Field notes — Ganbei</span></a><ol class="toc__sections"><li><span class="toc__num">9.1</span>The constraints that shaped the work</li><li><span class="toc__num">9.2</span>Slots to fill</li></ol></li><li class="toc__chapter"><a href="#ch10"><span class="toc__num">10</span><span class="toc__title">Field notes — Kaitaku</span></a><ol class="toc__sections"><li><span class="toc__num">10.1</span>The constraints that shaped the work</li><li><span class="toc__num">10.2</span>The ritual that made this chapter possible</li><li><span class="toc__num">10.3</span>Provenance</li><li><span class="toc__num">10.4</span>Verification</li><li><span class="toc__num">10.5</span>The generated project</li><li><span class="toc__num">10.6</span>Guardrails and their false positives</li><li><span class="toc__num">10.7</span>Fuses and tripwires</li><li><span class="toc__num">10.8</span>The fleet</li><li><span class="toc__num">10.9</span>Session hygiene</li><li><span class="toc__num">10.10</span>What transfers</li></ol></li><li class="toc__chapter"><a href="#ch11"><span class="toc__num">11</span><span class="toc__title">Evals</span></a><ol class="toc__sections"><li><span class="toc__num">11.1</span>When evals pay</li><li><span class="toc__num">11.2</span>Traces first — the cheap precondition</li><li><span class="toc__num">11.3</span>Golden sets come from failures, not imagination</li><li><span class="toc__num">11.4</span>Assertions before judges</li><li><span class="toc__num">11.5</span>LLM-as-judge and its documented failure modes</li><li><span class="toc__num">11.6</span>Rubric vs pairwise</li><li><span class="toc__num">11.7</span>Calibrate the judge against a human-labeled sample</li><li><span class="toc__num">11.8</span>Regression-gating prompt changes in CI</li><li><span class="toc__num">11.9</span>Agent evals: outcome vs trajectory</li></ol></li><li class="toc__chapter"><a href="#ch12"><span class="toc__num">12</span><span class="toc__title">Retrieval</span></a><ol class="toc__sections"><li><span class="toc__num">12.1</span>Measure retrieval before touching generation</li><li><span class="toc__num">12.2</span>Chunking is a tradeoff, not a parameter</li><li><span class="toc__num">12.3</span>Hybrid retrieval: BM25 is not legacy</li><li><span class="toc__num">12.4</span>Contextual retrieval: the biggest measured win</li><li><span class="toc__num">12.5</span>Rerankers: pay latency for the last mile</li><li><span class="toc__num">12.6</span>Embedding model and dimensions</li><li><span class="toc__num">12.7</span>The cheap wins nobody starts with</li><li><span class="toc__num">12.8</span>When to skip the vector store</li></ol></li><li class="toc__chapter"><a href="#ch13"><span class="toc__num">13</span><span class="toc__title">Agent security</span></a><ol class="toc__sections"><li><span class="toc__num">13.1</span>Prompt injection is not jailbreaking</li><li><span class="toc__num">13.2</span>The lethal trifecta</li><li><span class="toc__num">13.3</span>MCP is a supply chain</li><li><span class="toc__num">13.4</span>Defenses that hold</li><li><span class="toc__num">13.5</span>Defenses that don&#x27;t hold</li><li><span class="toc__num">13.6</span>Design-level defense: plan, then execute</li></ol></li><li class="toc__chapter"><a href="#ch14"><span class="toc__num">14</span><span class="toc__title">Cost and latency</span></a><ol class="toc__sections"><li><span class="toc__num">14.1</span>The price sheet</li><li><span class="toc__num">14.2</span>Prompt caching: the economics</li><li><span class="toc__num">14.3</span>Ordering is the design constraint</li><li><span class="toc__num">14.4</span>Batches: 50% off for patience</li><li><span class="toc__num">14.5</span>Routing: the 10k-lead worked example</li><li><span class="toc__num">14.6</span>Output discipline</li><li><span class="toc__num">14.7</span>Streaming buys perceived latency</li></ol></li><li class="toc__chapter"><a href="#ch15"><span class="toc__num">15</span><span class="toc__title">Structured output</span></a><ol class="toc__sections"><li><span class="toc__num">15.1</span>What guarantees the schema and what merely encourages it</li><li><span class="toc__num">15.2</span>The schema is a prompt</li><li><span class="toc__num">15.3</span>Let the model decline</li><li><span class="toc__num">15.4</span>Validate and repair, once</li><li><span class="toc__num">15.5</span>When the constraint makes the model dumber</li><li><span class="toc__num">15.6</span>Extraction at volume</li></ol></li><li class="toc__chapter"><a href="#ch16"><span class="toc__num">16</span><span class="toc__title">Fine-tuning and distillation</span></a><ol class="toc__sections"><li><span class="toc__num">16.1</span>The ladder</li><li><span class="toc__num">16.2</span>What gradient descent fixes — and what it can&#x27;t</li><li><span class="toc__num">16.3</span>No golden set, no fine-tune</li><li><span class="toc__num">16.4</span>The practical routes</li><li><span class="toc__num">16.5</span>Distillation: the one that pays</li><li><span class="toc__num">16.6</span>Worked example: classifying 10,000 scraped leads</li></ol></li><li class="toc__chapter"><a href="#ch17"><span class="toc__num">17</span><span class="toc__title">Multimodal</span></a><ol class="toc__sections"><li><span class="toc__num">17.1</span>Screenshots are a verification channel</li><li><span class="toc__num">17.2</span>How images are billed</li><li><span class="toc__num">17.3</span>Extraction: vision versus OCR-then-parse</li><li><span class="toc__num">17.4</span>Audio out: TTS</li><li><span class="toc__num">17.5</span>Audio in: STT</li></ol></li><li class="toc__chapter"><a href="#ch18"><span class="toc__num">18</span><span class="toc__title">Computer use and browser agents</span></a><ol class="toc__sections"><li><span class="toc__num">18.1</span>The reliability ladder</li><li><span class="toc__num">18.2</span>The computer use tool: pixels and coordinates</li><li><span class="toc__num">18.3</span>Browsers deserve better than pixels</li><li><span class="toc__num">18.4</span>How browser agents fail</li><li><span class="toc__num">18.5</span>Injection: the lethal trifecta with a UI</li><li><span class="toc__num">18.6</span>Gates and sandboxes</li></ol></li><li class="toc__chapter"><a href="#ch19"><span class="toc__num">19</span><span class="toc__title">Source list</span></a><ol class="toc__sections"><li><span class="toc__num">19.1</span>The vetting standard</li><li><span class="toc__num">19.2</span>Claude Code</li><li><span class="toc__num">19.3</span>Project memory and context engineering</li><li><span class="toc__num">19.4</span>MCP and the tool layer</li><li><span class="toc__num">19.5</span>Prompting</li><li><span class="toc__num">19.6</span>The API and its cost model</li><li><span class="toc__num">19.7</span>Evals</li><li><span class="toc__num">19.8</span>Retrieval</li><li><span class="toc__num">19.9</span>Agent security</li><li><span class="toc__num">19.10</span>Structured output</li><li><span class="toc__num">19.11</span>Fine-tuning and distillation</li><li><span class="toc__num">19.12</span>Multimodal</li><li><span class="toc__num">19.13</span>Computer use and browser agents</li></ol></li><li class="toc__chapter"><a href="#ch20"><span class="toc__num">20</span><span class="toc__title">Appendix</span></a><ol class="toc__sections"><li><span class="toc__num">20.1</span>Hook events, quick reference</li><li><span class="toc__num">20.2</span>Exit codes</li><li><span class="toc__num">20.3</span>Timeouts</li><li><span class="toc__num">20.4</span>Primary sources</li><li><span class="toc__num">20.5</span>Revision log</li></ol></li></ol>
+  <ol class="toc__list"><li class="toc__chapter"><a href="#ch0"><span class="toc__num">—</span><span class="toc__title">How to use this handbook</span></a><ol class="toc__sections"><li><span class="toc__num">0.1</span>The four signals</li><li><span class="toc__num">0.2</span>Building it</li><li><span class="toc__num">0.3</span>Adding to it</li></ol></li><li class="toc__chapter"><a href="#ch1"><span class="toc__num">01</span><span class="toc__title">The operating model</span></a><ol class="toc__sections"><li><span class="toc__num">1.1</span>What a harness is</li><li><span class="toc__num">1.2</span>The four layers</li><li><span class="toc__num">1.3</span>The permission gate</li><li><span class="toc__num">1.4</span>Plan mode is a cheap dry-run</li><li><span class="toc__num">1.5</span>Checkpoints are the undo layer</li><li><span class="toc__num">1.6</span>Effort is a dial, not a constant</li><li><span class="toc__num">1.7</span>Sessions have a lifecycle</li><li><span class="toc__num">1.8</span>Output styles are not CLAUDE.md</li><li><span class="toc__num">1.9</span>Three failure modes worth naming</li><li><span class="toc__num">1.10</span>The default posture</li></ol></li><li class="toc__chapter"><a href="#ch2"><span class="toc__num">02</span><span class="toc__title">Project memory and context engineering</span></a><ol class="toc__sections"><li><span class="toc__num">2.1</span>The hierarchy Claude Code actually reads</li><li><span class="toc__num">2.2</span>Rules files</li><li><span class="toc__num">2.3</span>Skills</li><li><span class="toc__num">2.4</span>Auto memory</li><li><span class="toc__num">2.5</span>What belongs in memory versus the repo</li><li><span class="toc__num">2.6</span>Compaction</li><li><span class="toc__num">2.7</span>Handoff docs</li><li><span class="toc__num">2.8</span>Context budgets for long-horizon work</li></ol></li><li class="toc__chapter"><a href="#ch3"><span class="toc__num">03</span><span class="toc__title">Subagents</span></a><ol class="toc__sections"><li><span class="toc__num">3.1</span>When to delegate</li><li><span class="toc__num">3.2</span>Definition</li><li><span class="toc__num">3.3</span>What the subagent actually sees</li><li><span class="toc__num">3.4</span>Model tiering</li><li><span class="toc__num">3.5</span>Orchestrator patterns</li><li><span class="toc__num">3.6</span>Background agents</li><li><span class="toc__num">3.7</span>Prompting a delegation</li><li><span class="toc__num">3.8</span>Findings are candidates, not facts</li></ol></li><li class="toc__chapter"><a href="#ch4"><span class="toc__num">04</span><span class="toc__title">Hooks</span></a><ol class="toc__sections"><li><span class="toc__num">4.1</span>Where they live</li><li><span class="toc__num">4.2</span>The events that earn their keep</li><li><span class="toc__num">4.3</span>Enforcement, not suggestion</li><li><span class="toc__num">4.4</span>Communication</li><li><span class="toc__num">4.5</span>Beyond shell</li><li><span class="toc__num">4.6</span>Three to install today</li><li><span class="toc__num">4.7</span>Debugging</li></ol></li><li class="toc__chapter"><a href="#ch5"><span class="toc__num">05</span><span class="toc__title">Agent teams</span></a><ol class="toc__sections"><li><span class="toc__num">5.1</span>The lifecycle</li><li><span class="toc__num">5.2</span>Teams versus subagents</li><li><span class="toc__num">5.3</span>The technique that justifies the feature</li><li><span class="toc__num">5.4</span>Running one</li><li><span class="toc__num">5.5</span>Quality gates</li><li><span class="toc__num">5.6</span>Why multi-agent systems fail</li><li><span class="toc__num">5.7</span>Cost</li></ol></li><li class="toc__chapter"><a href="#ch6"><span class="toc__num">06</span><span class="toc__title">MCP and the tool layer</span></a><ol class="toc__sections"><li><span class="toc__num">6.1</span>The architecture in one screen</li><li><span class="toc__num">6.2</span>Three scopes, strict precedence</li><li><span class="toc__num">6.3</span>When a CLI beats an MCP server</li><li><span class="toc__num">6.4</span>Tool definitions are the lever</li><li><span class="toc__num">6.5</span>Tool naming</li><li><span class="toc__num">6.6</span>Deferred loading: tool search</li><li><span class="toc__num">6.7</span>Trust is the price of admission</li><li><span class="toc__num">6.8</span>Building your own</li></ol></li><li class="toc__chapter"><a href="#ch7"><span class="toc__num">07</span><span class="toc__title">Prompting</span></a><ol class="toc__sections"><li><span class="toc__num">7.1</span>Structure</li><li><span class="toc__num">7.2</span>Placement and ordering</li><li><span class="toc__num">7.3</span>Few-shot examples</li><li><span class="toc__num">7.4</span>Specification over instruction</li><li><span class="toc__num">7.5</span>Prefilling is dead — migrate</li><li><span class="toc__num">7.6</span>Thinking: when it pays and how to budget it</li><li><span class="toc__num">7.7</span>Meta-prompting</li><li><span class="toc__num">7.8</span>Prompts as versioned artifacts</li><li><span class="toc__num">7.9</span>Delegation prompts</li></ol></li><li class="toc__chapter"><a href="#ch8"><span class="toc__num">08</span><span class="toc__title">Building on the API</span></a><ol class="toc__sections"><li><span class="toc__num">8.1</span>The loop every framework wraps</li><li><span class="toc__num">8.2</span>Four rungs, one decision rule</li><li><span class="toc__num">8.3</span>Streaming tool calls</li><li><span class="toc__num">8.4</span>Errors, retries, and idempotency</li><li><span class="toc__num">8.5</span>Count before you send</li><li><span class="toc__num">8.6</span>Structured output</li><li><span class="toc__num">8.7</span>Models and cost</li></ol></li><li class="toc__chapter"><a href="#ch9"><span class="toc__num">09</span><span class="toc__title">Field notes — Ganbei</span></a><ol class="toc__sections"><li><span class="toc__num">9.1</span>The constraints that shaped the work</li><li><span class="toc__num">9.2</span>Per-game specs</li><li><span class="toc__num">9.3</span>SwiftUI verification</li><li><span class="toc__num">9.4</span>Naming and the bundle split</li><li><span class="toc__num">9.5</span>Open slots</li></ol></li><li class="toc__chapter"><a href="#ch10"><span class="toc__num">10</span><span class="toc__title">Field notes — Kaitaku</span></a><ol class="toc__sections"><li><span class="toc__num">10.1</span>The constraints that shaped the work</li><li><span class="toc__num">10.2</span>The ritual that made this chapter possible</li><li><span class="toc__num">10.3</span>Provenance</li><li><span class="toc__num">10.4</span>Verification</li><li><span class="toc__num">10.5</span>The generated project</li><li><span class="toc__num">10.6</span>Guardrails and their false positives</li><li><span class="toc__num">10.7</span>Fuses and tripwires</li><li><span class="toc__num">10.8</span>The fleet</li><li><span class="toc__num">10.9</span>Session hygiene</li><li><span class="toc__num">10.10</span>What transfers</li></ol></li><li class="toc__chapter"><a href="#ch11"><span class="toc__num">11</span><span class="toc__title">Evals</span></a><ol class="toc__sections"><li><span class="toc__num">11.1</span>When evals pay</li><li><span class="toc__num">11.2</span>Traces first — the cheap precondition</li><li><span class="toc__num">11.3</span>Golden sets come from failures, not imagination</li><li><span class="toc__num">11.4</span>Assertions before judges</li><li><span class="toc__num">11.5</span>LLM-as-judge and its documented failure modes</li><li><span class="toc__num">11.6</span>Rubric vs pairwise</li><li><span class="toc__num">11.7</span>Calibrate the judge against a human-labeled sample</li><li><span class="toc__num">11.8</span>Regression-gating prompt changes in CI</li><li><span class="toc__num">11.9</span>Agent evals: outcome vs trajectory</li></ol></li><li class="toc__chapter"><a href="#ch12"><span class="toc__num">12</span><span class="toc__title">Retrieval</span></a><ol class="toc__sections"><li><span class="toc__num">12.1</span>Measure retrieval before touching generation</li><li><span class="toc__num">12.2</span>Chunking is a tradeoff, not a parameter</li><li><span class="toc__num">12.3</span>Hybrid retrieval: BM25 is not legacy</li><li><span class="toc__num">12.4</span>Contextual retrieval: the biggest measured win</li><li><span class="toc__num">12.5</span>Rerankers: pay latency for the last mile</li><li><span class="toc__num">12.6</span>Embedding model and dimensions</li><li><span class="toc__num">12.7</span>The cheap wins nobody starts with</li><li><span class="toc__num">12.8</span>When to skip the vector store</li></ol></li><li class="toc__chapter"><a href="#ch13"><span class="toc__num">13</span><span class="toc__title">Agent security</span></a><ol class="toc__sections"><li><span class="toc__num">13.1</span>Prompt injection is not jailbreaking</li><li><span class="toc__num">13.2</span>The lethal trifecta</li><li><span class="toc__num">13.3</span>MCP is a supply chain</li><li><span class="toc__num">13.4</span>Defenses that hold</li><li><span class="toc__num">13.5</span>Defenses that don&#x27;t hold</li><li><span class="toc__num">13.6</span>Design-level defense: plan, then execute</li></ol></li><li class="toc__chapter"><a href="#ch14"><span class="toc__num">14</span><span class="toc__title">Cost and latency</span></a><ol class="toc__sections"><li><span class="toc__num">14.1</span>The price sheet</li><li><span class="toc__num">14.2</span>Prompt caching: the economics</li><li><span class="toc__num">14.3</span>Ordering is the design constraint</li><li><span class="toc__num">14.4</span>Batches: 50% off for patience</li><li><span class="toc__num">14.5</span>Routing: the 10k-lead worked example</li><li><span class="toc__num">14.6</span>Output discipline</li><li><span class="toc__num">14.7</span>Streaming buys perceived latency</li></ol></li><li class="toc__chapter"><a href="#ch15"><span class="toc__num">15</span><span class="toc__title">Structured output</span></a><ol class="toc__sections"><li><span class="toc__num">15.1</span>What guarantees the schema and what merely encourages it</li><li><span class="toc__num">15.2</span>The schema is a prompt</li><li><span class="toc__num">15.3</span>Let the model decline</li><li><span class="toc__num">15.4</span>Validate and repair, once</li><li><span class="toc__num">15.5</span>When the constraint makes the model dumber</li><li><span class="toc__num">15.6</span>Extraction at volume</li></ol></li><li class="toc__chapter"><a href="#ch16"><span class="toc__num">16</span><span class="toc__title">Fine-tuning and distillation</span></a><ol class="toc__sections"><li><span class="toc__num">16.1</span>The ladder</li><li><span class="toc__num">16.2</span>What gradient descent fixes — and what it can&#x27;t</li><li><span class="toc__num">16.3</span>No golden set, no fine-tune</li><li><span class="toc__num">16.4</span>The practical routes</li><li><span class="toc__num">16.5</span>Distillation: the one that pays</li><li><span class="toc__num">16.6</span>Worked example: classifying 10,000 scraped leads</li></ol></li><li class="toc__chapter"><a href="#ch17"><span class="toc__num">17</span><span class="toc__title">Multimodal</span></a><ol class="toc__sections"><li><span class="toc__num">17.1</span>Screenshots are a verification channel</li><li><span class="toc__num">17.2</span>How images are billed</li><li><span class="toc__num">17.3</span>Extraction: vision versus OCR-then-parse</li><li><span class="toc__num">17.4</span>Audio out: TTS</li><li><span class="toc__num">17.5</span>Audio in: STT</li></ol></li><li class="toc__chapter"><a href="#ch18"><span class="toc__num">18</span><span class="toc__title">Computer use and browser agents</span></a><ol class="toc__sections"><li><span class="toc__num">18.1</span>The reliability ladder</li><li><span class="toc__num">18.2</span>The computer use tool: pixels and coordinates</li><li><span class="toc__num">18.3</span>Browsers deserve better than pixels</li><li><span class="toc__num">18.4</span>How browser agents fail</li><li><span class="toc__num">18.5</span>Injection: the lethal trifecta with a UI</li><li><span class="toc__num">18.6</span>Gates and sandboxes</li></ol></li><li class="toc__chapter"><a href="#ch19"><span class="toc__num">19</span><span class="toc__title">Local and open-weight models</span></a><ol class="toc__sections"><li><span class="toc__num">19.1</span>The three honest reasons</li><li><span class="toc__num">19.2</span>The runtime landscape</li><li><span class="toc__num">19.3</span>What 4-bit actually costs</li><li><span class="toc__num">19.4</span>Choose by license, not by benchmark</li><li><span class="toc__num">19.5</span>Serving beyond the laptop</li><li><span class="toc__num">19.6</span>The bottom tier of the cascade</li></ol></li><li class="toc__chapter"><a href="#ch20"><span class="toc__num">20</span><span class="toc__title">Observability</span></a><ol class="toc__sections"><li><span class="toc__num">20.1</span>What a trace has to capture</li><li><span class="toc__num">20.2</span>The standard almost nobody knows exists</li><li><span class="toc__num">20.3</span>Claude Code is already instrumented</li><li><span class="toc__num">20.4</span>Sampling: you probably shouldn&#x27;t</li><li><span class="toc__num">20.5</span>Traces are a copy of everything users typed</li><li><span class="toc__num">20.6</span>The flywheel is the reason to start today</li><li><span class="toc__num">20.7</span>Four signals worth alerting on</li></ol></li><li class="toc__chapter"><a href="#ch21"><span class="toc__num">21</span><span class="toc__title">Source list</span></a><ol class="toc__sections"><li><span class="toc__num">21.1</span>The vetting standard</li><li><span class="toc__num">21.2</span>Claude Code</li><li><span class="toc__num">21.3</span>Agent teams and multi-agent</li><li><span class="toc__num">21.4</span>Project memory and context engineering</li><li><span class="toc__num">21.5</span>MCP and the tool layer</li><li><span class="toc__num">21.6</span>Prompting</li><li><span class="toc__num">21.7</span>The API and its cost model</li><li><span class="toc__num">21.8</span>Evals</li><li><span class="toc__num">21.9</span>Retrieval</li><li><span class="toc__num">21.10</span>Agent security</li><li><span class="toc__num">21.11</span>Structured output</li><li><span class="toc__num">21.12</span>Fine-tuning and distillation</li><li><span class="toc__num">21.13</span>Multimodal</li><li><span class="toc__num">21.14</span>Computer use and browser agents</li><li><span class="toc__num">21.15</span>Local and open-weight models</li><li><span class="toc__num">21.16</span>Observability</li></ol></li><li class="toc__chapter"><a href="#ch22"><span class="toc__num">22</span><span class="toc__title">Appendix</span></a><ol class="toc__sections"><li><span class="toc__num">22.1</span>Hook events, quick reference</li><li><span class="toc__num">22.2</span>Exit codes</li><li><span class="toc__num">22.3</span>Timeouts</li><li><span class="toc__num">22.4</span>Primary sources</li><li><span class="toc__num">22.5</span>Revision log</li></ol></li></ol>
 </nav>
 
 <main><section class="sheet chapter" id="ch0"><p class="chapter__tab">—</p><header class="chapter__head"><h1>How to use this handbook</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-26</span></p></header><p>This is a working manual, not a tutorial. It exists because the same lessons kept
@@ -664,7 +664,7 @@ chrome.</p>
   the right chapter as a field note.</li>
 </ul>
 <p>The second one is the point. The handbook is only worth maintaining if capturing a
-lesson costs less effort than forgetting it.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch1"><p class="chapter__tab">01</p><header class="chapter__head"><h1>The operating model</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-26</span></p></header><p>Everything else in this handbook is downstream of one idea: <strong>context is a budget,
+lesson costs less effort than forgetting it.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch1"><p class="chapter__tab">01</p><header class="chapter__head"><h1>The operating model</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/en/how-claude-code-works">code.claude.com/docs/en/how-claude-code-works</a> · <a href="https://code.claude.com/docs/en/permissions">code.claude.com/docs/en/permissions</a> · <a href="https://code.claude.com/docs/en/permission-modes">code.claude.com/docs/en/permission-modes</a> · <a href="https://code.claude.com/docs/en/sandboxing">code.claude.com/docs/en/sandboxing</a> · <a href="https://code.claude.com/docs/en/checkpointing">code.claude.com/docs/en/checkpointing</a> · <a href="https://code.claude.com/docs/en/headless">code.claude.com/docs/en/headless</a> · <a href="https://code.claude.com/docs/en/model-config">code.claude.com/docs/en/model-config</a> · <a href="https://code.claude.com/docs/en/output-styles">code.claude.com/docs/en/output-styles</a></span></p></header><p>Everything else in this handbook is downstream of one idea: <strong>context is a budget,
 not a container.</strong></p>
 <p>The instinct is to treat the context window as a room you keep putting things in
 until it's full. The useful model is closer to a bank account. Every file read,
@@ -675,7 +675,20 @@ the work, even though nothing has technically overflowed.</p>
 someone else's budget. Hooks exist so rules don't have to be paid for repeatedly in
 tokens. Compaction is what happens when the account is overdrawn, and it costs you
 detail you chose badly.</p>
-<h2 id="the-four-layers"><span class="rail" aria-hidden="true">1.1</span><span class="h2-text">The four layers</span></h2>
+<h2 id="what-a-harness-is"><span class="rail" aria-hidden="true">1.1</span><span class="h2-text">What a harness is</span></h2>
+<p>Claude Code is not the model. It is a harness — the docs' own term is "agentic
+harness" — made of four things: a system prompt, a set of tools, a permission gate
+in front of those tools, and a loop. The loop is gather context → take action →
+verify results, repeated until the task is done, with every tool result fed back
+in as new input.</p>
+<p>This is why the same model behaves differently in Claude Code, in claude.ai, and
+in your own API scripts. The weights are identical; the system prompt, tools, and
+gating differ, and those three are most of observable behavior. When Claude Code
+"decides" to run the tests before answering, that is the harness's system prompt
+shaping the loop, not a property of the model. When behavior is wrong, ask which
+layer produced it — a model problem, a prompt problem, and a gate problem have
+three different fixes.</p>
+<h2 id="the-four-layers"><span class="rail" aria-hidden="true">1.2</span><span class="h2-text">The four layers</span></h2>
 <table>
 <thead>
 <tr>
@@ -712,7 +725,106 @@ coding preference belongs in instructions. "Never force-push to main" belongs in
 hook, because instructions are a request and hooks are a control.</p>
 <aside class="callout callout--pattern"><p class="callout__label">The layer test</p><p>Ask: what happens the one time the model doesn't follow this? If the answer is
 "nothing much," it's an instruction. If the answer is "I lose work," it's a hook.</p></aside>
-<h2 id="three-failure-modes-worth-naming"><span class="rail" aria-hidden="true">1.2</span><span class="h2-text">Three failure modes worth naming</span></h2>
+<p>Permission rules sit in the enforcement tier with hooks: enforced by Claude Code,
+not the model. <code>CLAUDE.md</code> shapes what Claude tries; rules change what the harness
+allows.</p>
+<h2 id="the-permission-gate"><span class="rail" aria-hidden="true">1.3</span><span class="h2-text">The permission gate</span></h2>
+<p>Every tool call passes through a gate before it runs. The gate has two parts: a
+mode setting the session's baseline, and allow/ask/deny rules in <code>settings.json</code>
+overriding it per tool or command pattern.</p>
+<p>The modes, cycled with <code>Shift+Tab</code>: <code>default</code> (labeled Manual — prompts before
+most actions), <code>acceptEdits</code> (file edits and common filesystem commands run
+unprompted), <code>plan</code> (file edits blocked until you approve the plan; reads run
+free, other shell commands still prompt unless auto mode's classifier is
+covering the session), <code>auto</code> (a classifier model reviews actions instead of
+you; the built-in starting mode on Pro, Max, and Team), <code>dontAsk</code> (auto-denies
+anything not pre-approved), and <code>bypassPermissions</code>.</p>
+<p>Rules evaluate deny, then ask, then allow — first match wins, and specificity does
+not change the order, so a deny like <code>Bash(git push *)</code> beats any narrower allow.
+Two mechanics defeat naive rules: each subcommand of a compound command is matched
+independently (<code>Bash(safe-cmd *)</code> does not cover <code>safe-cmd &amp;&amp; other-cmd</code>), and
+wrappers like <code>timeout</code> and <code>nohup</code> are stripped before matching. The space in
+<code>Bash(git diff *)</code> is load-bearing — without it the rule also matches
+<code>git diff-index</code>.</p>
+<aside class="callout callout--pattern"><p class="callout__label">Permissions as policy, not clicks</p><p>Every "Yes, and don't ask again" click writes a rule into
+<code>.claude/settings.local.json</code>. Skip the intermediary: write your allow/deny lists
+into <code>.claude/settings.json</code> and commit them. Your permission posture becomes
+reviewable in a diff, identical across sessions, and portable into headless runs.
+Per-session clicking is the same policy, unaudited.</p></aside>
+<p>Sandboxed Bash is the OS-level backstop. On macOS (Seatbelt) and Linux/WSL2, it
+confines every Bash command and its child processes to declared filesystem and
+network boundaries — enforcement that holds even for a Python script that opens
+files itself, which path-based deny rules cannot see. Enable it with <code>/sandbox</code> or
+<code>sandbox.enabled: true</code>. Rules gate what Claude may attempt; the sandbox gates what
+a command can reach once running. Use both.</p>
+<h2 id="plan-mode-is-a-cheap-dry-run"><span class="rail" aria-hidden="true">1.4</span><span class="h2-text">Plan mode is a cheap dry-run</span></h2>
+<p>Plan mode tells Claude to research and propose without editing: it reads files
+and runs shell commands to explore, but file edits stay blocked until you
+approve the plan. Non-read-only shell commands still prompt for approval during
+planning — plan mode isn't a read-only sandbox, it's an edit block — unless
+auto mode's classifier is reviewing the session, in which case it approves or
+rejects those commands for you.
+<code>Ctrl+G</code> opens the plan in your editor before approval — the cheapest possible code
+review, because you are editing intent before any tokens are spent executing it.</p>
+<p>Demand plan mode whenever the blast radius exceeds one file: migrations, refactors
+touching call sites you haven't enumerated, anything involving deletion. Enter it
+with <code>Shift+Tab</code>, prefix one prompt with <code>/plan</code>, or start with
+<code>claude --permission-mode plan</code>. For a repo where every session should start
+cautious, set <code>"permissions": {"defaultMode": "plan"}</code> in <code>.claude/settings.json</code>.</p>
+<h2 id="checkpoints-are-the-undo-layer"><span class="rail" aria-hidden="true">1.5</span><span class="h2-text">Checkpoints are the undo layer</span></h2>
+<p>Every prompt you send creates a checkpoint — snapshots of the files Claude edits,
+100 most recent per session. <code>/rewind</code> (or <code>Esc</code> <code>Esc</code> on an empty prompt) restores
+code, conversation, or both, independently. Restoring code alone is the underrated
+combination: throw away a bad implementation while keeping everything the session
+learned about the problem.</p>
+<aside class="callout callout--warning"><p class="callout__label">Rewind does not cover Bash</p><p>Checkpoints track Claude's file-editing tools only. <code>rm</code>, <code>mv</code>, a script that
+rewrites files, most subagent edits, and anything touching remote systems —
+databases, APIs, deployments — cannot be rewound. The undo layer covers the
+common case, not the catastrophic one; git and hooks cover the rest, which is
+why "never force-push" is a hook and not a hope.</p></aside>
+<p>Checkpoints survive <code>/resume</code>, are deleted with the session after 30 days, and are
+not version control.</p>
+<h2 id="effort-is-a-dial-not-a-constant"><span class="rail" aria-hidden="true">1.6</span><span class="h2-text">Effort is a dial, not a constant</span></h2>
+<p><code>/effort</code> sets how much reasoning the model spends per step: <code>low</code>, <code>medium</code>,
+<code>high</code>, <code>xhigh</code>, <code>max</code>, with <code>high</code> the default on every effort-capable model
+except Opus 4.7 (<code>xhigh</code>). The scale is calibrated per model — the same name is not
+the same spend across models. Two lesser-known controls: the literal keyword
+<code>ultrathink</code> anywhere in a prompt requests deeper reasoning for that turn only
+(phrases like "think hard" pass through as ordinary text and do nothing), and an
+<code>effort</code> field in a skill's or subagent's front matter overrides the session level
+while it runs. Route grunt-work subagents to <code>low</code>; keep <code>max</code> for the turn that
+needs it.</p>
+<h2 id="sessions-have-a-lifecycle"><span class="rail" aria-hidden="true">1.7</span><span class="h2-text">Sessions have a lifecycle</span></h2>
+<p>Every session is a JSONL transcript under <code>~/.claude/projects/</code>. <code>claude --continue</code>
+reopens the most recent; <code>claude --resume &lt;id&gt;</code> reopens a specific one;
+<code>--fork-session</code> or <code>/branch</code> copies history into a new ID so you can try a second
+approach without contaminating the first — anchoring insurance, priced at one flag.</p>
+<p>Headless mode, <code>claude -p "prompt"</code>, runs the same harness non-interactively and
+exits — the building block for agents that run without you. It composes like any
+Unix tool: stdin in (capped at 10MB), stdout out, exit code 0 on success.</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">session_id</span><span class="o">=</span><span class="k">$(</span>claude<span class="w"> </span>-p<span class="w"> </span><span class="s2">"Review this codebase for performance issues"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output-format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">'.session_id'</span><span class="k">)</span>
+claude<span class="w"> </span>-p<span class="w"> </span><span class="s2">"Now focus on the database queries"</span><span class="w"> </span>--resume<span class="w"> </span><span class="s2">"</span><span class="nv">$session_id</span><span class="s2">"</span>
+</code></pre></div>
+
+<p>The JSON output also carries <code>total_cost_usd</code>, so a cron job can log its own spend.
+Wrap <code>claude -p</code> in crontab or CI and you have a scheduled agent — nightly triage,
+a typo linter on <code>git diff main</code> — with permissions supplied by <code>--allowedTools</code>
+and the committed settings file instead of a human at a prompt.</p>
+<aside class="callout callout--warning"><p class="callout__label">`-p` skips the trust dialog</p><p>A <code>claude -p</code> run never shows the workspace trust prompt, yet still executes the
+project's hooks and connects its <code>.mcp.json</code> servers. In a repo you didn't write,
+that is arbitrary code execution on your machine. Pass <code>--bare</code> — it skips hooks,
+skills, plugins, MCP, and <code>CLAUDE.md</code> discovery entirely, is the docs'
+recommended mode for scripts, and starts faster.</p></aside>
+<h2 id="output-styles-are-not-claudemd"><span class="rail" aria-hidden="true">1.8</span><span class="h2-text">Output styles are not CLAUDE.md</span></h2>
+<p>Both are "standing instructions," but they land in different places. An output
+style modifies the system prompt itself — role, tone, format — and by default drops
+Claude Code's built-in software-engineering instructions unless you set
+<code>keep-coding-instructions: true</code>. <code>CLAUDE.md</code> is injected as a user message after
+the system prompt and is for project knowledge: conventions, architecture,
+commands. Voice goes in a style; facts go in <code>CLAUDE.md</code>. Styles take effect only
+after <code>/clear</code> or a new session, because the system prompt is read once at startup.</p>
+<h2 id="three-failure-modes-worth-naming"><span class="rail" aria-hidden="true">1.9</span><span class="h2-text">Three failure modes worth naming</span></h2>
 <p><strong>Context pollution.</strong> Failed approaches don't leave the window when they stop being
 relevant. Twenty minutes into a bad debugging path, the session is reasoning against
 a transcript full of things that didn't work, and it will keep proposing neighbours
@@ -724,8 +836,9 @@ investigation is the strongest debugging technique in the handbook (see the agen
 teams chapter).</p>
 <p><strong>Silent staleness.</strong> Instructions loaded at session start drift out of relevance as
 the work moves, and compaction can quietly drop them. Re-injection on compaction
-fixes this and almost nobody sets it up.</p>
-<h2 id="the-default-posture"><span class="rail" aria-hidden="true">1.3</span><span class="h2-text">The default posture</span></h2>
+fixes this and almost nobody sets it up (see the hooks chapter for the
+<code>SessionStart</code> recipe).</p>
+<h2 id="the-default-posture"><span class="rail" aria-hidden="true">1.10</span><span class="h2-text">The default posture</span></h2>
 <p>Plan in the main session. Explore in subagents. Enforce in hooks. Reserve the main
 context for decisions and their reasoning, and push anything that produces volume —
 test output, codebase searches, log analysis — somewhere it can be summarised before
@@ -891,7 +1004,7 @@ levers, all of which this handbook already institutionalises: compaction
 (above), structured notes outside the window (auto memory, handoff docs), and
 subagents that burn their own context and return a 1,000–2,000-token summary
 — see Subagents. Long-horizon capacity is not a bigger window; it is a
-discipline about what never enters the window at all.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch3"><p class="chapter__tab">03</p><header class="chapter__head"><h1>Subagents</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/en/sub-agents">code.claude.com/docs/en/sub-agents</a></span></p></header><p>A subagent is a task delegated to a separate Claude Code session with its own
+discipline about what never enters the window at all.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch3"><p class="chapter__tab">03</p><header class="chapter__head"><h1>Subagents</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/en/sub-agents">code.claude.com/docs/en/sub-agents</a> · <a href="https://www.anthropic.com/engineering/multi-agent-research-system">www.anthropic.com/engineering/multi-agent-research-s</a></span></p></header><p>A subagent is a task delegated to a separate Claude Code session with its own
 context window, its own system prompt, and optionally its own tool allowlist and
 model. It reports back a summary. Everything it read to produce that summary stays
 behind.</p>
@@ -909,7 +1022,13 @@ and failed at.</p>
 </ul>
 <p>Don't delegate work that is short, sequential, or needs the conversation's history
 to make sense. Handing a subagent a task that depends on context it doesn't have
-produces confident, wrong output.</p>
+produces confident, wrong output. A single-fact lookup is the degenerate case:
+spawning an agent to answer something one <code>Grep</code> call answers pays a whole session
+of startup context for nothing. Anthropic's scaling rule for its research system:
+simple fact-finding gets one agent with 3–10 tool calls; only genuinely complex
+research justifies ten or more subagents — and most coding tasks have fewer truly
+parallelizable pieces than research does. Domains where every agent needs the same
+shared context, or where steps depend tightly on each other, are a poor fit.</p>
 <h2 id="definition"><span class="rail" aria-hidden="true">3.2</span><span class="h2-text">Definition</span></h2>
 <p>Subagents live in <code>.claude/agents/*.md</code> as markdown with front matter.</p>
 <div class="codehilite"><pre><span></span><code>---
@@ -932,33 +1051,129 @@ Never edit a file. Never suggest an approach. Report and stop.
 
 <p>Fields worth knowing beyond the obvious:</p>
 <ul>
-<li><code>tools</code> — a comma-separated allowlist. Omitted means it inherits everything. Also
-  accepts <code>Agent(agent_type)</code> to restrict which subagents it may itself spawn.</li>
-<li><code>model</code> — <code>sonnet</code>, <code>opus</code>, <code>haiku</code>, a full model ID, or <code>inherit</code> (the default).</li>
+<li><code>tools</code> — a comma-separated allowlist. Omitted means it inherits everything.
+  <code>disallowedTools</code> is the complementary denylist. Listing <code>Agent</code> lets the subagent
+  spawn subagents of its own while the depth limit allows it — but the
+  <code>Agent(agent_type)</code> syntax that restricts <em>which</em> types can be spawned only applies
+  to an agent running as the main thread via <code>claude --agent</code>. Inside a subagent's
+  own <code>tools</code> field, any type list in the parentheses is ignored.</li>
+<li><code>model</code> — <code>sonnet</code>, <code>opus</code>, <code>haiku</code>, <code>fable</code>, a full model ID, or <code>inherit</code> (the
+  default).</li>
+<li><code>effort</code> — <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, or <code>max</code>. Effort is a knob separate
+  from model choice: a Sonnet agent at <code>low</code> effort is the cheapest worker you can
+  field.</li>
+<li><code>maxTurns</code> — hard cap on agentic turns before the agent stops. Set it on anything
+  that could loop.</li>
 <li><code>skills</code> — skills preloaded into the agent's context at startup, with their full
   content injected rather than merely made available.</li>
 <li><code>hooks</code> — lifecycle hooks scoped to only this subagent while it runs.</li>
+<li><code>memory</code> — <code>user</code>, <code>project</code>, or <code>local</code>. Gives the agent a persistent directory;
+  the first 200 lines / 25KB of its <code>MEMORY.md</code> are injected into its system prompt
+  each run. A reviewer agent that remembers past false positives is a different
+  tool than one that starts amnesiac.</li>
+<li><code>background: true</code> — keeps the agent in the background even when Claude wants it
+  foreground.</li>
 </ul>
+<p>Definitions resolve by precedence: managed settings, then the <code>--agents</code> CLI flag,
+then <code>.claude/agents/</code> (project, commit it), then <code>~/.claude/agents/</code> (personal,
+every project), then plugin agents. Same name, higher location wins. Both agent
+directories are scanned recursively, and edits are picked up within seconds — no
+restart, except for the first agent in a brand-new <code>agents/</code> directory.</p>
 <aside class="callout callout--pattern"><p class="callout__label">Builder / verifier split</p><p>The verifier's power comes entirely from not having watched the code get written.
 If it inherits the builder's reasoning it will inherit the builder's blind spots.
 Give it read-only tools so it physically cannot "just fix it" and collapse the two
 roles back together.</p></aside>
-<h2 id="model-tiering"><span class="rail" aria-hidden="true">3.3</span><span class="h2-text">Model tiering</span></h2>
+<h2 id="what-the-subagent-actually-sees"><span class="rail" aria-hidden="true">3.3</span><span class="h2-text">What the subagent actually sees</span></h2>
+<p>Context isolation is precise, and knowing the exact boundary changes how you write
+delegations. A subagent starts with: its own system prompt, the delegation message
+Claude writes, the full CLAUDE.md hierarchy, and a git-status snapshot from parent
+session start. It does not get the conversation history, the main session's auto
+memory, or anything the main session has read. The built-in Explore and Plan agents
+skip even CLAUDE.md and git status — they are cheaper to start but blinder.</p>
+<p>The economics follow from that boundary. Anthropic's multi-agent research post
+reports that agents use about 4× the tokens of a chat interaction, and multi-agent
+systems about 15× — you are buying fresh context windows, and they are not free.
+What you get for it: their multi-agent system (Opus 4 lead, Sonnet 4 subagents)
+outperformed single-agent Opus 4 by 90.2% on their internal research eval, and on
+the BrowseComp eval token spend alone explained 80% of performance variance.
+Spending more tokens across more context windows is, mechanically, how multi-agent
+buys capability — so the task's value has to be high enough to pay for it.</p>
+<h2 id="model-tiering"><span class="rail" aria-hidden="true">3.4</span><span class="h2-text">Model tiering</span></h2>
 <p>Route grunt work — file search, log scanning, API polling — to a cheaper model and
 keep the expensive one for architectural reasoning. This is the single easiest cost
-reduction available, and it usually improves output too, because the expensive model
-stops spending attention on retrieval.</p>
+reduction available. The concrete mechanism at project scale is the Sonnet fleet:
+see the file-partition pattern in Field notes — Kaitaku, which ran five parallel
+Sonnet builders repeatedly with zero collisions.</p>
 <aside class="callout callout--caution"><p class="callout__label">Summarisation is lossy on purpose</p><p>A subagent returns a summary, and the summary is written by a model that decided
 what mattered. For anything where a specific detail matters, say so explicitly in
 the delegation: "return the exact error strings, not a description of them."</p></aside>
-<h2 id="prompting-a-delegation"><span class="rail" aria-hidden="true">3.4</span><span class="h2-text">Prompting a delegation</span></h2>
+<h2 id="orchestrator-patterns"><span class="rail" aria-hidden="true">3.5</span><span class="h2-text">Orchestrator patterns</span></h2>
+<p>Three shapes cover almost every multi-agent job:</p>
+<p><strong>Fan-out with disjoint file ownership.</strong> For a batch change that cross-cuts many
+files, dispatch N agents that each own a non-overlapping set of files, forbid them
+from committing or building, and run exactly one integration build afterward.
+Partition by file, never by finding: findings overlap on shared files and produce
+write collisions; file ownership guarantees zero collisions by construction. The
+integration build exists to catch <em>your</em> edits too — in the Kaitaku fleet runs, the
+one failure it caught was the orchestrator's own pre-wired plumbing, not any
+agent's work.</p>
+<p><strong>Pipeline vs barrier.</strong> A pipeline chains stages where each output feeds the next
+— search, then synthesize, then verify — and is right when stages genuinely depend.
+A barrier fans out, waits for all agents, then does one integration step. Prefer
+the barrier whenever you can make the work disjoint: pipelines serialize latency
+and compound each stage's summarisation loss, while a barrier pays it once.</p>
+<p><strong>Result contracts.</strong> Prose summaries are where delegation value dies. Specify the
+return shape in the delegation prompt as if you were designing an API response:</p>
+<div class="codehilite"><pre><span></span><code>Return ONLY a markdown table: file | line | severity (P0/P1/P2) | one-line
+finding | exact code snippet. No preamble, no recommendations, no summary
+paragraph. If you found nothing, return the literal string NONE.
+</code></pre></div>
+
+<p>An agent given that contract returns data you can triage, diff against a previous
+run, or hand to the next agent. An agent given "review this code" returns an essay.
+Anthropic's delegation guidance is the same list: an objective, an output format,
+tool guidance, and explicit task boundaries.</p>
+<aside class="callout callout--pattern"><p class="callout__label">Prompt-shape the return, not just the task</p><p>The return contract is half the delegation. Name the fields, name the sort order,
+name the empty-result sentinel, and cap the length ("at most 10 findings"). Every
+constraint you put on the output is context you don't spend re-parsing prose in
+the main session. This composes with Structured output on the API side: the same
+discipline, enforced by schema instead of prompt.</p></aside>
+<h2 id="background-agents"><span class="rail" aria-hidden="true">3.6</span><span class="h2-text">Background agents</span></h2>
+<p>Foreground agents block the conversation; background agents run concurrently and
+report back when done. Backgrounding is the default when fork mode is on, and any
+agent can opt in permanently with <code>background: true</code>. Two limits to know: 20
+concurrent subagents (raise with <code>CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS</code>) and a
+spawn depth of 3 (<code>CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH</code>). Background agents also
+run with a reduced built-in tool set — file tools, Bash, web tools, and messaging
+survive; interactive tools don't — and their permission prompts surface in the main
+session, so a background agent that needs approvals will stall silently until you
+look. Kick off long verification passes in the background at the <em>start</em> of a work
+block, not the end, so the results land while you still have budget to act on them.</p>
+<h2 id="prompting-a-delegation"><span class="rail" aria-hidden="true">3.7</span><span class="h2-text">Prompting a delegation</span></h2>
 <p>The three things a subagent needs that the main session forgets to give it:</p>
 <ol>
 <li><strong>The goal, not the step.</strong> "Find why the build fails on CI but not locally," not
    "read the CI config."</li>
 <li><strong>The return contract.</strong> What exactly should come back, and in what shape.</li>
 <li><strong>The boundary.</strong> What it must not touch, so its lack of context can't hurt you.</li>
-</ol><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch4"><p class="chapter__tab">04</p><header class="chapter__head"><h1>Hooks</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/en/hooks-guide">code.claude.com/docs/en/hooks-guide</a></span></p></header><p>Hooks are commands Claude Code runs at fixed points in its lifecycle. They exist so
+</ol>
+<h2 id="findings-are-candidates-not-facts"><span class="rail" aria-hidden="true">3.8</span><span class="h2-text">Findings are candidates, not facts</span></h2>
+<p>Treat everything a subagent returns as candidate findings requiring verification,
+not as ground truth. The agent had less context than you, summarised aggressively,
+and — if it was a reviewer — was prompted to find problems, which biases it toward
+finding some. The working ritual from Kaitaku's first end-of-week review: check
+each finding against source before filing it, and explicitly log what you dropped
+and why. Two reviewer claims in that pass were checked, found wrong, and dropped;
+unverified, they would have driven two pointless fixes. The verification cost is
+small because the result contract already gives you file-and-line claims that are
+cheap to check — one more reason to demand structured returns.</p>
+<aside class="callout callout--field"><p class="callout__label">2026-07-30 — Convergence as free cross-validation</p><p>Kaitaku's pre-launch audit ran five read-only Sonnet agents, each owning one
+orthogonal dimension (copy truthfulness, store paperwork, licensing, dependency
+graph, StoreKit compliance). Two agents independently converged on the same
+unlisted gap — no privacy-policy URL existed. When agents with disjoint briefs
+agree on a finding neither was asked about, that finding has effectively been
+verified twice for free. Promote convergent findings past the candidate stage;
+hold solo findings to the check-against-source rule.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch4"><p class="chapter__tab">04</p><header class="chapter__head"><h1>Hooks</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/en/hooks-guide">code.claude.com/docs/en/hooks-guide</a></span></p></header><p>Hooks are commands Claude Code runs at fixed points in its lifecycle. They exist so
 that certain things always happen instead of depending on the model choosing to do
 them.</p>
 <p>That sentence is the whole chapter. Instructions are advisory; hooks are the control
@@ -1077,20 +1292,45 @@ claude<span class="w"> </span>--debug-file<span class="w"> </span>/tmp/claude.lo
 <p>The classic silent failure: a shell profile that unconditionally <code>echo</code>s something
 prepends that output to your hook's JSON, so stdout no longer starts with <code>{</code>, so
 the JSON is ignored as plain text with no error shown. Wrap profile echoes in an
-interactive-shell check.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch5"><p class="chapter__tab">05</p><header class="chapter__head"><h1>Agent teams</h1><p class="chapter__meta"><span class="tag tag--experimental">experimental</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/en/agent-teams">code.claude.com/docs/en/agent-teams</a></span></p></header><p>Agent teams coordinate multiple full Claude Code sessions. One acts as lead,
+interactive-shell check.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch5"><p class="chapter__tab">05</p><header class="chapter__head"><h1>Agent teams</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/en/agent-teams">code.claude.com/docs/en/agent-teams</a> · <a href="https://arxiv.org/abs/2503.13657">arxiv.org/abs/2503.13657</a></span></p></header><p>Agent teams coordinate multiple full Claude Code sessions. One acts as lead,
 assigning work and synthesising results; teammates each work in their own context
 window and message each other directly.</p>
 <p>Experimental and off by default. Enable with <code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code>
 in <code>settings.json</code> or the environment. Without it, no team is set up, no team
-directories are written, and Claude won't propose teammates.</p>
-<p>Teammates load project context automatically — <code>CLAUDE.md</code>, MCP servers, skills — but
-they do not inherit the lead's conversation history. Anything the lead worked out has
-to be written into the assignment.</p>
-<h2 id="teams-versus-subagents"><span class="rail" aria-hidden="true">5.1</span><span class="h2-text">Teams versus subagents</span></h2>
+directories are written, and Claude won't propose teammates. Spawning teammates also
+requires an interactive session — under <code>-p</code> or the Agent SDK, no team forms.</p>
+<h2 id="the-lifecycle"><span class="rail" aria-hidden="true">5.1</span><span class="h2-text">The lifecycle</span></h2>
+<p>A team is four parts: a <strong>lead</strong> (your main session, which spawns teammates and
+coordinates), <strong>teammates</strong> (separate full Claude Code instances), a <strong>shared task
+list</strong>, and a <strong>mailbox</strong> per agent for direct messages.</p>
+<p>Everything lives on disk under a session-derived name — <code>session-</code> plus the first
+eight characters of the session ID:</p>
+<ul>
+<li>Team config: <code>~/.claude/teams/{team-name}/config.json</code> — runtime state, deleted
+  when the session ends. Don't hand-edit it; state updates overwrite your changes.</li>
+<li>Mailboxes: <code>~/.claude/teams/{team-name}/inboxes/{agent-name}.json</code></li>
+<li>Task list: <code>~/.claude/tasks/{team-name}/</code> — persists across resume, swept by the
+  same <code>cleanupPeriodDays</code> as transcripts.</li>
+</ul>
+<p>Tasks have three states — pending, in progress, completed — plus dependencies: a
+pending task with unresolved dependencies can't be claimed until they complete.
+Claiming uses file locking, so two teammates racing for the same task is handled;
+two teammates editing the same file is not. The lead assigns tasks, or teammates
+self-claim the next unblocked one when they finish.</p>
+<p>Messages are delivered automatically — the lead never polls. When a teammate goes
+idle it notifies the lead, but the notification carries no output: results only
+travel by message or task-list update. Write that into your prompts, or the lead
+synthesises from nothing.</p>
+<p>Teammates load project context — <code>CLAUDE.md</code>, MCP servers, skills — but they do not
+inherit the lead's conversation history. Anything the lead worked out has to be
+written into the assignment.</p>
+<h2 id="teams-versus-subagents"><span class="rail" aria-hidden="true">5.2</span><span class="h2-text">Teams versus subagents</span></h2>
 <p>A subagent is a function call. A team is an organisation. The difference that matters
-in practice is communication: subagents report upward and never talk to each other,
-while teammates negotiate directly. That makes teams worth the overhead only when the
-work has genuine interfaces to agree on.</p>
+in practice is communication: subagents are fire-and-forget workers that report
+upward and never talk to each other, while teammates are long-lived peers that
+negotiate directly, claim work from a shared list, and can be messaged by you
+individually without going through the lead. That makes teams worth the overhead
+only when the work has genuine interfaces to agree on.</p>
 <table>
 <thead>
 <tr>
@@ -1113,7 +1353,13 @@ work has genuine interfaces to agree on.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="the-technique-that-justifies-the-feature"><span class="rail" aria-hidden="true">5.2</span><span class="h2-text">The technique that justifies the feature</span></h2>
+<aside class="callout callout--caution"><p class="callout__label">Enabling teams changes ordinary delegation</p><p>While the flag is on, any subagent Claude <em>names</em> launches as a teammate — even
+during delegation you never framed as team work. Teammates report back differently
+from subagents: the idle notification arrives without the output, so an
+orchestration flow waiting on subagent results can stall. Set the variable to <code>0</code>
+in user <code>settings.json</code> to restore normal subagents; it takes effect on the next
+spawn, no restart needed.</p></aside>
+<h2 id="the-technique-that-justifies-the-feature"><span class="rail" aria-hidden="true">5.3</span><span class="h2-text">The technique that justifies the feature</span></h2>
 <p>The strongest use is not parallel implementation. It's parallel <em>disagreement</em>.</p>
 <p>Spawn several teammates on competing hypotheses and have them actively try to
 disprove each other, like a scientific debate. Sequential investigation suffers from
@@ -1126,10 +1372,12 @@ theories. Update the findings doc with whatever consensus emerges."</p>
 <p>Reach for this on the bug that has already eaten a day. The cost is high and the
 anchoring cure is worth it precisely when your own reasoning has been stuck in one
 groove for hours.</p></aside>
-<h2 id="running-one"><span class="rail" aria-hidden="true">5.3</span><span class="h2-text">Running one</span></h2>
+<h2 id="running-one"><span class="rail" aria-hidden="true">5.4</span><span class="h2-text">Running one</span></h2>
 <p>Name the teammates and their scopes explicitly. "Spawn three agents for this
 codebase review" produces three agents doing overlapping work; naming them —
-security, performance, tests — produces three agents doing different work.</p>
+security, performance, tests — produces three agents doing different work. Named
+teammates are also addressable: any teammate can message any other by name, and so
+can you.</p>
 <p>Other things that matter:</p>
 <ul>
 <li>Give each teammate an exclusive file scope. Two teammates editing the same file is
@@ -1137,15 +1385,88 @@ security, performance, tests — produces three agents doing different work.</p>
 <li>State dependencies as instructions: who waits for whom, who confirms before the
   next starts.</li>
 <li>Require the lead to wait for all completions before synthesising.</li>
-<li>Have the lead delete the team before the final response.</li>
+<li>Start with 3–5 teammates and 5–6 tasks each. Three focused teammates outperform
+  five scattered ones, and small task grain lets the lead reassign when someone
+  stalls.</li>
+<li>Reuse subagent definitions as roles: "spawn a teammate using the
+  <code>security-reviewer</code> agent type." The teammate honours that definition's <code>tools</code>
+  allowlist and model; its body is appended to the system prompt. The <code>skills</code> and
+  <code>mcpServers</code> frontmatter fields are ignored for teammates.</li>
+<li>For risky work, require plan approval: the teammate stays read-only until the lead
+  approves its plan. The lead judges autonomously, so give it criteria — "only
+  approve plans that include test coverage."</li>
 </ul>
-<p>If the lead starts writing code instead of coordinating, <code>Shift+Tab</code> restricts it to
-coordination-only tools — spawning, messaging, task management, shutdown.</p>
-<aside class="callout callout--caution"><p class="callout__label">Roughly 5× tokens per teammate</p><p>Reserve teams for work that genuinely benefits from multiple perspectives running
-at once. For anything else, subagents or a single session are the right call.</p></aside>
-<aside class="callout callout--warning"><p class="callout__label">Experimental means experimental</p><p>Known rough edges around session resumption, task coordination, and shutdown
-behaviour. Start on read-only work — a multi-angle code review — before letting a
-team write to a repository you care about.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch6"><p class="chapter__tab">06</p><header class="chapter__head"><h1>MCP and the tool layer</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://modelcontextprotocol.io/docs/learn/architecture">modelcontextprotocol.io/docs/learn/architecture</a> · <a href="https://modelcontextprotocol.io/docs/develop/build-server">modelcontextprotocol.io/docs/develop/build-server</a> · <a href="https://code.claude.com/docs/en/mcp">code.claude.com/docs/en/mcp</a> · <a href="https://www.anthropic.com/engineering/writing-tools-for-agents">www.anthropic.com/engineering/writing-tools-for-agen</a> · <a href="https://www.anthropic.com/engineering/code-execution-with-mcp">www.anthropic.com/engineering/code-execution-with-mc</a></span></p></header><p>MCP is how Claude reaches past the filesystem and shell into the rest of your stack.</p>
+<p>If the lead starts writing code instead of coordinating, there's no dedicated
+coordination-only mode to switch it into — redirect it in plain language: "wait
+for your teammates to complete their tasks before proceeding."</p>
+<p>Display is <code>teammateMode</code> in <code>settings.json</code> (or <code>--teammate-mode</code> per session):
+<code>"in-process"</code> — the default — keeps everyone in one terminal behind an agent panel
+(arrows to select, Enter to view and message, <code>x</code> to stop, Ctrl+T for the task
+list); <code>"tmux"</code> gives each teammate its own split pane via tmux or iTerm2's <code>it2</code>
+CLI. In-process works everywhere; split panes don't work in VS Code's terminal,
+Windows Terminal, or Ghostty.</p>
+<h2 id="quality-gates"><span class="rail" aria-hidden="true">5.5</span><span class="h2-text">Quality gates</span></h2>
+<p>Instructions to "check your work" are advisory. Two mechanisms are not:</p>
+<p><strong>Hooks on team events.</strong> Three events exist for exactly this (see the Hooks
+chapter for mechanics): <code>TeammateIdle</code> fires before a teammate goes idle — exit 2
+sends feedback and keeps it working; <code>TaskCreated</code> can block a malformed task at
+creation; <code>TaskCompleted</code> can refuse the completion. A <code>TaskCompleted</code> hook that
+runs the test suite and exits 2 on failure means no teammate can mark work done
+that doesn't build.</p>
+<p><strong>A verifier teammate.</strong> Add one teammate whose only job is to challenge the
+others' completed work — rerun the repro, read the diff, message the author with
+what's wrong. It writes no code, so it conflicts with no one.</p>
+<h2 id="why-multi-agent-systems-fail"><span class="rail" aria-hidden="true">5.6</span><span class="h2-text">Why multi-agent systems fail</span></h2>
+<p>The MAST taxonomy ("Why Do Multi-Agent LLM Systems Fail?", arXiv 2503.13657v3)
+analysed 1,642 execution traces across 7 open-source multi-agent frameworks and
+found failure rates from 41% to 86.7%. The taxonomy itself was built from an
+initial 150 traces across five of those frameworks, coded by six human experts,
+with the resulting scheme checked for inter-annotator agreement at κ = 0.88. It
+derives 14 failure modes in three categories:
+<strong>system design issues</strong> (~44% of failures — disobeyed task or role specifications,
+step repetition, unawareness of stopping conditions), <strong>inter-agent misalignment</strong>
+(~32% — task derailment, information withholding, ignoring other agents' input,
+failing to ask for clarification), and <strong>task verification</strong> (~24% — premature
+termination, missing or incorrect verification).</p>
+<p>The headline: "many MAS failures arise from the challenges in organizational design
+and agent coordination rather than the limitations of individual agents." Same
+models, better structure, better results — adding a task-verification stage to
+ChatDev improved task success by 15.6 points on the ProgramDev benchmark, same
+underlying model throughout. Design the org chart, not just the prompts.</p>
+<p>The taxonomy maps directly onto team practice:</p>
+<ul>
+<li><strong>Specification and design failures → task-list contracts.</strong> Every task states
+  its deliverable, file scope, and stopping condition. "Refactor auth" derails;
+  "make <code>src/auth/</code> pass the existing suite with sessions moved to httpOnly
+  cookies, then mark the task complete" doesn't.</li>
+<li><strong>Inter-agent misalignment → messaging discipline.</strong> Require teammates to message
+  findings, not just finish; require the lead to wait for those messages before
+  synthesising. Idle notifications carry no content — silence is not agreement.</li>
+<li><strong>Verification failures → a verifier that isn't the author.</strong> MAST's third
+  category is why "no or incomplete verification" and "incorrect verification"
+  together account for roughly a sixth of all failures. The verifier teammate and
+  the <code>TaskCompleted</code> hook above are the structural fix.</li>
+</ul>
+<aside class="callout callout--note"><p class="callout__label">The failure is usually yours, not the model&#x27;s</p><p>When a team run goes sideways, reread your spawn prompt before blaming the
+model. Most multi-agent failures are specification and coordination failures —
+the fix is a tighter task contract, not a bigger model.</p></aside>
+<h2 id="cost"><span class="rail" aria-hidden="true">5.7</span><span class="h2-text">Cost</span></h2>
+<aside class="callout callout--caution"><p class="callout__label">Tokens scale linearly with team size</p><p>Each teammate is a separate Claude instance with its own context window, so
+cost scales linearly as you add teammates — Anthropic's docs confirm the
+scaling but publish no multiplier. Budget roughly 5× a single session's tokens
+for five teammates as a working estimate, not a documented figure. Reserve
+teams for work that genuinely benefits from multiple perspectives running at
+once. For anything else, subagents or a single session are the right call. One
+recovery: in-process teammates fall
+outside the main conversation's prompt-cache TTL bucket, so their cache holds
+five minutes by default — set <code>subagentPromptCacheTtl</code> to <code>1h</code> for long runs
+(the API bills 1-hour cache writes at a higher rate).</p></aside>
+<aside class="callout callout--caution"><p class="callout__label">Experimental means experimental</p><p>Known rough edges: <code>/resume</code> and <code>/rewind</code> do not restore in-process teammates —
+the lead will message ghosts until told to respawn; task status can lag, blocking
+dependents; shutdown waits for the current tool call; one team per session, no
+nested teams, and the lead is fixed for the session's lifetime. Start on
+read-only work — a multi-angle code review — before letting a team write to a
+repository you care about.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch6"><p class="chapter__tab">06</p><header class="chapter__head"><h1>MCP and the tool layer</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://modelcontextprotocol.io/docs/learn/architecture">modelcontextprotocol.io/docs/learn/architecture</a> · <a href="https://modelcontextprotocol.io/docs/develop/build-server">modelcontextprotocol.io/docs/develop/build-server</a> · <a href="https://code.claude.com/docs/en/mcp">code.claude.com/docs/en/mcp</a> · <a href="https://www.anthropic.com/engineering/writing-tools-for-agents">www.anthropic.com/engineering/writing-tools-for-agen</a> · <a href="https://www.anthropic.com/engineering/code-execution-with-mcp">www.anthropic.com/engineering/code-execution-with-mc</a></span></p></header><p>MCP is how Claude reaches past the filesystem and shell into the rest of your stack.</p>
 <h2 id="the-architecture-in-one-screen"><span class="rail" aria-hidden="true">6.1</span><span class="h2-text">The architecture in one screen</span></h2>
 <p>MCP is a client-server protocol over JSON-RPC 2.0. The host (Claude Code) creates
 one MCP client per configured server; each client holds a dedicated connection.
@@ -1635,7 +1956,7 @@ a real App Store release are the ones worth writing down.</p>
 <p>Ganbei is deliberately austere as software: fully offline, no accounts, no analytics
 SDKs, SwiftUI-first, dark UI with neon accents, ten-plus games with Finger Roulette
 as the hero feature and a Party Mode alongside it, monetised as a single one-time
-IAP unlock in the $2.99–3.99 range.</p>
+IAP unlock at $1.99.</p>
 <p>Every one of those constraints changes how an agent should be pointed at the
 codebase, and it's worth being explicit about why.</p>
 <p><strong>No analytics means no telemetry to debug from.</strong> There is no dashboard to ask what
@@ -1653,20 +1974,151 @@ StoreKit code should be hooks, not instructions.</p>
 <aside class="callout callout--warning"><p class="callout__label">Slot — purchase path guardrails</p><p>Record the exact <code>PreToolUse</code> matcher protecting the StoreKit and entitlement
 files here once it's written. This is the one place where an agent editing without
 review costs real money.</p></aside>
-<h2 id="slots-to-fill"><span class="rail" aria-hidden="true">9.2</span><span class="h2-text">Slots to fill</span></h2>
+<aside class="callout callout--field"><p class="callout__label">2026-07-22 — The escape hatch that depended on the machinery it escaped</p><p><strong>What happened.</strong> <code>-debugUnlockAll YES</code> existed so paid games could be tested
+without a real StoreKit product. Paid tiles still read "Locked" after 20+ seconds.</p>
+<p><strong>Why it happened.</strong> The debug flag was applied at the <em>end</em> of
+<code>refreshEntitlements()</code> — after <code>loadProduct()</code> and a full walk of
+<code>Transaction.currentEntitlements</code>. On a Simulator with no StoreKit config, either
+step can sit unresolved forever, so the bypass was gated on the exact async system
+it existed to bypass. A second, compounding bug rode along: the home screen's lock
+badge read <code>module.isFreeInV1</code> from the catalog and never consulted the
+entitlement store at all — every paid tile said Locked in production too.</p>
+<p><strong>What changed.</strong> The flag is now applied synchronously in <code>EntitlementStore.init</code>
+before any <code>await</code>, so it structurally cannot depend on StoreKit. The standing
+checks for any paywall: does the test bypass touch the async path under test, and
+does the lock-state UI actually read the entitlement store rather than a
+hardcoded catalog flag.</p></aside>
+<h2 id="per-game-specs"><span class="rail" aria-hidden="true">9.2</span><span class="h2-text">Per-game specs</span></h2>
+<p>Ten-plus games means ten-plus small, self-contained specifications. The question was
+whether a shared spec format keeps agent-written game modes consistent. The answer
+that held up: yes, but the format that worked was a code contract, not a document.</p>
+<aside class="callout callout--field"><p class="callout__label">2026-07-27 — The protocol was the spec</p><p><strong>What happened.</strong> Every game mode from M7 Truth or Dare through M39 Would You
+Rather answers the same fixed checklist in code, not in a doc — through two
+conformances, not one. Each game's <code>PartyGameModule</code> conformance carries
+<code>blurb</code>/<code>howToPlay</code> for the rulebook sheet and locked-game preview. Each game's
+case in the separate <code>PartyModuleID</code> enum (Core) carries a <code>heatWindow</code>
+(0.0–1.0, how the tier system tunes intensity), <code>assignsVictim</code> (does the round
+name one loser or is everyone in), and <code>minimumCrew</code> (floor on player count).
+There was never a prose spec file per game.</p>
+<p><strong>Why it happened.</strong> Two separate compile-time checks do what a markdown
+template only suggests. Adding game #11's <code>PartyGameModule</code> conformance forces
+an agent to write a blurb and a how-to-play, because the type won't satisfy the
+protocol otherwise; adding game #11's <code>PartyModuleID</code> case forces it to answer
+heat window, victim assignment, and crew floor, because the enum's exhaustive
+switches won't compile otherwise. The one seam this doesn't cover: the module's
+string <code>id</code> has to match its <code>PartyModuleID</code> raw value by hand across the
+App/Core boundary, and Core can't see App to check it — <code>PartyModeView</code> asserts
+the mapping at DEBUG runtime instead of at compile time. A spec doc drifts
+silently; a broken build doesn't — but a string match nobody's compiler is
+watching still can.</p>
+<p><strong>What changed.</strong> New games get no spec document. They get a <code>PartyGameModule</code>
+conformance, a <code>PartyModuleID</code> case, and a brief that reads as a diff against
+the nearest existing game — the Tiger Machine brief says "Integration mirrors
+SpinWheel," names which juice is reused (SpinWheel's frame-loop and
+deceleration curve) and which feedback events are genuinely new. Naming the
+reuse is what stops each agent from quietly reinventing wheel-deceleration
+curves and feedback taxonomies per game.</p></aside>
+<p>Cross-cutting features — the things a protocol can't capture — did get documents,
+but the same document every time.</p>
+<aside class="callout callout--pattern"><p class="callout__label">Name the contract, don&#x27;t re-derive it</p><p>When the four Chinese chain-games were designed as one shared engine
+(2026-07-23), the design doc opened by declaring "Same contract as
+PARTY-MODE.md: problem → decisions → the hard constraint → Core/App split → build
+order → explicit non-goals." The fixed shape forces the same load-bearing
+questions to get answered before code every time, and citing the prior doc by
+name is cheaper and more binding than inventing a fresh structure. The
+"deliberately not in v1" section earns its place: it's the only part that stops
+scope from being re-litigated mid-build.</p></aside>
+<p>Deciding <em>which</em> games to build got its own shape, from the Subagents chapter's
+toolbox rather than a spec at all.</p>
+<aside class="callout callout--pattern"><p class="callout__label">Rank by agreement, not by finder</p><p>Four research agents swept disjoint partitions — Western classics,
+Korean/Japanese/TW-HK/SEA games, competitor apps and their reviews, phone-native
+mechanics — each against the existing 28-game catalog and the standing rejected
+list. Results were ranked by how many passes independently surfaced the same
+candidate, not by any one agent's enthusiasm for its own find. "Cross-validated
+by 2+ passes" became the build-priority signal: Would You Rather shipped same-day
+because the classics sweep and the competitor-review sweep both flagged it
+independently (2026-07-27).</p></aside>
+<h2 id="swiftui-verification"><span class="rail" aria-hidden="true">9.3</span><span class="h2-text">SwiftUI verification</span></h2>
+<p>SwiftUI state bugs are notoriously easy to write and hard to see in a diff. Two
+incidents produced the concrete instructions the verifier subagent now carries.</p>
+<aside class="callout callout--field"><p class="callout__label">2026-07-21 — The zombie timer</p><p><strong>What happened.</strong> Opposites sometimes double-buzzed after time ran out — the
+countdown's explode event fired twice on some rounds.</p>
+<p><strong>Why it happened.</strong> The view model started a <code>Timer.scheduledTimer</code> in <code>init()</code>.
+SwiftUI is allowed to construct a <code>@State</code> object more than once while keeping
+only one — the discarded copies' timers keep running and keep firing. And
+<code>tick()</code> had no phase guard, so a stale tick from a zombie timer could resolve an
+already-resolved round a second time.</p>
+<p><strong>What changed.</strong> Rewritten as a <code>@MainActor</code> async countdown started from the
+view's <code>.task</code> (never <code>init</code>), cancelled in <code>.onDisappear</code>, with <code>phase</code>
+re-checked both in the loop and in <code>expire()</code> so a round can only resolve once.
+The verifier's checklist item is now mechanical: grep any SwiftUI diff for
+timers, <code>Task</code>s, or subscriptions started in <code>init()</code> on
+<code>@State</code>/<code>@StateObject</code>/<code>@Observable</code> types, and confirm every state-resolving
+callback carries a phase or idempotency guard.</p></aside>
+<aside class="callout callout--field"><p class="callout__label">2026-07-23 — Screenshots prove layout, not transitions</p><p><strong>What happened.</strong> One hands-on open of the wheel surfaced three bugs the
+build-green-plus-screenshot loop had passed: a debug launch arg re-fired on every
+re-visit, every editor control was permanently dead after the first spin, and
+leftover seeded debug data was riding the real store.</p>
+<p><strong>Why it happened.</strong> <code>simctl</code> can't tap, so Simulator verification sees one
+moment, never a second interaction. The launch arg was re-checked on every
+<code>onAppear</code>, but launch args persist for the whole process lifetime. The editor
+was <code>.disabled(phase != .idle)</code> and the phase parked in <code>.result</code> forever. All
+three are invisible by construction to a single-screenshot check.</p>
+<p><strong>What changed.</strong> Debug launch args became one-shot latches, consumed once. And
+the verifier's job for any <code>.disabled(phase == X)</code> gate is to trace whether that
+phase can ever return to its start state — not to confirm the first screenshot
+looks right.</p></aside>
+<p>The substitute for both telemetry and a tap-through harness was a family of debug
+launch arguments, which is worth stealing wholesale.</p>
+<aside class="callout callout--pattern"><p class="callout__label">One-shot DEBUG launch args as the test harness</p><p>Each game ships a DEBUG-only launch argument that jumps straight to a deep state
+for screenshotting: <code>-openGame</code>, <code>-debugUnlockAll YES</code>, <code>-wyrPhase
+card|voting|reveal</code>, <code>-rouletteAutoSpin</code>, <code>-openPartyMode play:finger-roulette</code>.
+All follow the same latch shape — consumed once, purely in-memory, nothing to
+clean up — so a verifier can reach "mid-spin, ball orbiting, call locked" on
+demand instead of only ever seeing a cold start. The discipline that makes it
+honest: every milestone's log entry splits what the DEBUG-arg Simulator pass
+confirmed from what still needs a real device (haptics, CoreMotion, multi-touch
+timing). Keeping that split every single milestone is what substitutes for
+telemetry.</p></aside>
+<p>One harness bug earns its own note, because it's the failure mode of the whole
+approach.</p>
+<aside class="callout callout--field"><p class="callout__label">2026-07-22 — A harness that hand-stuffs the end state verifies nothing</p><p><strong>What happened.</strong> The end-of-night summary card's "Drank the most" stat only
+ever appeared under the debug summary path. In a real night the tally was always
+empty — nothing in the app actually called <code>recordDrinks</code>.</p>
+<p><strong>Why it happened.</strong> The debug path (<code>-openPartyMode summary</code>) fabricated a
+plausible session directly, bypassing the recording code entirely. It passed
+every screenshot check while the production write path was never exercised: it
+looked verified and wasn't.</p>
+<p><strong>What changed.</strong> The debug path now plays a real 14-round night through the real
+<code>recordDrink</code> call, and the result is read back off the Simulator's actual disk
+(<code>drink-log.json</code>) to confirm it landed. The rule for any verifier or debug
+harness: it must drive the production mutation path, never synthesize the end
+state that path is supposed to produce.</p></aside>
+<h2 id="naming-and-the-bundle-split"><span class="rail" aria-hidden="true">9.4</span><span class="h2-text">Naming and the bundle split</span></h2>
+<p>The App Store listing is "Ganbei: Party Games" while the bundle display name is
+"Ganbei". No agent ever conflated the two on this project — and the interesting part
+is why not.</p>
+<aside class="callout callout--field"><p class="callout__label">2026-07-21 — A tripwire instead of a one-time fix</p><p><strong>What happened.</strong> Both names were locked as distinct values in the same commit
+that set the bundle ID, and <code>project.yml</code>'s <code>INFOPLIST_KEY_CFBundleDisplayName</code>
+was verified to pick up the short form at the time. The project then refused to
+trust that once-correct state to hold.</p>
+<p><strong>Why it happened.</strong> The two names are easy to conflate later: one config key,
+one App Store Connect field, both plausibly "the app name." The risk isn't a bug
+to fix once; it's an ambiguity that recurs every time a fresh session touches
+either surface.</p>
+<p><strong>What changed.</strong> "Confirm <code>CFBundleDisplayName</code> ("Ganbei") vs. App Store name
+("Ganbei: Party Games") is intentional" became a standing line in the
+pre-submission checklist — re-verified at a different point in the project than
+where the names were set. Any project with a split listing/bundle identity should
+carry the same tripwire in <code>CLAUDE.md</code>.</p></aside>
+<h2 id="open-slots"><span class="rail" aria-hidden="true">9.5</span><span class="h2-text">Open slots</span></h2>
 <p>Each of these is a question the next project will ask. Answer them here as they come
 up, in field-note callouts, with dates.</p>
-<p><strong>Per-game specs.</strong> Ten-plus games means ten-plus small, self-contained
-specifications. Did a shared spec format make agent-written game modes more
-consistent? What did the format look like?</p>
-<p><strong>SwiftUI verification.</strong> SwiftUI state bugs are notoriously easy to write and hard
-to see in a diff. What did the verifier subagent need to be told to catch them?</p>
-<p><strong>Naming and the bundle split.</strong> The App Store listing is "Ganbei: Party Games" while
-the bundle display name is "Ganbei". Any place where an agent conflated the two is
-worth recording — it's exactly the kind of detail that belongs in <code>CLAUDE.md</code> rather
-than being re-explained per session.</p>
 <p><strong>Creator seeding.</strong> Promo-code distribution to creators is a repeatable process, not
 a one-off. If it turns into a skill, note the shape of it here.</p>
+<p><strong>Purchase path guardrails.</strong> The <code>PreToolUse</code> matcher slot in the constraints
+section above is still open — the hook exists as a general git guardrail, but the
+StoreKit-file-specific matcher hasn't been written down.</p>
 <aside class="callout callout--field"><p class="callout__label">Template</p><p><strong>What happened.</strong> One or two sentences.</p>
 <p><strong>Why it happened.</strong> The mechanism, not the blame.</p>
 <p><strong>What changed.</strong> The hook, instruction, subagent, or habit that now prevents it.</p>
@@ -3061,9 +3513,306 @@ same thing at the OS level: a dedicated VM, minimal privileges, no credentials.
 The cheapest sandbox is the login the agent never had.</p>
 <p>Vision-based computer use is genuinely useful — for desktop apps, legacy UIs,
 and the last rung when nothing else exists. Treat it like that: the tool of
-last resort, wrapped in gates, running in a profile with nothing to lose.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch19"><p class="chapter__tab">19</p><header class="chapter__head"><h1>Source list</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/llms.txt">code.claude.com/docs/llms.txt</a> · <a href="https://code.claude.com/docs/en/sub-agents">code.claude.com/docs/en/sub-agents</a> · <a href="https://code.claude.com/docs/en/hooks-guide">code.claude.com/docs/en/hooks-guide</a> · <a href="https://code.claude.com/docs/en/agent-teams">code.claude.com/docs/en/agent-teams</a> · <a href="https://code.claude.com/docs/en/security">code.claude.com/docs/en/security</a> · <a href="https://code.claude.com/docs/en/sandboxing">code.claude.com/docs/en/sandboxing</a> · <a href="https://docs.claude.com/en/api/overview">docs.claude.com/en/api/overview</a> · <a href="https://platform.claude.com/docs/en/models/overview">platform.claude.com/docs/en/models/overview</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">platform.claude.com/docs/en/build-with-claude/prompt</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/batch-processing">platform.claude.com/docs/en/build-with-claude/batch-</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/streaming">platform.claude.com/docs/en/build-with-claude/stream</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs">platform.claude.com/docs/en/build-with-claude/struct</a> · <a href="https://platform.claude.com/docs/en/docs/build-with-claude/develop-tests">platform.claude.com/docs/en/docs/build-with-claude/d</a> · <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">www.anthropic.com/engineering/demystifying-evals-for</a> · <a href="https://www.anthropic.com/news/contextual-retrieval">www.anthropic.com/news/contextual-retrieval</a> · <a href="https://developers.openai.com/api/docs/guides/prompt-caching">developers.openai.com/api/docs/guides/prompt-caching</a> · <a href="https://developers.openai.com/api/docs/guides/batch">developers.openai.com/api/docs/guides/batch</a> · <a href="https://developers.openai.com/api/docs/guides/embeddings">developers.openai.com/api/docs/guides/embeddings</a> · <a href="https://developers.openai.com/api/docs/guides/structured-outputs">developers.openai.com/api/docs/guides/structured-out</a> · <a href="https://developers.openai.com/cookbook/examples/evaluation/use-cases/regression">developers.openai.com/cookbook/examples/evaluation/u</a> · <a href="https://docs.cohere.com/docs/rerank">docs.cohere.com/docs/rerank</a> · <a href="https://docs.voyageai.com/docs/flexible-dimensions-and-quantization">docs.voyageai.com/docs/flexible-dimensions-and-quant</a> · <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">owasp.org/www-project-top-10-for-large-language-mode</a> · <a href="https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices">modelcontextprotocol.io/specification/2025-06-18/bas</a> · <a href="https://arxiv.org/abs/2306.05685">arxiv.org/abs/2306.05685</a> · <a href="https://arxiv.org/abs/2404.13076">arxiv.org/abs/2404.13076</a> · <a href="https://arxiv.org/abs/2212.10496">arxiv.org/abs/2212.10496</a> · <a href="https://arxiv.org/abs/2104.08663">arxiv.org/abs/2104.08663</a> · <a href="https://arxiv.org/abs/2503.18813">arxiv.org/abs/2503.18813</a> · <a href="https://arxiv.org/abs/2408.02442">arxiv.org/abs/2408.02442</a> · <a href="https://dl.acm.org/doi/10.1145/1571941.1572114">dl.acm.org/doi/10.1145/1571941.1572114</a> · <a href="https://hamel.dev/blog/posts/evals/">hamel.dev/blog/posts/evals/</a> · <a href="https://hamel.dev/blog/posts/llm-judge/">hamel.dev/blog/posts/llm-judge/</a> · <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">simonwillison.net/2025/Jun/16/the-lethal-trifecta/</a> · <a href="https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks">invariantlabs.ai/blog/mcp-security-notification-tool</a> · <a href="https://code.claude.com/docs/en/memory">code.claude.com/docs/en/memory</a> · <a href="https://code.claude.com/docs/en/context-window">code.claude.com/docs/en/context-window</a> · <a href="https://code.claude.com/docs/en/costs">code.claude.com/docs/en/costs</a> · <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">www.anthropic.com/engineering/effective-context-engi</a> · <a href="https://modelcontextprotocol.io/docs/learn/architecture">modelcontextprotocol.io/docs/learn/architecture</a> · <a href="https://modelcontextprotocol.io/docs/develop/build-server">modelcontextprotocol.io/docs/develop/build-server</a> · <a href="https://code.claude.com/docs/en/mcp">code.claude.com/docs/en/mcp</a> · <a href="https://www.anthropic.com/engineering/writing-tools-for-agents">www.anthropic.com/engineering/writing-tools-for-agen</a> · <a href="https://www.anthropic.com/engineering/code-execution-with-mcp">www.anthropic.com/engineering/code-execution-with-mc</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices">platform.claude.com/docs/en/build-with-claude/prompt</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview">platform.claude.com/docs/en/build-with-claude/prompt</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/thinking">platform.claude.com/docs/en/build-with-claude/thinki</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost">platform.claude.com/docs/en/build-with-claude/thinki</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview">platform.claude.com/docs/en/agents-and-tools/tool-us</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons">platform.claude.com/docs/en/build-with-claude/handli</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner">platform.claude.com/docs/en/agents-and-tools/tool-us</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming">platform.claude.com/docs/en/agents-and-tools/tool-us</a> · <a href="https://platform.claude.com/docs/en/api/errors">platform.claude.com/docs/en/api/errors</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/token-counting">platform.claude.com/docs/en/build-with-claude/token-</a> · <a href="https://code.claude.com/docs/en/agent-sdk/overview">code.claude.com/docs/en/agent-sdk/overview</a> · <a href="https://developers.openai.com/api/docs/guides/supervised-fine-tuning">developers.openai.com/api/docs/guides/supervised-fin</a> · <a href="https://developers.openai.com/api/docs/pricing">developers.openai.com/api/docs/pricing</a> · <a href="https://platform.claude.com/docs/en/about-claude/pricing">platform.claude.com/docs/en/about-claude/pricing</a> · <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/custom-model-fine-tuning.html">docs.aws.amazon.com/bedrock/latest/userguide/custom-</a> · <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html">docs.aws.amazon.com/bedrock/latest/userguide/model-d</a> · <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/prequisites-model-distillation.html">docs.aws.amazon.com/bedrock/latest/userguide/prequis</a> · <a href="https://arxiv.org/abs/2106.09685">arxiv.org/abs/2106.09685</a> · <a href="https://arxiv.org/abs/2305.14314">arxiv.org/abs/2305.14314</a> · <a href="https://arxiv.org/abs/2305.11206">arxiv.org/abs/2305.11206</a> · <a href="https://arxiv.org/abs/2308.08747">arxiv.org/abs/2308.08747</a> · <a href="https://www.anthropic.com/legal/commercial-terms">www.anthropic.com/legal/commercial-terms</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/vision">platform.claude.com/docs/en/build-with-claude/vision</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/vision-coordinates">platform.claude.com/docs/en/build-with-claude/vision</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/pdf-support">platform.claude.com/docs/en/build-with-claude/pdf-su</a> · <a href="https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/openai-sdk">platform.claude.com/docs/en/cli-sdks-libraries/libra</a> · <a href="https://github.com/openai/whisper">github.com/openai/whisper</a> · <a href="https://developer.apple.com/documentation/avfaudio/avspeechsynthesizer">developer.apple.com/documentation/avfaudio/avspeechs</a> · <a href="https://developers.openai.com/api/docs/guides/speech-to-text">developers.openai.com/api/docs/guides/speech-to-text</a> · <a href="https://developers.openai.com/api/docs/guides/text-to-speech">developers.openai.com/api/docs/guides/text-to-speech</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool">platform.claude.com/docs/en/agents-and-tools/tool-us</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool">platform.claude.com/docs/en/agents-and-tools/tool-us</a> · <a href="https://code.claude.com/docs/en/chrome">code.claude.com/docs/en/chrome</a> · <a href="https://github.com/microsoft/playwright-mcp">github.com/microsoft/playwright-mcp</a> · <a href="https://claude.com/blog/claude-for-chrome">claude.com/blog/claude-for-chrome</a></span></p></header><p>Every load-bearing fact in this handbook traces to a source on this page, and a
+last resort, wrapped in gates, running in a profile with nothing to lose.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch19"><p class="chapter__tab">19</p><header class="chapter__head"><h1>Local and open-weight models</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/quantize/README.md">github.com/ggml-org/llama.cpp/blob/master/tools/quan</a> · <a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/perplexity/README.md">github.com/ggml-org/llama.cpp/blob/master/tools/perp</a> · <a href="https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md">github.com/ggml-org/llama.cpp/blob/master/grammars/R</a> · <a href="https://developer.meta.com/ai/llama4/license/">developer.meta.com/ai/llama4/license/</a> · <a href="https://raw.githubusercontent.com/meta-llama/llama-models/main/models/llama4/LICENSE">raw.githubusercontent.com/meta-llama/llama-models/ma</a> · <a href="https://huggingface.co/Qwen/Qwen3-8B">huggingface.co/Qwen/Qwen3-8B</a> · <a href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506">huggingface.co/mistralai/Mistral-Small-3.2-24B-Instr</a> · <a href="https://huggingface.co/mistralai/Ministral-8B-Instruct-2410">huggingface.co/mistralai/Ministral-8B-Instruct-2410</a> · <a href="https://huggingface.co/mistralai/Mistral-Large-Instruct-2411">huggingface.co/mistralai/Mistral-Large-Instruct-2411</a> · <a href="https://huggingface.co/openai/gpt-oss-20b">huggingface.co/openai/gpt-oss-20b</a> · <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-0528">huggingface.co/deepseek-ai/DeepSeek-R1-0528</a> · <a href="https://docs.vllm.ai/en/latest/">docs.vllm.ai/en/latest/</a> · <a href="https://docs.ollama.com/api/openai-compatibility">docs.ollama.com/api/openai-compatibility</a> · <a href="https://github.com/ml-explore/mlx-lm">github.com/ml-explore/mlx-lm</a> · <a href="https://github.com/ml-explore/mlx-swift">github.com/ml-explore/mlx-swift</a></span></p></header><p>Run a model locally for exactly three reasons — privacy, offline product features,
+or unit economics at volume — and treat everything else as a hobby.</p>
+<p>The hobby is fine. Pulling an 8B model onto your laptop and watching it stream
+tokens with the network cable unplugged teaches you more about how these systems
+work than a month of API calls. But this is a handbook about shipping, so the
+chapter is organised around the shipping question: when does a model you hold beat
+a model you rent?</p>
+<h2 id="the-three-honest-reasons"><span class="rail" aria-hidden="true">19.1</span><span class="h2-text">The three honest reasons</span></h2>
+<p><strong>Privacy and data residency.</strong> Some data cannot leave the machine: medical
+records, legal discovery, a client contract that says so. An open-weight model
+running on hardware you control is the only architecture where "the data never
+leaves" is a physical fact rather than a vendor promise. This is the one reason
+that overrides quality entirely — if the data can't go out, the frontier model is
+not on the menu.</p>
+<p><strong>Offline product features.</strong> If your product must work in airplane mode — field
+apps, on-device assistants, anything offline-first — inference ships inside the
+binary. The model becomes an asset in your bundle, like a font.</p>
+<p><strong>Unit economics at volume.</strong> A per-token API price that is negligible at
+prototype scale becomes a line item at millions of calls per day. If a task is
+narrow enough that a small model handles it — classification, extraction,
+routing — self-hosting converts a variable cost into fixed hardware. Do the
+arithmetic against your actual volume before believing this applies to you; for
+most solo-scale products it doesn't, and the cascade in <em>Cost and latency</em> gets
+you most of the saving with none of the ops.</p>
+<p>The honest other side — asserted here without a benchmark citation, so treat it as
+a claim to test rather than a fact: on open-ended reasoning, agentic coding, and
+long-context work, frontier API models beat anything you can run on a workstation,
+and the gap is largest exactly where Claude Code lives — multi-step tool use.
+Local models win narrow, well-specified tasks. Run your own evals (see <em>Evals</em>) on
+your task before trusting either this sentence or a leaderboard.</p>
+<h2 id="the-runtime-landscape"><span class="rail" aria-hidden="true">19.2</span><span class="h2-text">The runtime landscape</span></h2>
+<p>Three runtimes cover the practical territory.</p>
+<p><strong>llama.cpp</strong> is the substrate. It defines GGUF, the single-file quantized model
+format everything else consumes, and provides the CLI and server binaries. When
+you need control — custom sampling, grammars, exact quantization choice — you are
+here.</p>
+<p><strong>Ollama</strong> is the ergonomic wrapper: model registry, lifecycle management, and a
+local API. <code>ollama pull qwen3:8b &amp;&amp; ollama run qwen3:8b</code> and you're talking to a
+model. It also exposes an OpenAI-compatible API at <code>http://localhost:11434/v1/</code>
+(<code>/v1/chat/completions</code>, <code>/v1/embeddings</code>, tool use, JSON mode), which matters
+more than it sounds — see the cascade section below.</p>
+<p><strong>MLX</strong> is Apple's array framework for Apple silicon, and <code>mlx-lm</code>
+(<code>pip install mlx-lm</code>, then <code>mlx_lm.generate --prompt "..."</code>) runs and fine-tunes
+models against the M-series unified memory pool. On a Mac, MLX is typically the
+faster path. <code>mlx-lm</code> itself is Python and desktop-only, but <code>mlx-swift</code> is the
+bridge to on-device iOS inference — the same weights you evaluate on your desk can
+ship to the phone (see <em>Multimodal</em> for the on-device vision variants).</p>
+<aside class="callout callout--note"><p class="callout__label">Memory math</p><p>A GGUF file at Q4_K_M weighs roughly 0.6 bytes per parameter. Measured on
+Llama 3.1 8B in the llama.cpp quantize docs: 4.58 GiB at Q4_K_M, 7.95 GiB at
+Q8_0, 14.96 GiB at F16 — so a 7B at Q4 is about 4 GB of weights. Add headroom
+for the KV cache, which grows with context length: budget the file size plus
+1–2 GB for real sessions.</p></aside>
+<h2 id="what-4-bit-actually-costs"><span class="rail" aria-hidden="true">19.3</span><span class="h2-text">What 4-bit actually costs</span></h2>
+<p>Quantization folklore runs hot in both directions — "lossless" and "lobotomy" are
+both wrong. The llama.cpp perplexity tables give measured numbers for Llama 3 8B:
+F16 baseline perplexity 6.2332; Q8_0 is 6.2343 — indistinguishable; Q4_K_M with an
+importance matrix is 6.3829, about a 2.4% degradation. That is real but small:
+Q4_K_M is the sensible default, which is why every registry ships it as the
+standard download.</p>
+<aside class="callout callout--caution"><p class="callout__label">Below 4-bit the curve bends</p><p>The same table shows Q2_K with an importance matrix at 8.65 perplexity against
+the 6.23 baseline — a 39% jump, an order of magnitude worse than the F16→Q4
+step. Without an importance matrix Q2_K is worse still, at 9.75 — a 56% jump.
+Sub-4-bit quants trade correctness for memory at a steep rate. If the model
+doesn't fit at Q4, pick a smaller model rather than a smaller quant.</p></aside>
+<p>Perplexity is also an imperfect proxy — the llama.cpp docs themselves note that
+fine-tunes often raise perplexity while improving human-rated output. Treat these
+numbers as relative quality within one base model, and confirm on your own task.</p>
+<h2 id="choose-by-license-not-by-benchmark"><span class="rail" aria-hidden="true">19.4</span><span class="h2-text">Choose by license, not by benchmark</span></h2>
+<p>Benchmarks reshuffle monthly; license terms are what you actually ship under.
+Verified against the license files and model cards as of 2026-08:</p>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>License</th>
+<th>The catch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen3 (e.g. Qwen3-8B)</td>
+<td>Apache-2.0</td>
+<td>none</td>
+</tr>
+<tr>
+<td>Mistral, Small line 3.1+ (e.g. Mistral Small 3.2 24B)</td>
+<td>Apache-2.0</td>
+<td>Large and Ministral lines use the Mistral Research License instead — license is per model line, not per size</td>
+</tr>
+<tr>
+<td>gpt-oss-20b / 120b</td>
+<td>Apache-2.0</td>
+<td>none</td>
+</tr>
+<tr>
+<td>DeepSeek-R1</td>
+<td>MIT</td>
+<td>none</td>
+</tr>
+<tr>
+<td>Llama 4</td>
+<td>Llama Community License</td>
+<td>not open source in the OSI sense</td>
+</tr>
+</tbody>
+</table>
+<p>The Llama license is workable but conditional: over 700M monthly active users you
+must request a separate license from Meta; you must "prominently display 'Built
+with Llama'" in your product; derivative models must include "Llama" at the start
+of their name; and use is bound to Meta's Acceptable Use Policy. None of that
+blocks a typical product — but each condition is a clause your future acquirer's
+lawyers will read.</p>
+<aside class="callout callout--pattern"><p class="callout__label">The license-first shortlist</p><p>Filter by license, then by memory fit, then benchmark the survivors on your own
+eval set. Start from Apache-2.0/MIT families (Qwen, Mistral's Small line,
+gpt-oss, DeepSeek) and you skip attribution requirements, naming constraints,
+and AUP re-review on every model swap. A 2-point benchmark lead does not repay
+a licensing dependency in a product you intend to sell.</p></aside>
+<h2 id="serving-beyond-the-laptop"><span class="rail" aria-hidden="true">19.5</span><span class="h2-text">Serving beyond the laptop</span></h2>
+<p>If local graduates from your machine to a product backend, the runtime changes:
+llama.cpp and Ollama optimise for one user, not for concurrent load. vLLM is the
+standard server — continuous batching of incoming requests plus PagedAttention
+for KV-cache memory management, behind an OpenAI-compatible endpoint (it speaks
+the Anthropic Messages API too). Continuous batching is the headline: requests
+join and leave the batch mid-generation instead of waiting for the slowest
+sequence, which is where the throughput that makes self-hosting economical comes
+from. That's the one paragraph; if you are provisioning GPUs for vLLM you have
+left this handbook's scope and entered ops.</p>
+<h2 id="the-bottom-tier-of-the-cascade"><span class="rail" aria-hidden="true">19.6</span><span class="h2-text">The bottom tier of the cascade</span></h2>
+<p><em>Cost and latency</em> builds a model cascade: cheap models handle the easy majority,
+expensive models get the escalations. A local model is the natural floor —
+per-token cost of zero, no rate limits, no egress. Because Ollama speaks the
+OpenAI wire format, the floor is a config change, not a code change: point the
+base URL at <code>localhost:11434/v1</code> for the classify/route/extract tier and keep
+Claude for everything that thinks. This also gives you an offline dev loop — your
+test suite's LLM calls run free and disconnected, and only staging touches the
+metered API.</p>
+<p>Structured output is where local runtimes are quietly ahead of most APIs:
+llama.cpp supports GBNF, a BNF-style grammar format that constrains decoding
+itself — the sampler can only emit tokens the grammar allows, so conformance is
+guaranteed rather than requested. Pass <code>--grammar-file</code> to <code>llama-cli</code>, or a
+<code>grammar</code> or <code>json_schema</code> field to <code>llama-server</code>; a converter
+(<code>json_schema_to_grammar.py</code>) compiles JSON Schema to GBNF ahead of time. The
+schema shapes only the output, not the prompt. For the parse-or-retry discipline
+this replaces, see <em>Structured output</em>.</p>
+<aside class="callout callout--field"><p class="callout__label">2026-08 — the phone is a deployment target, not a demo</p><p>Working offline-first on iOS from an M-series Mac: the loop that works is
+evaluate with <code>mlx-lm</code> on the desktop, then ship the same small quantized model
+on-device via <code>mlx-swift</code> (mlx-lm itself is desktop-only Python; CoreML is the
+alternative route). The desktop Mac is an honest preview because it shares the
+unified-memory architecture — but it is
+not an honest preview of thermals or RAM ceilings on a phone, so budget a
+device-testing pass for sustained generation, not just first-token demos.</p></aside>
+<p>The summary you can act on: local is a floor and a fence — a cost floor under
+your cascade and a fence around data that can't leave. For everything above the
+floor and outside the fence, <em>Building on the API</em> is still the chapter that
+matters.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch20"><p class="chapter__tab">20</p><header class="chapter__head"><h1>Observability</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://github.com/open-telemetry/semantic-conventions-genai">github.com/open-telemetry/semantic-conventions-genai</a> · <a href="https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/gen-ai-spans.md">raw.githubusercontent.com/open-telemetry/semantic-co</a> · <a href="https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/anthropic.md">raw.githubusercontent.com/open-telemetry/semantic-co</a> · <a href="https://opentelemetry.io/docs/specs/semconv/gen-ai/">opentelemetry.io/docs/specs/semconv/gen-ai/</a> · <a href="https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/gen-ai-metrics.md">raw.githubusercontent.com/open-telemetry/semantic-co</a> · <a href="https://code.claude.com/docs/en/monitoring-usage">code.claude.com/docs/en/monitoring-usage</a> · <a href="https://docs.claude.com/en/docs/build-with-claude/prompt-caching">docs.claude.com/en/docs/build-with-claude/prompt-cac</a> · <a href="https://github.com/langfuse/langfuse/blob/main/LICENSE">github.com/langfuse/langfuse/blob/main/LICENSE</a> · <a href="https://www.langchain.com/pricing">www.langchain.com/pricing</a> · <a href="https://www.braintrust.dev/pricing">www.braintrust.dev/pricing</a></span></p></header><p>You cannot improve an LLM system you cannot replay: a trace complete enough to
+re-run the request is the raw material for everything in the Evals chapter, and
+you either capture it at request time or you never have it.</p>
+<p>That asymmetry is the whole argument for instrumenting on day one. Logs of
+"request succeeded, 3.2s" tell you nothing when a user reports a bad answer next
+Tuesday. The exact prompt that produced it — including the system prompt version,
+the retrieved chunks, the tool results mid-conversation — existed for one request
+and is gone unless you wrote it down.</p>
+<h2 id="what-a-trace-has-to-capture"><span class="rail" aria-hidden="true">20.1</span><span class="h2-text">What a trace has to capture</span></h2>
+<p>The test is replayability: could you re-issue this exact request tomorrow and
+diff the output? That requires, per model call:</p>
+<ul>
+<li><strong>The full input</strong> — system prompt, message history, tool definitions. Not "the
+  user's question"; the assembled thing you actually sent, because that is where
+  retrieval bugs, template bugs, and context-truncation bugs live.</li>
+<li><strong>The full output</strong> — completion text, tool calls with their arguments, and the
+  tool <em>results</em> fed back in, since an agent's next step is conditioned on them.</li>
+<li><strong>Model and parameters</strong> — exact model ID, temperature, max_tokens. "The prompt
+  didn't change but behaviour did" is usually a model or parameter change.</li>
+<li><strong>Token counts, from the API, not an estimate.</strong> Every Messages API response
+  carries <code>usage</code> with <code>input_tokens</code>, <code>output_tokens</code>,
+  <code>cache_creation_input_tokens</code>, and <code>cache_read_input_tokens</code>. Store all four —
+  the cache split is how you verify the economics in Cost and latency are
+  actually happening.</li>
+<li><strong>Cost and latency</strong> — compute cost from the usage block at write time, and
+  record time-to-first-token separately from total duration for streaming.</li>
+<li><strong>Correlation IDs</strong> — a session/conversation ID and an anonymised user ID, so
+  one bad answer expands into the whole trajectory that produced it.</li>
+</ul>
+<p>An agent request is a tree, not a call: one root span for the task, child spans
+per model call, per tool execution, per subagent. Flat logs make multi-step
+failures unreconstructable — you need the parent-child structure to see that step
+4 failed because step 2 retrieved garbage.</p>
+<h2 id="the-standard-almost-nobody-knows-exists"><span class="rail" aria-hidden="true">20.2</span><span class="h2-text">The standard almost nobody knows exists</span></h2>
+<p>OpenTelemetry has semantic conventions for exactly this — spans, metrics, and
+events for GenAI clients, agents, and MCP — now maintained in their own
+repository, <code>open-telemetry/semantic-conventions-genai</code>. Status: <strong>Development</strong>,
+so attribute names can still change, but they are the only vendor-neutral answer
+and the major tools already ingest them.</p>
+<p>The attributes map one-to-one onto the list above: <code>gen_ai.operation.name</code>,
+<code>gen_ai.provider.name</code> (set to <code>"anthropic"</code> per the Anthropic-specific
+conventions), <code>gen_ai.request.model</code>, <code>gen_ai.response.model</code>,
+<code>gen_ai.request.temperature</code>, <code>gen_ai.usage.input_tokens</code>,
+<code>gen_ai.usage.output_tokens</code>, <code>gen_ai.usage.cache_read.input_tokens</code>,
+<code>gen_ai.usage.cache_write.input_tokens</code>, <code>gen_ai.conversation.id</code>. Metrics get
+<code>gen_ai.client.token.usage</code> and <code>gen_ai.client.operation.duration</code>.</p>
+<p>Content is deliberately opt-in: <code>gen_ai.system_instructions</code>,
+<code>gen_ai.input.messages</code>, <code>gen_ai.output.messages</code>, <code>gen_ai.tool.call.arguments</code>,
+and <code>gen_ai.tool.call.result</code> are all marked <code>Opt-In</code>, and
+the spec's default posture is <em>don't record inputs and outputs at all</em>, with a
+third pattern — store content externally, record references on the span — for
+production. That default exists because the spec authors know what you are about
+to learn in the PII section.</p>
+<aside class="callout callout--pattern"><p class="callout__label">Emit the standard, choose the backend later</p><p>Instrument with <code>gen_ai.*</code> attribute names even if you start by writing JSONL
+to disk. Every serious backend speaks OTLP; naming your fields to the
+convention means switching tools is a config change, not a re-instrumentation.</p></aside>
+<p>The tool landscape in one honest paragraph: Langfuse is the self-host option —
+the core is MIT-licensed (<code>ee/</code>, <code>web/src/ee/</code>, and <code>worker/src/ee/</code> are not)
+and runs from Docker. LangSmith and Braintrust are proprietary managed
+platforms; both list self-hosted/on-prem deployment only on their Enterprise
+pricing tier, gated behind a sales call rather than a price. All three do traces, prompt
+management, and eval scoring; none of them matters as much as whether your spans
+carry the data above. For a solo practitioner, self-hosted Langfuse or a plain
+OTLP collector writing to disk is enough, and the standard keeps the exit door
+open.</p>
+<h2 id="claude-code-is-already-instrumented"><span class="rail" aria-hidden="true">20.3</span><span class="h2-text">Claude Code is already instrumented</span></h2>
+<p>You do not have to build any of this for your own agent sessions — Claude Code
+ships an OpenTelemetry exporter behind an environment variable:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">CLAUDE_CODE_ENABLE_TELEMETRY</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_METRICS_EXPORTER</span><span class="o">=</span>otlp
+<span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_LOGS_EXPORTER</span><span class="o">=</span>otlp
+<span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_ENDPOINT</span><span class="o">=</span>http://localhost:4317
+</code></pre></div>
+
+<p>That emits <code>claude_code.token.usage</code> (in tokens), <code>claude_code.cost.usage</code> (in
+USD), <code>claude_code.session.count</code>, and per-tool events. Prompt content is off
+by default (<code>OTEL_LOG_USER_PROMPTS=1</code> to opt in).</p>
+<p>Span-level tracing — one trace per request, linking the prompt to the API
+calls and tool executions it triggered — is a separate beta: set both
+<code>CLAUDE_CODE_ENABLE_TELEMETRY=1</code> and <code>CLAUDE_CODE_ENHANCED_TELEMETRY_BETA=1</code>,
+then point <code>OTEL_TRACES_EXPORTER</code> at a destination. That gets you the trace
+shape, not the content inside it — tool arguments and raw model output
+(<code>tool_input</code>, <code>response.model_output</code>) are outside the stable span schema and
+only appear under a further gate, <code>ENABLE_BETA_TRACING_DETAILED=1</code> plus
+<code>BETA_TRACING_ENDPOINT</code>, and interactive CLI sessions additionally need the
+organization allowlisted for it (the Agent SDK and non-interactive <code>-p</code> runs
+are not gated). If you route work by cost the way the Kaitaku project did,
+this is the measured version of that instinct — actual dollars per session
+type instead of vibes. It composes with the verbatim master-log <code>Stop</code> hook
+from Hooks: OTel for the numbers, the hook for the replayable text.</p>
+<h2 id="sampling-you-probably-shouldnt"><span class="rail" aria-hidden="true">20.4</span><span class="h2-text">Sampling: you probably shouldn't</span></h2>
+<p>Head-based sampling exists for services doing millions of requests. A solo
+product doing 500 requests a day at ~10k tokens each generates on the order of
+20 MB of trace text daily — storage is not the constraint, and every discarded
+trace is a debugging session you can't have and an eval case that never exists.
+Keep 100% while volume is low and value per request is high, which describes
+quote drafting, lien-waiver generation, and every other B2B document workflow
+where one request maps to real money.</p>
+<p>When volume does force sampling, sample the successes, never the failures:
+keep 100% of errors, refusals, and schema-validation failures, and sample the
+happy path. The failures are the traces you were collecting for.</p>
+<h2 id="traces-are-a-copy-of-everything-users-typed"><span class="rail" aria-hidden="true">20.5</span><span class="h2-text">Traces are a copy of everything users typed</span></h2>
+<p>A trace store is a second database containing every name, address, contract
+amount, and pasted credential that ever entered a prompt — without the access
+controls your real database has. Scrubbing and retention are not compliance
+theatre; they are the difference between "we log requests" and "we exfiltrated
+our users' data to ourselves."</p>
+<p>Minimum policy: scrub credential-shaped strings (API keys, <code>Bearer</code> tokens,
+JWTs, anything matching a <code>sk-</code>/<code>pk-</code> prefix) at write time, before storage;
+hash user identifiers instead of storing them raw; set a retention window —
+30 days of raw content is a defensible default for a solo product — and let
+it expire while keeping the derived metrics indefinitely. The trap is composition — see the
+2026-07-05 field note in Field notes — Kaitaku, where two individually sensible
+policies (log full transcripts verbatim; exempt <code>.md</code> files from the secret
+scanner) combined into a path that would have committed any pasted credential to
+plaintext. A trace pipeline is exactly such an exempted copy-machine. Audit it
+the same way.</p>
+<h2 id="the-flywheel-is-the-reason-to-start-today"><span class="rail" aria-hidden="true">20.6</span><span class="h2-text">The flywheel is the reason to start today</span></h2>
+<aside class="callout callout--pattern"><p class="callout__label">The trace→eval flywheel</p><p>Every bad production trace becomes an eval case. User reports a wrong answer →
+pull the trace → the exact input becomes a golden-set entry with the corrected
+output → the regression gate in Evals now covers it forever. Failures stop
+being incidents and become permanent test coverage. This only works if the
+trace was complete enough to replay — which is why you instrument before you
+have users, not after.</p></aside>
+<p>The Evals chapter says golden sets come from failures, not imagination. Traces
+are where the failures are kept. Without them you are writing eval cases from
+memory of what went wrong, which is imagination with extra confidence.</p>
+<h2 id="four-signals-worth-alerting-on"><span class="rail" aria-hidden="true">20.7</span><span class="h2-text">Four signals worth alerting on</span></h2>
+<p>Dashboards you check weekly; alerts for the four that move first:</p>
+<ol>
+<li><strong>Cost per request drift.</strong> Mean cost creeping from $0.04 to $0.11 means a
+   prompt grew, caching broke (watch <code>cache_read_input_tokens</code> fall), or a
+   retry loop appeared. It drifts silently; the invoice arrives monthly.</li>
+<li><strong>Refusal and error rate.</strong> A rising refusal rate after a prompt change is a
+   regression the happy-path tests won't catch.</li>
+<li><strong>Schema-validation failure rate.</strong> If you validate outputs per Structured
+   output, that validator's failure counter is a free, deterministic quality
+   metric — alert on any sustained rise.</li>
+<li><strong>Latency p95, not mean.</strong> Means hide the retry storms and the max_tokens
+   runaways. Track time-to-first-token separately if you stream.</li>
+</ol>
+<aside class="callout callout--caution"><p class="callout__label">Metrics without traces are alarms without evidence</p><p>An alert that cost drifted is only actionable because you can open the ten
+most expensive traces and read them. Instrument traces first, derive the
+metrics from them — not the other way around.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch21"><p class="chapter__tab">21</p><header class="chapter__head"><h1>Source list</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/llms.txt">code.claude.com/docs/llms.txt</a> · <a href="https://code.claude.com/docs/en/how-claude-code-works">code.claude.com/docs/en/how-claude-code-works</a> · <a href="https://code.claude.com/docs/en/permissions">code.claude.com/docs/en/permissions</a> · <a href="https://code.claude.com/docs/en/permission-modes">code.claude.com/docs/en/permission-modes</a> · <a href="https://code.claude.com/docs/en/checkpointing">code.claude.com/docs/en/checkpointing</a> · <a href="https://code.claude.com/docs/en/headless">code.claude.com/docs/en/headless</a> · <a href="https://code.claude.com/docs/en/model-config">code.claude.com/docs/en/model-config</a> · <a href="https://code.claude.com/docs/en/output-styles">code.claude.com/docs/en/output-styles</a> · <a href="https://code.claude.com/docs/en/sub-agents">code.claude.com/docs/en/sub-agents</a> · <a href="https://code.claude.com/docs/en/hooks-guide">code.claude.com/docs/en/hooks-guide</a> · <a href="https://code.claude.com/docs/en/agent-teams">code.claude.com/docs/en/agent-teams</a> · <a href="https://www.anthropic.com/engineering/multi-agent-research-system">www.anthropic.com/engineering/multi-agent-research-s</a> · <a href="https://arxiv.org/abs/2503.13657">arxiv.org/abs/2503.13657</a> · <a href="https://code.claude.com/docs/en/security">code.claude.com/docs/en/security</a> · <a href="https://code.claude.com/docs/en/sandboxing">code.claude.com/docs/en/sandboxing</a> · <a href="https://docs.claude.com/en/api/overview">docs.claude.com/en/api/overview</a> · <a href="https://platform.claude.com/docs/en/models/overview">platform.claude.com/docs/en/models/overview</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">platform.claude.com/docs/en/build-with-claude/prompt</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/batch-processing">platform.claude.com/docs/en/build-with-claude/batch-</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/streaming">platform.claude.com/docs/en/build-with-claude/stream</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs">platform.claude.com/docs/en/build-with-claude/struct</a> · <a href="https://platform.claude.com/docs/en/docs/build-with-claude/develop-tests">platform.claude.com/docs/en/docs/build-with-claude/d</a> · <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">www.anthropic.com/engineering/demystifying-evals-for</a> · <a href="https://www.anthropic.com/news/contextual-retrieval">www.anthropic.com/news/contextual-retrieval</a> · <a href="https://developers.openai.com/api/docs/guides/prompt-caching">developers.openai.com/api/docs/guides/prompt-caching</a> · <a href="https://developers.openai.com/api/docs/guides/batch">developers.openai.com/api/docs/guides/batch</a> · <a href="https://developers.openai.com/api/docs/guides/embeddings">developers.openai.com/api/docs/guides/embeddings</a> · <a href="https://developers.openai.com/api/docs/guides/structured-outputs">developers.openai.com/api/docs/guides/structured-out</a> · <a href="https://developers.openai.com/cookbook/examples/evaluation/use-cases/regression">developers.openai.com/cookbook/examples/evaluation/u</a> · <a href="https://docs.cohere.com/docs/rerank">docs.cohere.com/docs/rerank</a> · <a href="https://docs.voyageai.com/docs/flexible-dimensions-and-quantization">docs.voyageai.com/docs/flexible-dimensions-and-quant</a> · <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">owasp.org/www-project-top-10-for-large-language-mode</a> · <a href="https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices">modelcontextprotocol.io/specification/2025-06-18/bas</a> · <a href="https://arxiv.org/abs/2306.05685">arxiv.org/abs/2306.05685</a> · <a href="https://arxiv.org/abs/2404.13076">arxiv.org/abs/2404.13076</a> · <a href="https://arxiv.org/abs/2212.10496">arxiv.org/abs/2212.10496</a> · <a href="https://arxiv.org/abs/2104.08663">arxiv.org/abs/2104.08663</a> · <a href="https://arxiv.org/abs/2503.18813">arxiv.org/abs/2503.18813</a> · <a href="https://arxiv.org/abs/2408.02442">arxiv.org/abs/2408.02442</a> · <a href="https://dl.acm.org/doi/10.1145/1571941.1572114">dl.acm.org/doi/10.1145/1571941.1572114</a> · <a href="https://hamel.dev/blog/posts/evals/">hamel.dev/blog/posts/evals/</a> · <a href="https://hamel.dev/blog/posts/llm-judge/">hamel.dev/blog/posts/llm-judge/</a> · <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">simonwillison.net/2025/Jun/16/the-lethal-trifecta/</a> · <a href="https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks">invariantlabs.ai/blog/mcp-security-notification-tool</a> · <a href="https://code.claude.com/docs/en/memory">code.claude.com/docs/en/memory</a> · <a href="https://code.claude.com/docs/en/context-window">code.claude.com/docs/en/context-window</a> · <a href="https://code.claude.com/docs/en/costs">code.claude.com/docs/en/costs</a> · <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">www.anthropic.com/engineering/effective-context-engi</a> · <a href="https://modelcontextprotocol.io/docs/learn/architecture">modelcontextprotocol.io/docs/learn/architecture</a> · <a href="https://modelcontextprotocol.io/docs/develop/build-server">modelcontextprotocol.io/docs/develop/build-server</a> · <a href="https://code.claude.com/docs/en/mcp">code.claude.com/docs/en/mcp</a> · <a href="https://www.anthropic.com/engineering/writing-tools-for-agents">www.anthropic.com/engineering/writing-tools-for-agen</a> · <a href="https://www.anthropic.com/engineering/code-execution-with-mcp">www.anthropic.com/engineering/code-execution-with-mc</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices">platform.claude.com/docs/en/build-with-claude/prompt</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview">platform.claude.com/docs/en/build-with-claude/prompt</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/thinking">platform.claude.com/docs/en/build-with-claude/thinki</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost">platform.claude.com/docs/en/build-with-claude/thinki</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview">platform.claude.com/docs/en/agents-and-tools/tool-us</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons">platform.claude.com/docs/en/build-with-claude/handli</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner">platform.claude.com/docs/en/agents-and-tools/tool-us</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming">platform.claude.com/docs/en/agents-and-tools/tool-us</a> · <a href="https://platform.claude.com/docs/en/api/errors">platform.claude.com/docs/en/api/errors</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/token-counting">platform.claude.com/docs/en/build-with-claude/token-</a> · <a href="https://code.claude.com/docs/en/agent-sdk/overview">code.claude.com/docs/en/agent-sdk/overview</a> · <a href="https://developers.openai.com/api/docs/guides/supervised-fine-tuning">developers.openai.com/api/docs/guides/supervised-fin</a> · <a href="https://developers.openai.com/api/docs/pricing">developers.openai.com/api/docs/pricing</a> · <a href="https://platform.claude.com/docs/en/about-claude/pricing">platform.claude.com/docs/en/about-claude/pricing</a> · <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/custom-model-fine-tuning.html">docs.aws.amazon.com/bedrock/latest/userguide/custom-</a> · <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/model-distillation.html">docs.aws.amazon.com/bedrock/latest/userguide/model-d</a> · <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/prequisites-model-distillation.html">docs.aws.amazon.com/bedrock/latest/userguide/prequis</a> · <a href="https://arxiv.org/abs/2106.09685">arxiv.org/abs/2106.09685</a> · <a href="https://arxiv.org/abs/2305.14314">arxiv.org/abs/2305.14314</a> · <a href="https://arxiv.org/abs/2305.11206">arxiv.org/abs/2305.11206</a> · <a href="https://arxiv.org/abs/2308.08747">arxiv.org/abs/2308.08747</a> · <a href="https://www.anthropic.com/legal/commercial-terms">www.anthropic.com/legal/commercial-terms</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/vision">platform.claude.com/docs/en/build-with-claude/vision</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/vision-coordinates">platform.claude.com/docs/en/build-with-claude/vision</a> · <a href="https://platform.claude.com/docs/en/build-with-claude/pdf-support">platform.claude.com/docs/en/build-with-claude/pdf-su</a> · <a href="https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/openai-sdk">platform.claude.com/docs/en/cli-sdks-libraries/libra</a> · <a href="https://github.com/openai/whisper">github.com/openai/whisper</a> · <a href="https://developer.apple.com/documentation/avfaudio/avspeechsynthesizer">developer.apple.com/documentation/avfaudio/avspeechs</a> · <a href="https://developers.openai.com/api/docs/guides/speech-to-text">developers.openai.com/api/docs/guides/speech-to-text</a> · <a href="https://developers.openai.com/api/docs/guides/text-to-speech">developers.openai.com/api/docs/guides/text-to-speech</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool">platform.claude.com/docs/en/agents-and-tools/tool-us</a> · <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool">platform.claude.com/docs/en/agents-and-tools/tool-us</a> · <a href="https://code.claude.com/docs/en/chrome">code.claude.com/docs/en/chrome</a> · <a href="https://github.com/microsoft/playwright-mcp">github.com/microsoft/playwright-mcp</a> · <a href="https://claude.com/blog/claude-for-chrome">claude.com/blog/claude-for-chrome</a> · <a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/quantize/README.md">github.com/ggml-org/llama.cpp/blob/master/tools/quan</a> · <a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/perplexity/README.md">github.com/ggml-org/llama.cpp/blob/master/tools/perp</a> · <a href="https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md">github.com/ggml-org/llama.cpp/blob/master/grammars/R</a> · <a href="https://developer.meta.com/ai/llama4/license/">developer.meta.com/ai/llama4/license/</a> · <a href="https://raw.githubusercontent.com/meta-llama/llama-models/main/models/llama4/LICENSE">raw.githubusercontent.com/meta-llama/llama-models/ma</a> · <a href="https://huggingface.co/Qwen/Qwen3-8B">huggingface.co/Qwen/Qwen3-8B</a> · <a href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506">huggingface.co/mistralai/Mistral-Small-3.2-24B-Instr</a> · <a href="https://huggingface.co/mistralai/Ministral-8B-Instruct-2410">huggingface.co/mistralai/Ministral-8B-Instruct-2410</a> · <a href="https://huggingface.co/mistralai/Mistral-Large-Instruct-2411">huggingface.co/mistralai/Mistral-Large-Instruct-2411</a> · <a href="https://huggingface.co/openai/gpt-oss-20b">huggingface.co/openai/gpt-oss-20b</a> · <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-0528">huggingface.co/deepseek-ai/DeepSeek-R1-0528</a> · <a href="https://docs.vllm.ai/en/latest/">docs.vllm.ai/en/latest/</a> · <a href="https://docs.ollama.com/api/openai-compatibility">docs.ollama.com/api/openai-compatibility</a> · <a href="https://github.com/ml-explore/mlx-lm">github.com/ml-explore/mlx-lm</a> · <a href="https://github.com/ml-explore/mlx-swift">github.com/ml-explore/mlx-swift</a> · <a href="https://github.com/open-telemetry/semantic-conventions-genai">github.com/open-telemetry/semantic-conventions-genai</a> · <a href="https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/gen-ai-spans.md">raw.githubusercontent.com/open-telemetry/semantic-co</a> · <a href="https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/gen-ai-metrics.md">raw.githubusercontent.com/open-telemetry/semantic-co</a> · <a href="https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/anthropic.md">raw.githubusercontent.com/open-telemetry/semantic-co</a> · <a href="https://opentelemetry.io/docs/specs/semconv/gen-ai/">opentelemetry.io/docs/specs/semconv/gen-ai/</a> · <a href="https://code.claude.com/docs/en/monitoring-usage">code.claude.com/docs/en/monitoring-usage</a> · <a href="https://github.com/langfuse/langfuse/blob/main/LICENSE">github.com/langfuse/langfuse/blob/main/LICENSE</a> · <a href="https://www.langchain.com/pricing">www.langchain.com/pricing</a> · <a href="https://www.braintrust.dev/pricing">www.braintrust.dev/pricing</a></span></p></header><p>Every load-bearing fact in this handbook traces to a source on this page, and a
 source gets on this page by clearing one of three bars — not by being interesting.</p>
-<h2 id="the-vetting-standard"><span class="rail" aria-hidden="true">19.1</span><span class="h2-text">The vetting standard</span></h2>
+<h2 id="the-vetting-standard"><span class="rail" aria-hidden="true">21.1</span><span class="h2-text">The vetting standard</span></h2>
 <p>Three tiers. Each tier is authoritative for a different kind of claim, and a source
 cited outside its tier is a bug in the handbook.</p>
 <p><strong>PRIMARY — vendor docs, official specs, standards bodies.</strong> Authoritative for facts
@@ -3089,21 +3838,53 @@ documentation is the one way a chapter fails review outright.</p></aside>
 <p>Anything that clears none of the three bars stays out. This list carries no
 "included with reservations" section — a source you have to caveat is a source you
 drop.</p>
-<h2 id="claude-code"><span class="rail" aria-hidden="true">19.2</span><span class="h2-text">Claude Code</span></h2>
+<h2 id="claude-code"><span class="rail" aria-hidden="true">21.2</span><span class="h2-text">Claude Code</span></h2>
 <ul>
 <li><a href="https://code.claude.com/docs/llms.txt">Claude Code docs index (llms.txt)</a> —
   <strong>primary</strong>. The full docs map; the recovery point when a cited page moves.</li>
-<li><a href="https://code.claude.com/docs/en/sub-agents">Sub-agents</a> — <strong>primary</strong>. Subagent
-  configuration, front matter, and tool/model inheritance.</li>
+<li><a href="https://code.claude.com/docs/en/how-claude-code-works">How Claude Code works</a> —
+  <strong>primary</strong>. The "agentic harness" definition and the gather/act/verify loop.</li>
+<li><a href="https://code.claude.com/docs/en/permissions">Configure permissions</a> —
+  <strong>primary</strong>. Rule syntax, deny/ask/allow precedence, compound-command and
+  wrapper matching, settings file locations.</li>
+<li><a href="https://code.claude.com/docs/en/permission-modes">Choose a permission mode</a> —
+  <strong>primary</strong>. All six modes, plan-mode behavior and approval flow, protected
+  paths, <code>bypassPermissions</code> caveats.</li>
+<li><a href="https://code.claude.com/docs/en/checkpointing">Checkpointing</a> — <strong>primary</strong>.
+  Per-prompt checkpoints, the 100-snapshot limit, 30-day retention, and the
+  Bash/subagent/external-change gaps in coverage.</li>
+<li><a href="https://code.claude.com/docs/en/headless">Run Claude Code programmatically</a> —
+  <strong>primary</strong>. The <code>-p</code> flag, <code>--output-format json</code>, <code>session_id</code> chaining,
+  <code>--bare</code>, trust-dialog behavior, the 10MB stdin cap.</li>
+<li><a href="https://code.claude.com/docs/en/model-config">Model configuration</a> —
+  <strong>primary</strong>. Effort levels per model and their defaults, the <code>ultrathink</code>
+  keyword, front-matter effort overrides.</li>
+<li><a href="https://code.claude.com/docs/en/output-styles">Output styles</a> — <strong>primary</strong>.
+  System-prompt modification, the keep-coding-instructions default, the
+  comparison table against CLAUDE.md.</li>
 <li><a href="https://code.claude.com/docs/en/hooks-guide">Hooks guide</a> — <strong>primary</strong>. Hook
   events, exit-code and JSON communication, hook types, timeouts.</li>
-<li><a href="https://code.claude.com/docs/en/agent-teams">Agent teams</a> — <strong>primary</strong>. Team
-  lifecycle, lead/teammate mechanics, task coordination.</li>
 <li><a href="https://code.claude.com/docs/en/agent-sdk/overview">Agent SDK overview</a> —
   <strong>primary</strong>. What the SDK's agent loop provides over raw API calls: the harness,
   built-in tools, session management.</li>
 </ul>
-<h2 id="project-memory-and-context-engineering"><span class="rail" aria-hidden="true">19.3</span><span class="h2-text">Project memory and context engineering</span></h2>
+<h2 id="agent-teams-and-multi-agent"><span class="rail" aria-hidden="true">21.3</span><span class="h2-text">Agent teams and multi-agent</span></h2>
+<ul>
+<li><a href="https://code.claude.com/docs/en/sub-agents">Sub-agents</a> — <strong>primary</strong>. Subagent
+  front-matter fields and precedence, the isolation boundary, tool sets and
+  tool/model inheritance, concurrency limits.</li>
+<li><a href="https://code.claude.com/docs/en/agent-teams">Agent teams</a> — <strong>primary</strong>. Team
+  lifecycle, lead/teammate mechanics, task coordination, display modes, hooks,
+  settings names, and the documented limitations.</li>
+<li><a href="https://www.anthropic.com/engineering/multi-agent-research-system">How we built our multi-agent research system</a>
+  — <strong>primary</strong>. The token multipliers, the 90.2% improvement figure, the
+  variance analysis, and the delegation guidance.</li>
+<li><a href="https://arxiv.org/abs/2503.13657">Why Do Multi-Agent LLM Systems Fail? (MAST) — Cemri et al.</a>
+  — <strong>paper</strong>. The failure taxonomy built from 1,600+ annotated traces with
+  κ=0.88 inter-annotator agreement; category names and percentages quoted from
+  the v3 full text.</li>
+</ul>
+<h2 id="project-memory-and-context-engineering"><span class="rail" aria-hidden="true">21.4</span><span class="h2-text">Project memory and context engineering</span></h2>
 <ul>
 <li><a href="https://code.claude.com/docs/en/memory">How Claude remembers your project</a> —
   <strong>primary</strong>. The CLAUDE.md hierarchy, imports, rules, and auto memory.</li>
@@ -3115,7 +3896,7 @@ drop.</p>
   — <strong>primary</strong>. Context rot, the attention budget, and the
   compaction/notes/subagents levers.</li>
 </ul>
-<h2 id="mcp-and-the-tool-layer"><span class="rail" aria-hidden="true">19.4</span><span class="h2-text">MCP and the tool layer</span></h2>
+<h2 id="mcp-and-the-tool-layer"><span class="rail" aria-hidden="true">21.5</span><span class="h2-text">MCP and the tool layer</span></h2>
 <ul>
 <li><a href="https://modelcontextprotocol.io/docs/learn/architecture">MCP architecture overview</a>
   — <strong>primary</strong>. The host/client/server model, the primitives, transport
@@ -3133,7 +3914,7 @@ drop.</p>
   — <strong>primary</strong>. The 150,000→2,000-token (98.7%) context-cost measurement for
   loading tools as code instead of definitions.</li>
 </ul>
-<h2 id="prompting"><span class="rail" aria-hidden="true">19.5</span><span class="h2-text">Prompting</span></h2>
+<h2 id="prompting"><span class="rail" aria-hidden="true">21.6</span><span class="h2-text">Prompting</span></h2>
 <ul>
 <li><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices">Prompting best practices</a>
   — <strong>primary</strong>. Anthropic's consolidated prompt-engineering reference; absorbed
@@ -3148,7 +3929,7 @@ drop.</p>
   — <strong>primary</strong>. Effort levels, per-message steering, cost control, and the
   effort-change cache invalidation.</li>
 </ul>
-<h2 id="the-api-and-its-cost-model"><span class="rail" aria-hidden="true">19.6</span><span class="h2-text">The API and its cost model</span></h2>
+<h2 id="the-api-and-its-cost-model"><span class="rail" aria-hidden="true">21.7</span><span class="h2-text">The API and its cost model</span></h2>
 <ul>
 <li><a href="https://docs.claude.com/en/api/overview">API overview</a> — <strong>primary</strong>. The
   Messages endpoint shape; the page to check for current model IDs and limits.</li>
@@ -3157,7 +3938,9 @@ drop.</p>
   footnotes.</li>
 <li><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">Prompt caching</a>
   — <strong>primary</strong>. Cache-write multipliers, TTL semantics, token minimums,
-  breakpoints, the lookback window.</li>
+  breakpoints, the lookback window, and the <code>cache_creation_input_tokens</code> /
+  <code>cache_read_input_tokens</code> usage fields the observability chapter maps to OTel
+  attributes.</li>
 <li><a href="https://platform.claude.com/docs/en/build-with-claude/batch-processing">Batch processing</a>
   — <strong>primary</strong>. The 50% discount, batch limits, cache stacking, expected hit-rate
   range.</li>
@@ -3186,7 +3969,7 @@ drop.</p>
 <li><a href="https://developers.openai.com/api/docs/guides/batch">OpenAI — Batch API</a> —
   <strong>primary</strong>. The contrast case: 50% discount, 24-hour completion window.</li>
 </ul>
-<h2 id="evals"><span class="rail" aria-hidden="true">19.7</span><span class="h2-text">Evals</span></h2>
+<h2 id="evals"><span class="rail" aria-hidden="true">21.8</span><span class="h2-text">Evals</span></h2>
 <ul>
 <li><a href="https://platform.claude.com/docs/en/docs/build-with-claude/develop-tests">Define success criteria and build evaluations</a>
   — <strong>primary</strong>. Grader-choice guidance and the volume-over-quality eval design
@@ -3211,7 +3994,7 @@ drop.</p>
   ~30-example heuristic — distilled from roughly thirty company engagements.
   Labeled as a lead where cited.</li>
 </ul>
-<h2 id="retrieval"><span class="rail" aria-hidden="true">19.8</span><span class="h2-text">Retrieval</span></h2>
+<h2 id="retrieval"><span class="rail" aria-hidden="true">21.9</span><span class="h2-text">Retrieval</span></h2>
 <ul>
 <li><a href="https://www.anthropic.com/news/contextual-retrieval">Introducing Contextual Retrieval</a>
   — <strong>primary</strong>. The contextual-retrieval technique and the vendor's own benchmark
@@ -3232,7 +4015,7 @@ drop.</p>
   — <strong>paper</strong> (NeurIPS 2021). The BM25-robustness result and the reranker findings
   across domains.</li>
 </ul>
-<h2 id="agent-security"><span class="rail" aria-hidden="true">19.9</span><span class="h2-text">Agent security</span></h2>
+<h2 id="agent-security"><span class="rail" aria-hidden="true">21.10</span><span class="h2-text">Agent security</span></h2>
 <ul>
 <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP Top 10 for LLM Applications</a>
   — <strong>primary</strong>. The LLM01 Prompt Injection ranking and the Excessive Agency entry.</li>
@@ -3243,7 +4026,8 @@ drop.</p>
   The isolated web-fetch context window, MCP first-use trust verification and its
   <code>-p</code> exemption, network-command approval behavior.</li>
 <li><a href="https://code.claude.com/docs/en/sandboxing">Claude Code — Sandboxing</a> —
-  <strong>primary</strong>. Seatbelt/bubblewrap enforcement, <code>network.allowedDomains</code>, credential
+  <strong>primary</strong>. OS-level enforcement — macOS Seatbelt, bubblewrap on Linux/WSL2 —
+  plus <code>/sandbox</code>, <code>sandbox.enabled</code>, <code>network.allowedDomains</code>, and credential
   masking with sentinel values and <code>injectHosts</code>.</li>
 <li><a href="https://arxiv.org/abs/2503.18813">Defeating Prompt Injections by Design (CaMeL) — Debenedetti et al.</a>
   — <strong>paper</strong>. The dual-LLM capability mechanism and the 77% vs 84% AgentDojo
@@ -3256,7 +4040,7 @@ drop.</p>
   rug pulls, and cross-server shadowing, with reproduced proofs of concept. Cited
   for those demonstrations, named inline.</li>
 </ul>
-<h2 id="structured-output"><span class="rail" aria-hidden="true">19.10</span><span class="h2-text">Structured output</span></h2>
+<h2 id="structured-output"><span class="rail" aria-hidden="true">21.11</span><span class="h2-text">Structured output</span></h2>
 <ul>
 <li><a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs">Structured outputs — Claude API docs</a>
   — <strong>primary</strong>. <code>output_config.format</code>, strict tool use, schema limitations, the
@@ -3268,7 +4052,7 @@ drop.</p>
   The GSM8K degradation figures under format restriction, the key-ordering finding,
   the parsing-error analysis, the NL-to-Format condition.</li>
 </ul>
-<h2 id="fine-tuning-and-distillation"><span class="rail" aria-hidden="true">19.11</span><span class="h2-text">Fine-tuning and distillation</span></h2>
+<h2 id="fine-tuning-and-distillation"><span class="rail" aria-hidden="true">21.12</span><span class="h2-text">Fine-tuning and distillation</span></h2>
 <ul>
 <li><a href="https://developers.openai.com/api/docs/guides/supervised-fine-tuning">OpenAI — supervised fine-tuning guide</a>
   — <strong>primary</strong>. The JSONL format, the 10-example minimum and 50-example
@@ -3305,7 +4089,7 @@ drop.</p>
 <li><a href="https://www.anthropic.com/legal/commercial-terms">Anthropic Commercial Terms of Service</a>
   — <strong>primary</strong>. The §D.4 use restriction quoted in the distillation-ToS caution.</li>
 </ul>
-<h2 id="multimodal"><span class="rail" aria-hidden="true">19.12</span><span class="h2-text">Multimodal</span></h2>
+<h2 id="multimodal"><span class="rail" aria-hidden="true">21.13</span><span class="h2-text">Multimodal</span></h2>
 <ul>
 <li><a href="https://platform.claude.com/docs/en/build-with-claude/vision">Vision</a> —
   <strong>primary</strong>. The ⌈w/28⌉×⌈h/28⌉ visual-token formula, resolution tiers (2576px /
@@ -3334,7 +4118,7 @@ drop.</p>
   — <strong>primary</strong>. The <code>/v1/audio/speech</code> endpoint, gpt-4o-mini-tts, the
   <code>instructions</code> parameter.</li>
 </ul>
-<h2 id="computer-use-and-browser-agents"><span class="rail" aria-hidden="true">19.13</span><span class="h2-text">Computer use and browser agents</span></h2>
+<h2 id="computer-use-and-browser-agents"><span class="rail" aria-hidden="true">21.14</span><span class="h2-text">Computer use and browser agents</span></h2>
 <ul>
 <li><a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool">Computer use tool</a>
   — <strong>primary</strong>. <code>computer_toolset_20260801</code>, its member tools, the batch-halt
@@ -3355,13 +4139,92 @@ drop.</p>
   blocked-category and confirmation policies. Vendor-reported figures,
   authoritative for the vendor's own product only.</li>
 </ul>
+<h2 id="local-and-open-weight-models"><span class="rail" aria-hidden="true">21.15</span><span class="h2-text">Local and open-weight models</span></h2>
+<ul>
+<li><a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/quantize/README.md">llama.cpp quantize tool README</a>
+  — <strong>primary</strong>. The GGUF file-size table: Llama 3.1 8B at 4.58 GiB (Q4_K_M),
+  7.95 GiB (Q8_0), 14.96 GiB (F16).</li>
+<li><a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/perplexity/README.md">llama.cpp perplexity tool README</a>
+  — <strong>primary</strong>. The measured perplexity tables (Llama 3 8B: F16 6.2332, Q8_0
+  6.2343, Q4_K_M 6.3829, Q2_K 8.6478) and the perplexity-vs-finetune caveat.</li>
+<li><a href="https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md">llama.cpp GBNF grammars README</a>
+  — <strong>primary</strong>. The GBNF spec, <code>--grammar-file</code> / <code>grammar</code> / <code>json_schema</code>
+  usage, <code>json_schema_to_grammar.py</code>, and the schema-not-injected-into-prompt
+  behavior.</li>
+<li><a href="https://developer.meta.com/ai/llama4/license/">Llama 4 Community License Agreement</a>
+  — <strong>primary</strong>. The actual license text: the 700M-MAU threshold, the "Built with
+  Llama" display requirement, the "Llama" name-prefix rule, AUP incorporation.</li>
+<li><a href="https://raw.githubusercontent.com/meta-llama/llama-models/main/models/llama4/LICENSE">Llama 4 LICENSE — meta-llama/llama-models (raw)</a>
+  — <strong>primary</strong>. The license file as distributed with the weights; the
+  cross-check that Meta's developer-site text matches what ships in the repo.</li>
+<li><a href="https://huggingface.co/Qwen/Qwen3-8B">Qwen3-8B model card</a> — <strong>primary</strong>.
+  Official Qwen model card; license field <code>apache-2.0</code>.</li>
+<li><a href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506">Mistral Small 3.2 24B model card</a>
+  — <strong>primary</strong>. Official Mistral model card; license field <code>apache-2.0</code>.</li>
+<li><a href="https://huggingface.co/mistralai/Ministral-8B-Instruct-2410">Ministral-8B-Instruct-2410 model card</a>
+  — <strong>primary</strong>. The Mistral Research License counterexample: same vendor,
+  different model line, non-commercial license — licensing is per model line, not
+  per vendor.</li>
+<li><a href="https://huggingface.co/mistralai/Mistral-Large-Instruct-2411">Mistral Large Instruct 2411 model card</a>
+  — <strong>primary</strong>. The Large line's Mistral Research License; second data point for
+  the per-model-line licensing claim.</li>
+<li><a href="https://huggingface.co/openai/gpt-oss-20b">gpt-oss-20b model card</a> —
+  <strong>primary</strong>. Official OpenAI model card: Apache-2.0, 21B parameters with 3.6B
+  active, runs within 16GB memory.</li>
+<li><a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-0528">DeepSeek-R1-0528 model card</a>
+  — <strong>primary</strong>. Official DeepSeek model card: MIT license, explicit permission
+  for commercial use and distillation.</li>
+<li><a href="https://docs.vllm.ai/en/latest/">vLLM documentation</a> — <strong>primary</strong>. Continuous
+  batching, PagedAttention, and the OpenAI-compatible server plus Anthropic
+  Messages API support.</li>
+<li><a href="https://docs.ollama.com/api/openai-compatibility">Ollama OpenAI compatibility</a>
+  — <strong>primary</strong>. The <code>localhost:11434/v1</code> base URL, supported endpoints, JSON
+  mode, tool use.</li>
+<li><a href="https://github.com/ml-explore/mlx-lm">mlx-lm — ml-explore/mlx-lm</a> —
+  <strong>primary</strong>. Apple's own repo: the install command, the <code>mlx_lm.generate</code> CLI,
+  4-bit quantization on Apple silicon.</li>
+<li><a href="https://github.com/ml-explore/mlx-swift">mlx-swift — ml-explore/mlx-swift</a> —
+  <strong>primary</strong>. Apple's Swift MLX bindings: the bridge from desktop <code>mlx-lm</code>
+  evaluation to on-device iOS inference with the same weights.</li>
+</ul>
+<h2 id="observability"><span class="rail" aria-hidden="true">21.16</span><span class="h2-text">Observability</span></h2>
+<ul>
+<li><a href="https://github.com/open-telemetry/semantic-conventions-genai">OpenTelemetry GenAI semantic conventions repository</a>
+  — <strong>primary</strong>. The authoritative spec repo for GenAI spans, metrics, and
+  events; the opentelemetry.io GenAI pages now redirect here.</li>
+<li><a href="https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/gen-ai-spans.md">GenAI model span conventions (raw spec)</a>
+  — <strong>primary</strong>. The <code>gen_ai.*</code> span attributes, their Development-status
+  stability badges, and the Opt-In classification of content capture.</li>
+<li><a href="https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/gen-ai-metrics.md">GenAI metric conventions (raw spec)</a>
+  — <strong>primary</strong>. The <code>gen_ai.client.token.usage</code> and
+  <code>gen_ai.client.operation.duration</code> metric definitions.</li>
+<li><a href="https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/anthropic.md">Anthropic-specific GenAI conventions (raw spec)</a>
+  — <strong>primary</strong>. The official spec extension for Anthropic clients:
+  <code>gen_ai.provider.name = "anthropic"</code>.</li>
+<li><a href="https://opentelemetry.io/docs/specs/semconv/gen-ai/">opentelemetry.io GenAI semconv page</a>
+  — <strong>primary</strong>. Now a redirect stub; cited as confirmation that the conventions
+  relocated to the dedicated repo.</li>
+<li><a href="https://code.claude.com/docs/en/monitoring-usage">Claude Code monitoring and telemetry</a>
+  — <strong>primary</strong>. <code>CLAUDE_CODE_ENABLE_TELEMETRY</code>, the OTel exporter env vars,
+  metric names, defaults, beta flags. Client-rendered page — verified by curling
+  the raw HTML.</li>
+<li><a href="https://github.com/langfuse/langfuse/blob/main/LICENSE">Langfuse LICENSE</a> —
+  <strong>primary</strong>. The license file itself, fetched raw: MIT (Expat) core with the
+  <code>ee/</code> directories excepted — the basis of the self-host claim.</li>
+<li><a href="https://www.langchain.com/pricing">LangSmith pricing</a> — <strong>primary</strong>.
+  Authoritative for the vendor's own pricing only: self-hosted deployment listed
+  solely on the Enterprise tier.</li>
+<li><a href="https://www.braintrust.dev/pricing">Braintrust pricing</a> — <strong>primary</strong>.
+  Authoritative for the vendor's own pricing only: self-hosted/on-prem gated to
+  the Enterprise tier.</li>
+</ul>
 <aside class="callout callout--note"><p class="callout__label">Sources rot — the date is part of the citation</p><p>Every entry above was vetted on 2026-08-26, and that date is the strongest claim
 this page makes. Primary docs change without notice; papers get superseded;
 practitioner posts quietly get edited. When you cite an entry from here in a
 chapter, the chapter's <code>verified</code> date asserts you re-checked the source then —
 not that this list once did. Re-verify the tier-appropriate way: primary sources
 by re-fetching the page, papers by checking for replications, leads by tracing the
-claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch20"><p class="chapter__tab">20</p><header class="chapter__head"><h1>Appendix</h1><p class="chapter__meta"><span class="tag tag--stub">stub</span><span class="verified">verified 2026-08-26</span></p></header><h2 id="hook-events-quick-reference"><span class="rail" aria-hidden="true">20.1</span><span class="h2-text">Hook events, quick reference</span></h2>
+claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch22"><p class="chapter__tab">22</p><header class="chapter__head"><h1>Appendix</h1><p class="chapter__meta"><span class="tag tag--stub">stub</span><span class="verified">verified 2026-08-26</span></p></header><h2 id="hook-events-quick-reference"><span class="rail" aria-hidden="true">22.1</span><span class="h2-text">Hook events, quick reference</span></h2>
 <p><code>SessionStart</code> · <code>Setup</code> · <code>UserPromptSubmit</code> · <code>UserPromptExpansion</code> · <code>PreToolUse</code>
 · <code>PermissionRequest</code> · <code>PermissionDenied</code> · <code>PostToolUse</code> · <code>PostToolUseFailure</code> ·
 <code>PostToolBatch</code> · <code>Notification</code> · <code>MessageDisplay</code> · <code>SubagentStart</code> ·
@@ -3369,7 +4232,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
 <code>TeammateIdle</code> · <code>InstructionsLoaded</code> · <code>ConfigChange</code> · <code>CwdChanged</code> ·
 <code>DirectoryAdded</code> · <code>FileChanged</code> · <code>WorktreeCreate</code> · <code>WorktreeRemove</code> ·
 <code>PreCompact</code> · <code>PostCompact</code> · <code>Elicitation</code> · <code>ElicitationResult</code> · <code>SessionEnd</code></p>
-<h2 id="exit-codes"><span class="rail" aria-hidden="true">20.2</span><span class="h2-text">Exit codes</span></h2>
+<h2 id="exit-codes"><span class="rail" aria-hidden="true">22.2</span><span class="h2-text">Exit codes</span></h2>
 <table>
 <thead>
 <tr>
@@ -3392,17 +4255,17 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
 </tr>
 </tbody>
 </table>
-<h2 id="timeouts"><span class="rail" aria-hidden="true">20.3</span><span class="h2-text">Timeouts</span></h2>
+<h2 id="timeouts"><span class="rail" aria-hidden="true">22.3</span><span class="h2-text">Timeouts</span></h2>
 <p><code>command</code> / <code>http</code> / <code>mcp_tool</code> 10 min · <code>prompt</code> 30 s · <code>agent</code> 60 s ·
 <code>UserPromptSubmit</code> 30 s · <code>MessageDisplay</code> 10 s · <code>SessionEnd</code> 1.5 s shared budget</p>
-<h2 id="primary-sources"><span class="rail" aria-hidden="true">20.4</span><span class="h2-text">Primary sources</span></h2>
+<h2 id="primary-sources"><span class="rail" aria-hidden="true">22.4</span><span class="h2-text">Primary sources</span></h2>
 <ul>
 <li>https://code.claude.com/docs/llms.txt — full docs index</li>
 <li>https://code.claude.com/docs/en/hooks-guide</li>
 <li>https://code.claude.com/docs/en/agent-teams</li>
 <li>https://docs.claude.com/en/api/overview</li>
 </ul>
-<h2 id="revision-log"><span class="rail" aria-hidden="true">20.5</span><span class="h2-text">Revision log</span></h2>
+<h2 id="revision-log"><span class="rail" aria-hidden="true">22.5</span><span class="h2-text">Revision log</span></h2>
 <table>
 <thead>
 <tr>

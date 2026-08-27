@@ -23,7 +23,9 @@
     "18-fine-tuning.md",
     "19-multimodal.md",
     "20-computer-use.md",
-    "21-sources.md",
-    "22-appendix.md"
+    "21-local-models.md",
+    "22-observability.md",
+    "23-sources.md",
+    "24-appendix.md"
   ]
 }

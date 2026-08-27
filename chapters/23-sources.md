@@ -4,9 +4,18 @@ status: draft
 verified: 2026-08-26
 sources:
   - https://code.claude.com/docs/llms.txt
+  - https://code.claude.com/docs/en/how-claude-code-works
+  - https://code.claude.com/docs/en/permissions
+  - https://code.claude.com/docs/en/permission-modes
+  - https://code.claude.com/docs/en/checkpointing
+  - https://code.claude.com/docs/en/headless
+  - https://code.claude.com/docs/en/model-config
+  - https://code.claude.com/docs/en/output-styles
   - https://code.claude.com/docs/en/sub-agents
   - https://code.claude.com/docs/en/hooks-guide
   - https://code.claude.com/docs/en/agent-teams
+  - https://www.anthropic.com/engineering/multi-agent-research-system
+  - https://arxiv.org/abs/2503.13657
   - https://code.claude.com/docs/en/security
   - https://code.claude.com/docs/en/sandboxing
   - https://docs.claude.com/en/api/overview
@@ -82,6 +91,30 @@ sources:
   - https://code.claude.com/docs/en/chrome
   - https://github.com/microsoft/playwright-mcp
   - https://claude.com/blog/claude-for-chrome
+  - https://github.com/ggml-org/llama.cpp/blob/master/tools/quantize/README.md
+  - https://github.com/ggml-org/llama.cpp/blob/master/tools/perplexity/README.md
+  - https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md
+  - https://developer.meta.com/ai/llama4/license/
+  - https://raw.githubusercontent.com/meta-llama/llama-models/main/models/llama4/LICENSE
+  - https://huggingface.co/Qwen/Qwen3-8B
+  - https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506
+  - https://huggingface.co/mistralai/Ministral-8B-Instruct-2410
+  - https://huggingface.co/mistralai/Mistral-Large-Instruct-2411
+  - https://huggingface.co/openai/gpt-oss-20b
+  - https://huggingface.co/deepseek-ai/DeepSeek-R1-0528
+  - https://docs.vllm.ai/en/latest/
+  - https://docs.ollama.com/api/openai-compatibility
+  - https://github.com/ml-explore/mlx-lm
+  - https://github.com/ml-explore/mlx-swift
+  - https://github.com/open-telemetry/semantic-conventions-genai
+  - https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/gen-ai-spans.md
+  - https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/gen-ai-metrics.md
+  - https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/anthropic.md
+  - https://opentelemetry.io/docs/specs/semconv/gen-ai/
+  - https://code.claude.com/docs/en/monitoring-usage
+  - https://github.com/langfuse/langfuse/blob/main/LICENSE
+  - https://www.langchain.com/pricing
+  - https://www.braintrust.dev/pricing
 ---
 
 Every load-bearing fact in this handbook traces to a source on this page, and a
@@ -125,15 +158,47 @@ drop.
 
 - [Claude Code docs index (llms.txt)](https://code.claude.com/docs/llms.txt) —
   **primary**. The full docs map; the recovery point when a cited page moves.
-- [Sub-agents](https://code.claude.com/docs/en/sub-agents) — **primary**. Subagent
-  configuration, front matter, and tool/model inheritance.
+- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works) —
+  **primary**. The "agentic harness" definition and the gather/act/verify loop.
+- [Configure permissions](https://code.claude.com/docs/en/permissions) —
+  **primary**. Rule syntax, deny/ask/allow precedence, compound-command and
+  wrapper matching, settings file locations.
+- [Choose a permission mode](https://code.claude.com/docs/en/permission-modes) —
+  **primary**. All six modes, plan-mode behavior and approval flow, protected
+  paths, `bypassPermissions` caveats.
+- [Checkpointing](https://code.claude.com/docs/en/checkpointing) — **primary**.
+  Per-prompt checkpoints, the 100-snapshot limit, 30-day retention, and the
+  Bash/subagent/external-change gaps in coverage.
+- [Run Claude Code programmatically](https://code.claude.com/docs/en/headless) —
+  **primary**. The `-p` flag, `--output-format json`, `session_id` chaining,
+  `--bare`, trust-dialog behavior, the 10MB stdin cap.
+- [Model configuration](https://code.claude.com/docs/en/model-config) —
+  **primary**. Effort levels per model and their defaults, the `ultrathink`
+  keyword, front-matter effort overrides.
+- [Output styles](https://code.claude.com/docs/en/output-styles) — **primary**.
+  System-prompt modification, the keep-coding-instructions default, the
+  comparison table against CLAUDE.md.
 - [Hooks guide](https://code.claude.com/docs/en/hooks-guide) — **primary**. Hook
   events, exit-code and JSON communication, hook types, timeouts.
-- [Agent teams](https://code.claude.com/docs/en/agent-teams) — **primary**. Team
-  lifecycle, lead/teammate mechanics, task coordination.
 - [Agent SDK overview](https://code.claude.com/docs/en/agent-sdk/overview) —
   **primary**. What the SDK's agent loop provides over raw API calls: the harness,
   built-in tools, session management.
+
+## Agent teams and multi-agent
+
+- [Sub-agents](https://code.claude.com/docs/en/sub-agents) — **primary**. Subagent
+  front-matter fields and precedence, the isolation boundary, tool sets and
+  tool/model inheritance, concurrency limits.
+- [Agent teams](https://code.claude.com/docs/en/agent-teams) — **primary**. Team
+  lifecycle, lead/teammate mechanics, task coordination, display modes, hooks,
+  settings names, and the documented limitations.
+- [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)
+  — **primary**. The token multipliers, the 90.2% improvement figure, the
+  variance analysis, and the delegation guidance.
+- [Why Do Multi-Agent LLM Systems Fail? (MAST) — Cemri et al.](https://arxiv.org/abs/2503.13657)
+  — **paper**. The failure taxonomy built from 1,600+ annotated traces with
+  κ=0.88 inter-annotator agreement; category names and percentages quoted from
+  the v3 full text.
 
 ## Project memory and context engineering
 
@@ -189,7 +254,9 @@ drop.
   footnotes.
 - [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)
   — **primary**. Cache-write multipliers, TTL semantics, token minimums,
-  breakpoints, the lookback window.
+  breakpoints, the lookback window, and the `cache_creation_input_tokens` /
+  `cache_read_input_tokens` usage fields the observability chapter maps to OTel
+  attributes.
 - [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing)
   — **primary**. The 50% discount, batch limits, cache stacking, expected hit-rate
   range.
@@ -275,7 +342,8 @@ drop.
   The isolated web-fetch context window, MCP first-use trust verification and its
   `-p` exemption, network-command approval behavior.
 - [Claude Code — Sandboxing](https://code.claude.com/docs/en/sandboxing) —
-  **primary**. Seatbelt/bubblewrap enforcement, `network.allowedDomains`, credential
+  **primary**. OS-level enforcement — macOS Seatbelt, bubblewrap on Linux/WSL2 —
+  plus `/sandbox`, `sandbox.enabled`, `network.allowedDomains`, and credential
   masking with sentinel values and `injectHosts`.
 - [Defeating Prompt Injections by Design (CaMeL) — Debenedetti et al.](https://arxiv.org/abs/2503.18813)
   — **paper**. The dual-LLM capability mechanism and the 77% vs 84% AgentDojo
@@ -386,6 +454,85 @@ drop.
   publisher of the 23.6%/11.2%/35.7%→0% attack-success numbers and the
   blocked-category and confirmation policies. Vendor-reported figures,
   authoritative for the vendor's own product only.
+
+## Local and open-weight models
+
+- [llama.cpp quantize tool README](https://github.com/ggml-org/llama.cpp/blob/master/tools/quantize/README.md)
+  — **primary**. The GGUF file-size table: Llama 3.1 8B at 4.58 GiB (Q4_K_M),
+  7.95 GiB (Q8_0), 14.96 GiB (F16).
+- [llama.cpp perplexity tool README](https://github.com/ggml-org/llama.cpp/blob/master/tools/perplexity/README.md)
+  — **primary**. The measured perplexity tables (Llama 3 8B: F16 6.2332, Q8_0
+  6.2343, Q4_K_M 6.3829, Q2_K 8.6478) and the perplexity-vs-finetune caveat.
+- [llama.cpp GBNF grammars README](https://github.com/ggml-org/llama.cpp/blob/master/grammars/README.md)
+  — **primary**. The GBNF spec, `--grammar-file` / `grammar` / `json_schema`
+  usage, `json_schema_to_grammar.py`, and the schema-not-injected-into-prompt
+  behavior.
+- [Llama 4 Community License Agreement](https://developer.meta.com/ai/llama4/license/)
+  — **primary**. The actual license text: the 700M-MAU threshold, the "Built with
+  Llama" display requirement, the "Llama" name-prefix rule, AUP incorporation.
+- [Llama 4 LICENSE — meta-llama/llama-models (raw)](https://raw.githubusercontent.com/meta-llama/llama-models/main/models/llama4/LICENSE)
+  — **primary**. The license file as distributed with the weights; the
+  cross-check that Meta's developer-site text matches what ships in the repo.
+- [Qwen3-8B model card](https://huggingface.co/Qwen/Qwen3-8B) — **primary**.
+  Official Qwen model card; license field `apache-2.0`.
+- [Mistral Small 3.2 24B model card](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506)
+  — **primary**. Official Mistral model card; license field `apache-2.0`.
+- [Ministral-8B-Instruct-2410 model card](https://huggingface.co/mistralai/Ministral-8B-Instruct-2410)
+  — **primary**. The Mistral Research License counterexample: same vendor,
+  different model line, non-commercial license — licensing is per model line, not
+  per vendor.
+- [Mistral Large Instruct 2411 model card](https://huggingface.co/mistralai/Mistral-Large-Instruct-2411)
+  — **primary**. The Large line's Mistral Research License; second data point for
+  the per-model-line licensing claim.
+- [gpt-oss-20b model card](https://huggingface.co/openai/gpt-oss-20b) —
+  **primary**. Official OpenAI model card: Apache-2.0, 21B parameters with 3.6B
+  active, runs within 16GB memory.
+- [DeepSeek-R1-0528 model card](https://huggingface.co/deepseek-ai/DeepSeek-R1-0528)
+  — **primary**. Official DeepSeek model card: MIT license, explicit permission
+  for commercial use and distillation.
+- [vLLM documentation](https://docs.vllm.ai/en/latest/) — **primary**. Continuous
+  batching, PagedAttention, and the OpenAI-compatible server plus Anthropic
+  Messages API support.
+- [Ollama OpenAI compatibility](https://docs.ollama.com/api/openai-compatibility)
+  — **primary**. The `localhost:11434/v1` base URL, supported endpoints, JSON
+  mode, tool use.
+- [mlx-lm — ml-explore/mlx-lm](https://github.com/ml-explore/mlx-lm) —
+  **primary**. Apple's own repo: the install command, the `mlx_lm.generate` CLI,
+  4-bit quantization on Apple silicon.
+- [mlx-swift — ml-explore/mlx-swift](https://github.com/ml-explore/mlx-swift) —
+  **primary**. Apple's Swift MLX bindings: the bridge from desktop `mlx-lm`
+  evaluation to on-device iOS inference with the same weights.
+
+## Observability
+
+- [OpenTelemetry GenAI semantic conventions repository](https://github.com/open-telemetry/semantic-conventions-genai)
+  — **primary**. The authoritative spec repo for GenAI spans, metrics, and
+  events; the opentelemetry.io GenAI pages now redirect here.
+- [GenAI model span conventions (raw spec)](https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/gen-ai-spans.md)
+  — **primary**. The `gen_ai.*` span attributes, their Development-status
+  stability badges, and the Opt-In classification of content capture.
+- [GenAI metric conventions (raw spec)](https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/gen-ai-metrics.md)
+  — **primary**. The `gen_ai.client.token.usage` and
+  `gen_ai.client.operation.duration` metric definitions.
+- [Anthropic-specific GenAI conventions (raw spec)](https://raw.githubusercontent.com/open-telemetry/semantic-conventions-genai/main/docs/gen-ai/anthropic.md)
+  — **primary**. The official spec extension for Anthropic clients:
+  `gen_ai.provider.name = "anthropic"`.
+- [opentelemetry.io GenAI semconv page](https://opentelemetry.io/docs/specs/semconv/gen-ai/)
+  — **primary**. Now a redirect stub; cited as confirmation that the conventions
+  relocated to the dedicated repo.
+- [Claude Code monitoring and telemetry](https://code.claude.com/docs/en/monitoring-usage)
+  — **primary**. `CLAUDE_CODE_ENABLE_TELEMETRY`, the OTel exporter env vars,
+  metric names, defaults, beta flags. Client-rendered page — verified by curling
+  the raw HTML.
+- [Langfuse LICENSE](https://github.com/langfuse/langfuse/blob/main/LICENSE) —
+  **primary**. The license file itself, fetched raw: MIT (Expat) core with the
+  `ee/` directories excepted — the basis of the self-host claim.
+- [LangSmith pricing](https://www.langchain.com/pricing) — **primary**.
+  Authoritative for the vendor's own pricing only: self-hosted deployment listed
+  solely on the Enterprise tier.
+- [Braintrust pricing](https://www.braintrust.dev/pricing) — **primary**.
+  Authoritative for the vendor's own pricing only: self-hosted/on-prem gated to
+  the Enterprise tier.
 
 > [!NOTE] Sources rot — the date is part of the citation
 > Every entry above was vetted on 2026-08-26, and that date is the strongest claim
