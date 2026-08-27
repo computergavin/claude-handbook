@@ -1,4 +1,19 @@
 {
+  "permissions": {
+    "deny": [
+      "Edit(.claude/hooks/**)",
+      "Write(.claude/hooks/**)",
+      "Edit(build/**)",
+      "Write(build/**)"
+    ],
+    "allow": [
+      "WebFetch(domain:code.claude.com)",
+      "WebFetch(domain:docs.claude.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:www.anthropic.com)",
+      "Bash(python build.py)"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {
@@ -6,8 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Edit(chapters/*.md)",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && python build.py >/dev/null 2>&1 || true"
+            "command": "f=$(jq -r '.tool_input.file_path // \"\"'); case \"$f\" in */chapters/*.md) cd \"$CLAUDE_PROJECT_DIR\" && python3 build.py >/dev/null 2>&1 || true ;; esac"
           }
         ]
       }

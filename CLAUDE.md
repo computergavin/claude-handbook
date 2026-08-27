@@ -13,6 +13,13 @@ python build.py --watch    # rebuild on save
 Never hand-edit `build/handbook.html`. It is generated. Edit `chapters/*.md`,
 `assets/book.css`, or `assets/book.js` and rebuild.
 
+## Session policy
+
+Permissions and hooks live in `.claude/settings.json`. The sandbox stays off
+here on purpose: solo prose repo, no untrusted code runs, and the permission
+gate plus hooks cover the blast radius. Revisit if this repo ever executes
+fetched or third-party code.
+
 ## House rules for the prose
 
 - **Assertions, not hedges.** "Hooks are deterministic" beats "hooks can be a good
