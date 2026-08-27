@@ -145,6 +145,7 @@ def build() -> Path:
     chapters_html: list[str] = []
     toc_html: list[str] = []
     stale: list[str] = []
+    last_updated: date | None = None
 
     for idx, filename in enumerate(book["chapters"]):
         path = CHAPTERS / filename
@@ -168,9 +169,12 @@ def build() -> Path:
 
         if verified:
             try:
-                age = (date.today() - date.fromisoformat(verified)).days
+                vdate = date.fromisoformat(verified)
+                age = (date.today() - vdate).days
                 if age > 90:
                     stale.append(f"{filename} ({age}d)")
+                if last_updated is None or vdate > last_updated:
+                    last_updated = vdate
             except ValueError:
                 pass
 
@@ -239,6 +243,7 @@ def build() -> Path:
   <dl class="cover__plate">
     <div><dt>Compiled by</dt><dd>{html.escape(book.get("author", ""))}</dd></div>
     <div><dt>Edition</dt><dd>{html.escape(book.get("edition", ""))}</dd></div>
+    <div><dt>Last updated</dt><dd>{last_updated.isoformat() if last_updated else "&mdash;"}</dd></div>
     <div><dt>Built</dt><dd>{date.today().isoformat()}</dd></div>
     <div><dt>Chapters</dt><dd>{len(chapters_html)}</dd></div>
   </dl>
