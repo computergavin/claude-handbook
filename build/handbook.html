@@ -4720,11 +4720,17 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     return null;
   }
 
+  /* Everything on the page is a target except the game's own chrome and the
+     controls. Limiting this to the chapters meant the crosshair unlocked while
+     you were still looking at the cover, where nothing could be hit at all —
+     which is indistinguishable from the thing being broken. */
+  var SAFE = '.hud, .playtoggle, .themetoggle, .topbar, .results, .shot';
+
   function targetable(node) {
     if (!node || node.nodeType !== 3) return false;
     var el = node.parentNode;
-    if (!el || el.classList && el.classList.contains('shot')) return false;
-    return !!(main.contains(node) || (document.querySelector('.toc') || main).contains(node));
+    if (!el || !el.closest) return false;
+    return !el.closest(SAFE);
   }
 
   function wordAt(x, y) {
