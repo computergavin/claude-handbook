@@ -4742,8 +4742,40 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     return !el.closest(SAFE);
   }
 
-  function wordAt(x, y) {
-    var range = caretAt(x, y);
+  /* caretRangeFromPoint answers with the caret position NEAREST the point,
+     not one under it, so a shot into empty space comes back holding whatever
+     text is closest. On the cover that is the display-size title, which is
+     why CLAUDE could be hit from most of the card. A word counts only if the
+     shot landed on the word itself. */
+  var PAD = 3;                      // css px of forgiveness, under one pixel block
+
+  function inkBand(el, rect) {
+    var fs = el && el.nodeType === 1 ? parseFloat(getComputedStyle(el).fontSize) : 0;
+    if (!fs || fs >= rect.height) return [rect.top, rect.bottom];
+    /* at prose line-height the line box is much taller than the letters, and
+       the leading above and below it is not part of the target. Trim to the em
+       box and no further: shaving the descender slot as well was clipping the
+       tail off a word like "working", and cutting real ink to save two pixels
+       of slop is the wrong trade in a shooter. */
+    var lead = (rect.height - fs) / 2;
+    return [rect.top + lead, rect.bottom - lead];
+  }
+
+  function onRange(range, x, y) {
+    var rects = range.getClientRects();
+    if (!rects || !rects.length) return false;
+    var el = range.startContainer.parentNode;
+    for (var i = 0; i < rects.length; i++) {
+      var r = rects[i];
+      if (r.width <= 0 || r.height <= 0) continue;
+      if (x < r.left - PAD || x > r.right + PAD) continue;
+      var band = inkBand(el, r);          // a wrapped word gives one rect per line
+      if (y >= band[0] - PAD && y <= band[1] + PAD) return true;
+    }
+    return false;
+  }
+
+  function wordFrom(range, x, y) {
     if (!range || !targetable(range.startContainer)) return null;
     var text = range.startContainer.nodeValue, i = range.startOffset;
     if (!text || !text.trim()) return null;
@@ -4754,7 +4786,28 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     var word = document.createRange();
     word.setStart(range.startContainer, a);
     word.setEnd(range.startContainer, b);
-    return word;
+    return onRange(word, x, y) ? word : null;
+  }
+
+  function lineStep(range) {
+    var el = range && range.startContainer && range.startContainer.parentNode;
+    if (!el || el.nodeType !== 1) return 0;
+    var cs = getComputedStyle(el);
+    return parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2 || 0;
+  }
+
+  function wordAt(x, y) {
+    var range = caretAt(x, y);
+    var word = wordFrom(range, x, y);
+    if (word) return word;
+    /* A display line-height under 1 makes the line boxes overlap, so the caret
+       at this point can belong to the line above while the letters drawn under
+       the shot belong to the line below — the top of the cover title. Re-probe
+       half a line either way and keep whichever word actually covers the shot.
+       The test is still against the original point, so nothing gets wider. */
+    var d = lineStep(range) * 0.5;
+    if (!d) return null;
+    return wordFrom(caretAt(x, y + d), x, y) || wordFrom(caretAt(x, y - d), x, y);
   }
 
   function knock(range, fromX, fromY) {
@@ -5063,7 +5116,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
 
   /* exposed so the state can be driven in a test without synthesising input */
   window.__targets = {
-    start: start, stop: stop, fire: fire, unlock: unlock,
+    start: start, stop: stop, fire: fire, unlock: unlock, wordAt: wordAt,
     score: function () { return { hits: hits, shots: shots, live: wrapped.length, rocks: rocks.length, time: timeLeft, best: best }; }
   };
 })();
