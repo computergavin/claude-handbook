@@ -133,6 +133,15 @@ body {
 
 /* --- the sheet: every major block sits on one -------------------------- */
 
+/* Layout containment keeps a reflow inside one sheet instead of the whole
+   book. The overlay minigame wraps a hit word in display: inline-block,
+   which invalidates layout for its line — without containment, the browser
+   has to consider whether that changes anything below it, all the way to
+   the last of 21 chapters. Layout containment stops that walk at the sheet's
+   own border box. It is deliberately not `paint`: the die-cut tab overlaps
+   the top edge by 1px on purpose, and paint containment clips that overlap
+   (box-shadow itself is unaffected — only a box's own overflowing
+   descendants get clipped — but the tab is exactly such a descendant). */
 .sheet {
   position: relative;
   max-width: calc(var(--measure) + var(--rail) + var(--pad) * 2);
@@ -142,6 +151,7 @@ body {
   background: var(--sheet);
   border: 1px solid var(--orange-line);
   box-shadow: 7px 7px 0 var(--shadow);
+  contain: layout;
 }
 
 /* registration mark, bottom right of every sheet — a wireframe tell */
@@ -723,6 +733,11 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
 /* --- narrow ------------------------------------------------------------- */
 
 @media (max-width: 48rem) {
+  /* Smooth-scrolling a document this tall means the browser keeps animating
+     and hit-testing every frame of a jump that can span thousands of pixels.
+     Phones feel that as stutter; a search hit or a #contents link should
+     just cut to place instead. */
+  html { scroll-behavior: auto; }
   :root { --rail: 0rem; --pad: 1.25rem; }
   .sheet { padding-left: var(--pad); box-shadow: 4px 4px 0 var(--shadow); margin-bottom: 2rem; }
   .chapter h2 { padding-top: 1.5rem; }
@@ -759,6 +774,11 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
     border: 0;
     box-shadow: none;
     background: none;
+    /* Containment earns its keep on screen, where a shot has to not reflow
+       21 chapters. Printing has no shots and no scrolling, so it buys
+       nothing here — and a contained box is one more thing between a
+       chapter and the page break it needs. Drop it. */
+    contain: none;
   }
   .sheet::after { display: none; }
   .cover__warp, .cover__engage, .themetoggle,

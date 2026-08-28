@@ -1,5 +1,13 @@
-/* Search. Indexes the rendered DOM on load, so nothing extra is generated at
-   build time and the index can never drift from the text on the page. */
+/* Search. Indexes the rendered DOM, so nothing extra is generated at build
+   time and the index can never drift from the text on the page.
+
+   The script tag sits right after the last chapter, so a synchronous walk
+   here runs inline during initial parsing, over every h2/h3/p/li/pre/td in
+   21 chapters, before the browser can finish the page and paint it. None of
+   that work is needed until someone actually searches, so it is built once,
+   lazily, the first time the box is touched — with an idle-time warm-up so
+   it is usually already done by then instead of stalling that first
+   keystroke. */
 
 (function () {
   var input = document.getElementById('q');
@@ -9,6 +17,7 @@
 
   var index = [];
   var anchorSeq = 0;
+  var indexed = false;
 
   function clean(node) {
     var rail = node.querySelector ? node.querySelector('.rail') : null;
@@ -23,42 +32,54 @@
     return sib ? clean(sib).slice(0, 260) : '';
   }
 
-  document.querySelectorAll('.chapter').forEach(function (chapter) {
-    var h1 = chapter.querySelector('h1');
-    var chapterTitle = clean(h1);
-    if (!chapter.id) chapter.id = 'c' + (anchorSeq++);
+  function buildIndex() {
+    if (indexed) return;
+    indexed = true;
 
-    // the chapter itself, so a title search surfaces the chapter before its innards
-    index.push({
-      id: chapter.id,
-      chapter: chapterTitle,
-      section: '',
-      match: chapterTitle,
-      show: firstProse(chapter.querySelector('.chapter__head')) || chapterTitle,
-      weight: 8
-    });
+    document.querySelectorAll('.chapter').forEach(function (chapter) {
+      var h1 = chapter.querySelector('h1');
+      var chapterTitle = clean(h1);
+      if (!chapter.id) chapter.id = 'c' + (anchorSeq++);
 
-    var section = '';
-    chapter.querySelectorAll('h2, h3, p, li, pre, td').forEach(function (node) {
-      if (node.closest('.chapter__meta') || node.closest('.chapter__head')) return;
-      var text = clean(node);
-      var heading = node.tagName === 'H2' || node.tagName === 'H3';
-      if (!heading && text.length < 24) return;
-      if (heading) section = text;
-      if (!node.id) node.id = 'x' + (anchorSeq++);
-
+      // the chapter itself, so a title search surfaces the chapter before its innards
       index.push({
-        id: node.id,
+        id: chapter.id,
         chapter: chapterTitle,
-        section: heading ? text : section,
-        match: heading ? text : section + ' ' + text,
-        show: heading ? (firstProse(node) || text) : text,
-        weight: node.tagName === 'H2' ? 5 : node.tagName === 'H3' ? 4 : 1
+        section: '',
+        match: chapterTitle,
+        show: firstProse(chapter.querySelector('.chapter__head')) || chapterTitle,
+        weight: 8
+      });
+
+      var section = '';
+      chapter.querySelectorAll('h2, h3, p, li, pre, td').forEach(function (node) {
+        if (node.closest('.chapter__meta') || node.closest('.chapter__head')) return;
+        var text = clean(node);
+        var heading = node.tagName === 'H2' || node.tagName === 'H3';
+        if (!heading && text.length < 24) return;
+        if (heading) section = text;
+        if (!node.id) node.id = 'x' + (anchorSeq++);
+
+        index.push({
+          id: node.id,
+          chapter: chapterTitle,
+          section: heading ? text : section,
+          match: heading ? text : section + ' ' + text,
+          show: heading ? (firstProse(node) || text) : text,
+          weight: node.tagName === 'H2' ? 5 : node.tagName === 'H3' ? 4 : 1
+        });
       });
     });
-  });
 
-  index.forEach(function (e) { e.haystack = e.match.toLowerCase(); });
+    index.forEach(function (e) { e.haystack = e.match.toLowerCase(); });
+  }
+
+  // Warm the index once the browser is idle, so the first real search rarely
+  // pays the build cost. run() and the hit handler still call buildIndex()
+  // themselves, so search is correct even if this callback never fires.
+  if (window.requestIdleCallback) requestIdleCallback(buildIndex, { timeout: 2000 });
+  else setTimeout(buildIndex, 300);
+  input.addEventListener('focus', buildIndex, { once: true });
 
   function escapeHtml(s) {
     return s.replace(/[&<>"]/g, function (c) {
@@ -89,6 +110,7 @@
   function run(query) {
     var terms = query.toLowerCase().split(/\s+/).filter(function (t) { return t.length > 1; });
     if (!terms.length) { panel.dataset.open = 'false'; return; }
+    buildIndex();
 
     var hits = [];
     index.forEach(function (entry) {

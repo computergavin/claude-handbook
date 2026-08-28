@@ -23,6 +23,11 @@
   try { best = parseInt(localStorage.getItem(BEST_KEY), 10) || 0; } catch (e) {}
   var px = -99, py = -99, raf = 0, bursts = [];
 
+  /* getComputedStyle(document.documentElement) forces a style recalc across
+     all 21 chapters. draw() used to pay that twice a frame for two values
+     that only move on a theme flip. Read them once and cache them. */
+  var colOrange = '#e8590c', colInk = '#1c1917';
+
   /* --- chrome ----------------------------------------------------------- */
 
   var canvas = document.createElement('canvas');
@@ -96,8 +101,20 @@
      shot landed on the word itself. */
   var PAD = 3;                      // css px of forgiveness, under one pixel block
 
+  /* a shot can call inkBand() once per rect a word spans and lineStep() again
+     on the same element when the first probe misses — that's a repeated
+     getComputedStyle on one element per tap. Memoize by element identity;
+     nothing in a single shot mutates the DOM before wordAt() returns, so the
+     cached value can never go stale within one call. */
+  var styleCacheEl = null, styleCacheVal = null;
+
+  function styleOf(el) {
+    if (el !== styleCacheEl) { styleCacheEl = el; styleCacheVal = getComputedStyle(el); }
+    return styleCacheVal;
+  }
+
   function inkBand(el, rect) {
-    var fs = el && el.nodeType === 1 ? parseFloat(getComputedStyle(el).fontSize) : 0;
+    var fs = el && el.nodeType === 1 ? parseFloat(styleOf(el).fontSize) : 0;
     if (!fs || fs >= rect.height) return [rect.top, rect.bottom];
     /* at prose line-height the line box is much taller than the letters, and
        the leading above and below it is not part of the target. Trim to the em
@@ -139,7 +156,7 @@
   function lineStep(range) {
     var el = range && range.startContainer && range.startContainer.parentNode;
     if (!el || el.nodeType !== 1) return 0;
-    var cs = getComputedStyle(el);
+    var cs = styleOf(el);
     return parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2 || 0;
   }
 
@@ -162,6 +179,11 @@
     var span = document.createElement('span');
     span.className = 'shot';
     try { range.surroundContents(span); } catch (e) { return false; }   // spans a tag boundary
+    /* the cover title is a target too, and an inline-block dropped into it can
+       rewrap the line and change the cover's height. The rocks are positioned
+       off that box, so the shot has to dirty it or they draw at a stale offset
+       until the next scroll happens to correct them. */
+    coverDirty = true;
 
     /* thrown away from the shot, so it reads as being hit rather than fading */
     var dx = (rect.left + rect.width / 2) - fromX;
@@ -197,8 +219,25 @@
   var rocks = [], respawns = [];
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  /* the cover's box only moves on scroll and only resizes on resize, but
+     drawRocks() was reading it every frame, and rockAt()/explode() read it
+     again on every shot — three synchronous layout flushes of the whole
+     document where one would do. Cache it and only re-flush when something
+     that could have moved it actually happened. */
+  var coverRect = null, coverDirty = true;
+
+  function coverBox() {
+    if (coverDirty) {
+      coverRect = cover ? cover.getBoundingClientRect() : null;
+      coverDirty = false;
+    }
+    return coverRect;
+  }
+
+  window.addEventListener('scroll', function () { coverDirty = true; }, { passive: true });
+
   function makeRock(fromEdge) {
-    var rect = cover.getBoundingClientRect();
+    var rect = coverBox();
     var r = 9 + Math.random() * 9;                                  // css px
     var x, y;
     if (fromEdge) {
@@ -233,7 +272,7 @@
 
   function rockAt(x, y) {
     if (!cover) return -1;
-    var rect = cover.getBoundingClientRect();
+    var rect = coverBox();
     for (var i = 0; i < rocks.length; i++) {
       var rk = rocks[i];
       var dx = x - (rect.left + rk.x), dy = y - (rect.top + rk.y);
@@ -248,7 +287,7 @@
       respawns[i] -= dt;
       if (respawns[i] <= 0) { respawns.splice(i, 1); rocks.push(makeRock(true)); }
     }
-    var rect = cover.getBoundingClientRect();
+    var rect = coverBox();
     if (rect.bottom < 0 || rect.top > window.innerHeight) return;   // cover scrolled away
     ctx.fillStyle = orange;
     for (i = 0; i < rocks.length; i++) {
@@ -280,7 +319,7 @@
     var rk = rocks[i];
     rocks.splice(i, 1);
     respawns.push(1.2 + Math.random() * 1.6);
-    var rect = cover.getBoundingClientRect();
+    var rect = coverBox();
     var ex = rect.left + rk.x, ey = rect.top + rk.y;
     var n = 16 + Math.round(rk.r);
     for (var k = 0; k < n; k++) {
@@ -346,10 +385,23 @@
     return v || fallback;
   }
 
+  function refreshInk() {
+    colOrange = ink('--orange', '#e8590c');
+    colInk = ink('--ink', '#1c1917');
+  }
+
+  refreshInk();
+  if (window.MutationObserver) {
+    /* same pattern as warp.js: recolour in place on a theme flip rather than
+       waiting for the next start() to notice */
+    new MutationObserver(refreshInk).observe(document.documentElement,
+      { attributes: true, attributeFilter: ['data-theme'] });
+  }
+
   function draw(dt) {
     var W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
-    var orange = ink('--orange', '#e8590c'), pale = ink('--ink', '#1c1917');
+    var orange = colOrange, pale = colInk;
 
     if (on) drawRocks(dt, orange);
 
@@ -378,7 +430,16 @@
     }
   }
 
-  var last = 0;
+  /* Rocks drift at 8-24 css px/s, which on the 4px grid is 2-6 pixel blocks a
+     second — smooth at a fraction of 60fps. Repainting the whole canvas every
+     frame while the player is idle (no bursts, crosshair not moving) is ~10x
+     more paint than the animation needs. Skip frames while idle instead, but
+     the instant the pointer moves or a shot lands, draw every frame again —
+     accumulate dt across the skipped frames so drift doesn't stutter when a
+     draw finally happens. */
+  var IDLE_DRAW_MS = 66;             // ~15fps ceiling while nothing is moving
+  var last = 0, drawDt = 0, sinceDraw = 0, lastPX = px, lastPY = py;
+
   function loop(now) {
     var dt = Math.min(0.05, (now - last) / 1000);
     last = now;
@@ -388,7 +449,16 @@
       if (Math.ceil(timeLeft) !== shown) paintHud();
       if (timeLeft <= 0) stop(true);
     }
-    draw(dt);
+    var moved = px !== lastPX || py !== lastPY;
+    lastPX = px; lastPY = py;
+    drawDt += dt;
+    sinceDraw += dt * 1000;
+    var idle = on && !bursts.length && !moved;
+    if (!idle || sinceDraw >= IDLE_DRAW_MS) {
+      draw(drawDt);
+      drawDt = 0;
+      sinceDraw = 0;
+    }
     if (on || bursts.length) raf = requestAnimationFrame(loop);
   }
 
@@ -401,10 +471,13 @@
     timeLeft = TIME;
     document.body.classList.add('is-playing');
     toggle.setAttribute('aria-pressed', 'true');
+    refreshInk();                    // in case the theme flipped while the game was off
     size();
     seedRocks();
     paintHud();
     last = performance.now();
+    drawDt = 0;
+    sinceDraw = IDLE_DRAW_MS;        // force the first frame to paint immediately
     raf = requestAnimationFrame(loop);
   }
 
@@ -449,6 +522,21 @@
     px = e.clientX; py = e.clientY;
   });
 
+  /* touch has no hover, so without this the crosshair just sits at the last
+     tap. Worse, once the browser commits a touch to scrolling the page it
+     can stop dispatching pointermove for that touch entirely, so aiming a
+     drag needs its own listener rather than relying on pointermove to cover
+     it. Passive because we only ever read the position here — never call
+     preventDefault — so the page keeps scrolling under the finger. */
+  function trackTouch(e) {
+    if (!on) return;
+    var t = e.touches && e.touches[0];
+    if (!t) return;
+    px = t.clientX; py = t.clientY;
+  }
+  document.addEventListener('touchstart', trackTouch, { passive: true });
+  document.addEventListener('touchmove', trackTouch, { passive: true });
+
   /* firing on click rather than pointerdown keeps a touch drag as a scroll,
      so you can work your way down through the chapters between shots */
   document.addEventListener('click', function (e) {
@@ -458,7 +546,10 @@
     fire(e.clientX, e.clientY);
   }, true);
 
-  window.addEventListener('resize', function () { if (on) size(); });
+  window.addEventListener('resize', function () {
+    coverDirty = true;
+    if (on) size();
+  });
   window.addEventListener('blur', function () { if (on) stop(); });
 
   /* exposed so the state can be driven in a test without synthesising input */

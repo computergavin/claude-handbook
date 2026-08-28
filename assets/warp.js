@@ -16,6 +16,20 @@
   var CELL = 4;                       // css px per pixel block
   var HUE = ['232,89,12', '184,67,10', '28,25,23'];   // orange, deep, ink
 
+  /* A phone's cover is edge to edge, so the short side of the viewport is
+     close to the phone's screen width whichever way it's held. Block count
+     (W * H) alone doesn't catch that: a tall narrow phone cover carries as
+     many blocks as a short wide desktop hero, so it hit the same star cap
+     and did full desktop-weight per-frame work on a phone CPU.
+     navigator.deviceMemory is unset on iOS Safari, so its absence has to
+     read as "unknown", not as "plenty" — it only ever pulls the cap down. */
+  var shortSide = Math.min(window.innerWidth || 1200, window.innerHeight || 900);
+  var lowCores = (navigator.hardwareConcurrency || 8) <= 4;
+  var lowMem = !!navigator.deviceMemory && navigator.deviceMemory <= 4;
+  var STAR_CAP = shortSide <= 480 ? 110 : (shortSide <= 820 ? 190 : 300);
+  var MOBILE = shortSide <= 480 || lowCores || lowMem;
+  if (MOBILE) STAR_CAP = Math.min(STAR_CAP, 130);
+
   /* phase lengths, ms: tremble, spool up, the jump itself, coast down */
   var CHARGE = 700, SPOOL = 800, JUMP = 420, SETTLE = 1600;
   var TOTAL = CHARGE + SPOOL + JUMP + SETTLE;
@@ -39,6 +53,22 @@
      was halving the travel per frame, dropping the drift under the pixel grid
      exactly where the settle slows — and doing twice the work to do it. */
   var FRAME = 1 / 75;    // gate: 60Hz passes every frame, 120Hz every other
+
+  /* Once arrived, nobody is timing this against a clock — it's a permanent
+     background tax competing with scroll and the shooter minigame. Render a
+     third as often past that point (a tenth on a phone) and let the pooled
+     step below grow to match: the same real time lands in fewer, larger
+     steps, so each rendered frame still clears the one-block floor instead
+     of crawling under it and stuttering. */
+  var DRIFT_FRAME = MOBILE ? 1 / 10 : 1 / 24;
+
+  /* The jump's visible streak length is the whole point of the burst; the
+     drift's is not — it collapses to one step anyway once FLOAT_WARP takes
+     over (see below). A phone doesn't need 32 samples to read as continuous
+     at 4px a block, so the cap that only ever binds during the burst (an
+     edge star under full warp) can drop by more than half there and cost
+     nothing the eye can find during the slow drift after. */
+  var STEP_CAP = MOBILE ? 14 : 32;
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -109,7 +139,7 @@
   }
 
   function seed() {
-    var count = Math.min(300, Math.max(90, Math.round(W * H / 26)));
+    var count = Math.min(STAR_CAP, Math.max(Math.round(STAR_CAP * 0.3), Math.round(W * H / 26)));
     stars = [];
     for (var i = 0; i < count; i++) stars.push(star(Math.random() * maxR));
     seeded = true;
@@ -188,7 +218,7 @@
       /* the streak: sampled blocks from the old radius to the new one, capped
          so an extreme warp factor cannot blow up the per-frame draw count. */
       var len = st.r - pr;
-      var steps = Math.min(32, Math.max(1, Math.round(len)));
+      var steps = Math.min(STEP_CAP, Math.max(1, Math.round(len)));
       var ca = Math.cos(st.a), sa = Math.sin(st.a);
       for (var k = 0; k <= steps; k++) {
         var r = pr + (len * k) / steps;
@@ -236,9 +266,13 @@
     /* A 120Hz panel delivers twice the frames, which halved the travel per
        frame and dropped the drift under the pixel grid — the stutter near the
        end — while doing twice the work. Frames are pooled to a 60th of a
-       second so a rendered step is the same everywhere. */
+       second so a rendered step is the same everywhere. Past arrival the gate
+       widens (see DRIFT_FRAME above): the pooled step grows by the same
+       factor the render rate drops by, so the field drifts at the same speed
+       for a fraction of the render() calls. */
     acc += dt;
-    if (acc < FRAME) { raf = requestAnimationFrame(frame); return; }
+    var gate = arrived ? DRIFT_FRAME : FRAME;
+    if (acc < gate) { raf = requestAnimationFrame(frame); return; }
     var step = acc;
     acc = 0;
 
