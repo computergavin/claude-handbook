@@ -135,7 +135,10 @@ def number_sections(chapter_html: str, chapter_no: int) -> tuple[str, list]:
 def build() -> Path:
     book = json.loads((ROOT / "book.json").read_text(encoding="utf-8"))
     css = (ASSETS / "book.css").read_text(encoding="utf-8")
-    js = (ASSETS / "book.js").read_text(encoding="utf-8")
+    js = "\n".join(
+        (ASSETS / name).read_text(encoding="utf-8")
+        for name in ("book.js", "warp.js", "theme.js")
+    )
 
     md = markdown.Markdown(
         extensions=["extra", "sane_lists", "toc", "codehilite"],
@@ -214,13 +217,15 @@ def build() -> Path:
         )
 
     doc = f"""<!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en" data-theme="dark"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(book["title"])}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<script>try{{var t=localStorage.getItem('wwc-theme');
+if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}}catch(e){{}}</script>
 <style>{css}</style>
 </head><body>
 
@@ -282,7 +287,8 @@ def watch() -> None:
     seen: dict = {}
     while True:
         changed = False
-        for f in list(CHAPTERS.glob("*.md")) + list(ASSETS.glob("*.css")) + [ROOT / "book.json"]:
+        for f in (list(CHAPTERS.glob("*.md")) + list(ASSETS.glob("*.css"))
+                  + list(ASSETS.glob("*.js")) + [ROOT / "book.json"]):
             stamp = f.stat().st_mtime
             if seen.get(f) != stamp:
                 seen[f] = stamp

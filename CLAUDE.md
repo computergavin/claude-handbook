@@ -66,6 +66,17 @@ sheets with a hard offset shadow, die-cut index tabs, margin rail for procedure
 numbers. All color and type decisions live in `:root` in `assets/book.css`. Change
 tokens there rather than adding one-off rules.
 
+Dark is the default theme; light is the same book on paper. Both are token sets in
+`assets/book.css` — light in `:root`, dark in `:root[data-theme="dark"]` — and no
+rule outside those blocks may name a color. The dark values are sampled pixel for
+pixel from a browser-dark rendering of the light page, so `--orange` (text) and
+`--orange-line` (rules, borders, fills) are separate tokens: that rendering
+brightens orange text and darkens orange lines. Print always forces the light set.
+
+Changing a light color must not change the light rendering by accident. Verify by
+building the previous version and diffing full-page screenshots; the light book is
+expected to come back pixel-identical.
+
 ## Compact instructions
 
 When summarising this conversation, preserve: chapter edits and why they were made,

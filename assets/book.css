@@ -17,11 +17,24 @@
   --graphite: #78716c;
 
   --orange:      #e8590c;
+  --orange-line: #e8590c;   /* the same orange as a rule or fill, split out so
+                               the dark theme can darken lines without dulling
+                               orange text — the browser-dark render does this */
   --orange-deep: #b8430a;
   --orange-wash: #fdefe4;
   --grid:        rgba(232, 89, 12, .11);
   --grid-major:  rgba(232, 89, 12, .2);
   --rule:        #e7ddd0;
+
+  --shadow:     rgba(232, 89, 12, .13);
+  --shadow-ink: rgba(28, 25, 23, .07);
+  --mark:       #ffe0c2;
+  --flash:      #ffc98f;
+  --caution:      #a16207;
+  --caution-line: #a16207;
+  --caution-bg:   #fbf3e0;
+  --tab-ink:      #fff;
+  color-scheme: light;
 
   --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
   --sans:  "IBM Plex Sans Condensed", "Helvetica Neue", Arial, sans-serif;
@@ -31,6 +44,74 @@
   --rail: 5rem;
   --pad: 3rem;
 }
+
+/* --- dark theme ----------------------------------------------------------
+   Every value here is sampled straight off the browser-dark rendering of this
+   page, pixel for pixel: paper, sheet, ink, graphite, both oranges, the rule
+   and both grid weights. That render brightens orange text but darkens orange
+   lines, which is why --orange and --orange-line exist. Code blocks are left
+   alone — they were already dark. This is the default; the toggle opts out. */
+
+:root[data-theme="dark"] {
+  --paper:    #211b0d;
+  --sheet:    #322105;
+  --ink:      #d8d5d0;
+  --graphite: #9e988c;
+
+  --orange:      #e17a3d;
+  --orange-line: #9e4a1c;
+  --orange-deep: #c96a33;
+  --orange-wash: #3b2609;
+  --grid:        #30210f;
+  --grid-major:  #482a12;
+  --rule:        #4f412d;
+
+  --shadow:     rgba(158, 74, 28, .35);
+  --shadow-ink: rgba(0, 0, 0, .45);
+  --mark:       #5b3a12;
+  --flash:      #6b3f10;
+  --caution:      #d9a441;
+  --caution-line: #8a6a24;
+  --caution-bg:   #2b220c;
+  --tab-ink:      #f3ece3;
+  color-scheme: dark;
+}
+
+/* The dark grid lines are opaque, so they land on the sampled values exactly
+   instead of washing the paper through a translucent orange. That means the
+   layers no longer blend where they coincide, so the major weight is painted
+   first — on top — or the 26px minor line would hide it every fifth cell. */
+:root[data-theme="dark"] body {
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 130px 130px, 130px 130px, 26px 26px, 26px 26px;
+}
+
+/* --- theme toggle: fixed, bottom left, clear of the sheet's edge --------- */
+
+.themetoggle {
+  position: fixed;
+  z-index: 45;
+  bottom: 1.25rem;
+  left: max(.9rem, calc(50% - (var(--measure) + var(--rail) + var(--pad) * 2) / 2 - 3.4rem));
+  width: 2.4rem;
+  height: 2.4rem;
+  display: grid;
+  place-items: center;
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--orange);
+  background: var(--sheet);
+  border: 1px dashed var(--orange-line);
+  box-shadow: 3px 3px 0 var(--shadow);
+  cursor: pointer;
+  padding: 0;
+}
+.themetoggle:hover, .themetoggle:focus-visible { background: var(--orange-wash); border-style: solid; }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 5rem; }
@@ -59,8 +140,8 @@ body {
   padding: var(--pad) var(--pad) 2.5rem;
   padding-left: calc(var(--rail) + var(--pad) * .5);
   background: var(--sheet);
-  border: 1px solid var(--orange);
-  box-shadow: 7px 7px 0 rgba(232, 89, 12, .13);
+  border: 1px solid var(--orange-line);
+  box-shadow: 7px 7px 0 var(--shadow);
 }
 
 /* registration mark, bottom right of every sheet — a wireframe tell */
@@ -72,8 +153,8 @@ body {
   width: 11px;
   height: 11px;
   background:
-    linear-gradient(var(--orange), var(--orange)) center/11px 1px no-repeat,
-    linear-gradient(var(--orange), var(--orange)) center/1px 11px no-repeat;
+    linear-gradient(var(--orange-line), var(--orange-line)) center/11px 1px no-repeat,
+    linear-gradient(var(--orange-line), var(--orange-line)) center/1px 11px no-repeat;
   opacity: .55;
 }
 
@@ -88,7 +169,7 @@ body {
   gap: 1rem;
   padding: .55rem 1rem;
   background: var(--sheet);
-  border-bottom: 1px solid var(--orange);
+  border-bottom: 1px solid var(--orange-line);
   font-family: var(--mono);
   font-size: .72rem;
 }
@@ -117,7 +198,7 @@ body {
   min-width: 12rem;
   background: var(--paper);
 }
-.searchbox:focus-within { border-color: var(--orange); box-shadow: 3px 3px 0 rgba(232,89,12,.15); }
+.searchbox:focus-within { border-color: var(--orange-line); box-shadow: 3px 3px 0 var(--shadow); }
 
 #q {
   border: 0;
@@ -160,7 +241,7 @@ body {
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--graphite);
-  border-bottom: 1px solid var(--orange);
+  border-bottom: 1px solid var(--orange-line);
   padding-bottom: .5rem;
   margin-bottom: 1.25rem;
 }
@@ -171,14 +252,14 @@ body {
   text-align: left;
   background: var(--sheet);
   border: 1px solid var(--rule);
-  border-left: 3px solid var(--orange);
+  border-left: 3px solid var(--orange-line);
   padding: .75rem .9rem;
   margin-bottom: .6rem;
   cursor: pointer;
   font: inherit;
   color: inherit;
 }
-.hit:hover, .hit:focus-visible { border-color: var(--orange); box-shadow: 4px 4px 0 rgba(232,89,12,.14); outline: none; }
+.hit:hover, .hit:focus-visible { border-color: var(--orange-line); box-shadow: 4px 4px 0 var(--shadow); outline: none; }
 
 .hit__where {
   font-family: var(--mono);
@@ -189,11 +270,11 @@ body {
   margin-bottom: .3rem;
 }
 .hit__text { font-size: .92rem; line-height: 1.5; margin: 0; }
-.hit mark, mark.flash { background: #ffe0c2; color: var(--ink); padding: 0 .12em; }
+.hit mark, mark.flash { background: var(--mark); color: var(--ink); padding: 0 .12em; }
 
 .results__empty { font-style: italic; color: var(--graphite); }
 
-@keyframes flash { from { background: #ffc98f; } to { background: transparent; } }
+@keyframes flash { from { background: var(--flash); } to { background: transparent; } }
 .is-flashed { animation: flash 1.6s ease-out; }
 
 /* --- cover -------------------------------------------------------------- */
@@ -207,7 +288,7 @@ body {
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--orange);
-  border: 1px dashed var(--orange);
+  border: 1px dashed var(--orange-line);
   padding: .3rem .6rem;
   margin: 0 0 2rem;
 }
@@ -226,7 +307,7 @@ body {
   display: block;
   width: 4.5rem;
   height: 5px;
-  background: var(--orange);
+  background: var(--orange-line);
   margin-top: 1.1rem;
 }
 
@@ -259,11 +340,66 @@ body {
 .cover__note {
   font-size: .9rem;
   color: var(--graphite);
-  border-left: 3px solid var(--orange);
+  border-left: 3px solid var(--orange-line);
   padding-left: .9rem;
   max-width: 30rem;
   margin: 0;
 }
+
+/* --- cover warp jump ---------------------------------------------------- */
+
+/* The canvas is one backing-store pixel per block, upscaled by the browser
+   with no smoothing, so the starfield is genuinely pixelated rather than a
+   grid of drawn squares. It sits under the cover text, which keeps every word
+   legible no matter how bright the jump gets. */
+
+.cover__warp {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  image-rendering: pixelated;
+  transition: opacity .25s linear;
+}
+.cover__warp.is-live { opacity: 1; }
+
+.cover > *:not(.cover__warp) { position: relative; z-index: 1; }
+
+.cover__engage {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: .66rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--orange);
+  background: none;
+  border: 1px dashed var(--orange-line);
+  padding: .4rem .7rem;
+  margin: 0 0 2.5rem;
+  cursor: pointer;
+}
+.cover__engage span { font-size: .6em; vertical-align: .12em; }
+.cover__engage:hover:not(:disabled),
+.cover__engage:focus-visible { background: var(--orange-wash); border-style: solid; }
+.cover__engage:disabled { color: var(--graphite); border-color: var(--rule); cursor: default; }
+
+/* the sheet lurches on the jump, in steps, because the starfield is pixels */
+@keyframes warp-jolt {
+  0%   { transform: translate(0, 0); }
+  15%  { transform: translate(-3px, 1px); }
+  30%  { transform: translate(4px, -2px); }
+  45%  { transform: translate(-2px, -1px); }
+  60%  { transform: translate(3px, 2px); }
+  75%  { transform: translate(-1px, 0); }
+  100% { transform: translate(0, 0); }
+}
+.is-warping .cover__title,
+.is-warping .cover__stamp { animation: warp-jolt .42s steps(1, end) 1; }
+.is-warping .cover__title::after { background: var(--orange-deep); width: 100%; }
+.cover__title::after { transition: width .35s ease-out, background .35s linear; }
 
 /* --- contents ----------------------------------------------------------- */
 
@@ -274,7 +410,7 @@ body {
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--ink);
-  border-bottom: 2px solid var(--orange);
+  border-bottom: 2px solid var(--orange-line);
   padding-bottom: .5rem;
   margin: 0 0 1.75rem;
 }
@@ -291,7 +427,7 @@ body {
   padding-bottom: .3rem;
   border-bottom: 1px dashed var(--rule);
 }
-.toc__chapter > a:hover { border-bottom-color: var(--orange); }
+.toc__chapter > a:hover { border-bottom-color: var(--orange-line); }
 .toc__chapter > a:hover .toc__title { color: var(--orange); }
 
 .toc__num {
@@ -319,8 +455,8 @@ body {
   position: absolute;
   top: -1px;
   right: 2rem;
-  background: var(--orange);
-  color: #fff;
+  background: var(--orange-line);
+  color: var(--tab-ink);
   font-family: var(--mono);
   font-size: .7rem;
   letter-spacing: .14em;
@@ -357,7 +493,7 @@ body {
 .tag--stable { border-color: var(--ink); color: var(--ink); }
 .tag--draft { border-style: dashed; border-color: var(--graphite); }
 .tag--stub { border-style: dotted; }
-.tag--experimental { border-color: var(--orange); color: var(--orange); background: var(--orange-wash); }
+.tag--experimental { border-color: var(--orange-line); color: var(--orange); background: var(--orange-wash); }
 .chapter__meta a { color: var(--graphite); }
 
 /* section headings number themselves out in the rail */
@@ -442,11 +578,11 @@ hr { border: 0; border-top: 1px dashed var(--rule); margin: 2.4rem 0; }
 .callout p, .callout li { font-size: .95rem; max-width: none; }
 .callout > :last-child { margin-bottom: .7rem; }
 
-.callout--warning { border-left-color: var(--orange); background: var(--orange-wash); }
+.callout--warning { border-left-color: var(--orange-line); background: var(--orange-wash); }
 .callout--warning .callout__label { color: var(--orange); }
 
-.callout--caution { border-left-color: #a16207; background: #fbf3e0; }
-.callout--caution .callout__label { color: #a16207; }
+.callout--caution { border-left-color: var(--caution-line); background: var(--caution-bg); }
+.callout--caution .callout__label { color: var(--caution); }
 
 .callout--note { border-left-color: var(--graphite); }
 
@@ -454,13 +590,13 @@ hr { border: 0; border-top: 1px dashed var(--rule); margin: 2.4rem 0; }
   border: 1px solid var(--ink);
   border-left: 4px solid var(--ink);
   background: var(--sheet);
-  box-shadow: 5px 5px 0 rgba(28, 25, 23, .07);
+  box-shadow: 5px 5px 0 var(--shadow-ink);
 }
 .callout--pattern .callout__label { color: var(--ink); }
 
 .callout--field {
-  border: 1px dashed var(--orange);
-  border-left: 4px solid var(--orange);
+  border: 1px dashed var(--orange-line);
+  border-left: 4px solid var(--orange-line);
   background: var(--sheet);
 }
 .callout--field .callout__label { color: var(--orange); }
@@ -482,7 +618,7 @@ pre {
   color: #ece7e0;
   padding: 1rem 1.05rem;
   overflow-x: auto;
-  border-left: 4px solid var(--orange);
+  border-left: 4px solid var(--orange-line);
   margin: 1.35rem 0;
   break-inside: avoid;
 }
@@ -505,7 +641,7 @@ th {
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--orange);
-  border-bottom: 1.5px solid var(--orange);
+  border-bottom: 1.5px solid var(--orange-line);
   padding: .4rem .6rem .4rem 0;
 }
 td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule); vertical-align: top; }
@@ -521,13 +657,13 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
   margin: 0;
 }
 
-:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--orange-line); outline-offset: 2px; }
 
 /* --- narrow ------------------------------------------------------------- */
 
 @media (max-width: 48rem) {
   :root { --rail: 0rem; --pad: 1.25rem; }
-  .sheet { padding-left: var(--pad); box-shadow: 4px 4px 0 rgba(232,89,12,.13); margin-bottom: 2rem; }
+  .sheet { padding-left: var(--pad); box-shadow: 4px 4px 0 var(--shadow); margin-bottom: 2rem; }
   .chapter h2 { padding-top: 1.5rem; }
   .chapter h2 .rail { position: static; display: block; margin-bottom: .25rem; }
   .chapter__tab { right: 1rem; }
@@ -542,7 +678,13 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
 @page { size: letter; margin: 20mm 22mm 22mm 26mm; }
 
 @media print {
-  :root { --rail: 3.2rem; --pad: 0rem; }
+  :root, :root[data-theme="dark"] {
+    --rail: 3.2rem; --pad: 0rem;
+    --paper: #faf7f1; --sheet: #fffdfa; --ink: #1c1917; --graphite: #78716c;
+    --orange: #e8590c; --orange-line: #e8590c; --orange-deep: #b8430a;
+    --orange-wash: #fdefe4; --rule: #e7ddd0; --tab-ink: #fff;
+    --caution: #a16207; --caution-line: #a16207; --caution-bg: #fbf3e0;
+  }
 
   html { scroll-behavior: auto; }
   body { background: #fff; font-size: 10.5pt; line-height: 1.5; }
@@ -558,6 +700,7 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
     background: none;
   }
   .sheet::after { display: none; }
+  .cover__warp, .cover__engage, .themetoggle { display: none !important; }
 
   .cover { page-break-after: always; padding-top: 0; }
   .toc { page-break-after: always; }
