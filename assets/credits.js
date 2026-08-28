@@ -3,7 +3,9 @@
    Hits knock the word off the page and count up; leaving the mode puts every
    word back exactly as it was, because this is still a handbook. The title
    card gets targets of its own: little asteroids drift over the cover, blow
-   into pixel debris when shot, and float back in from the edges. */
+   into pixel debris when shot, and float back in from the edges. A run is 30
+   seconds on the clock; the best score survives the session in localStorage,
+   and only a run the clock ends is allowed to set it. */
 
 (function () {
   var main = document.querySelector('main');
@@ -12,8 +14,13 @@
   var CELL = 4;                                  // same pixel grid as the warp
   var RANKS = [[1, 'CRACK SHOT'], [0.8, 'SHARP'], [0.5, 'STEADY'], [0, 'SPRAY AND PRAY']];
 
+  var TIME = 30;                                 // seconds on the clock per run
+  var BEST_KEY = 'handbook:best';
+
   var on = false, unlocked = false;
   var hits = 0, shots = 0, wrapped = [];
+  var timeLeft = TIME, best = 0;
+  try { best = parseInt(localStorage.getItem(BEST_KEY), 10) || 0; } catch (e) {}
   var px = -99, py = -99, raf = 0, bursts = [];
 
   /* --- chrome ----------------------------------------------------------- */
@@ -262,7 +269,10 @@
 
   function paintHud() {
     var acc = shots ? Math.round(hits / shots * 100) : 0;
-    hud.textContent = 'HITS ' + hits + '  ·  SHOTS ' + shots + '  ·  ' + (shots ? acc + '%' : '--');
+    var t = Math.max(0, Math.ceil(timeLeft));
+    hud.textContent = '0:' + (t < 10 ? '0' + t : t)
+      + '  ·  SCORE ' + hits
+      + '  ·  ' + (shots ? acc + '%' : '--');
   }
 
   function rank(acc) {
@@ -319,6 +329,12 @@
   function loop(now) {
     var dt = Math.min(0.05, (now - last) / 1000);
     last = now;
+    if (on) {
+      var shown = Math.ceil(timeLeft);
+      timeLeft -= dt;
+      if (Math.ceil(timeLeft) !== shown) paintHud();
+      if (timeLeft <= 0) stop(true);
+    }
     draw(dt);
     if (on || bursts.length) raf = requestAnimationFrame(loop);
   }
@@ -329,6 +345,7 @@
     if (on || !unlocked) return;
     on = true;
     hits = shots = 0;
+    timeLeft = TIME;
     document.body.classList.add('is-playing');
     toggle.setAttribute('aria-pressed', 'true');
     size();
@@ -338,17 +355,30 @@
     raf = requestAnimationFrame(loop);
   }
 
-  function stop() {
+  function stop(full) {
     if (!on) return;
     on = false;
     document.body.classList.remove('is-playing');
     toggle.setAttribute('aria-pressed', 'false');
     var acc = shots ? hits / shots : 0;
-    hud.textContent = shots
-      ? hits + '/' + shots + '  ·  ' + Math.round(acc * 100) + '%  ·  ' + rank(acc)
-      : '';
+    if (full === true) {
+      /* the clock ran out: this run counts. A quit run only ever scores
+         lower than a finished one would have, so it shows its numbers but
+         never touches the best. */
+      var newBest = hits > best;
+      if (newBest) {
+        best = hits;
+        try { localStorage.setItem(BEST_KEY, String(best)); } catch (e) {}
+      }
+      hud.textContent = (newBest ? 'NEW BEST ' + hits : 'SCORE ' + hits + '  ·  BEST ' + best)
+        + '  ·  ' + Math.round(acc * 100) + '%  ·  ' + rank(acc);
+    } else {
+      hud.textContent = shots
+        ? hits + '/' + shots + '  ·  ' + Math.round(acc * 100) + '%  ·  ' + rank(acc)
+        : '';
+    }
     hud.classList.add('is-summary');
-    window.setTimeout(function () { hud.classList.remove('is-summary'); }, 3200);
+    window.setTimeout(function () { hud.classList.remove('is-summary'); }, full === true ? 5200 : 3200);
     restore();
     rocks = [];
     respawns = [];
@@ -381,6 +411,6 @@
   /* exposed so the state can be driven in a test without synthesising input */
   window.__targets = {
     start: start, stop: stop, fire: fire, unlock: unlock,
-    score: function () { return { hits: hits, shots: shots, live: wrapped.length, rocks: rocks.length }; }
+    score: function () { return { hits: hits, shots: shots, live: wrapped.length, rocks: rocks.length, time: timeLeft, best: best }; }
   };
 })();
