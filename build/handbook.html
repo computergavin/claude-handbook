@@ -4654,7 +4654,9 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
 /* Target practice, after the manner of the Melee credits: once the warp drive
    has arrived, a crosshair unlocks and every word in the book becomes a target.
    Hits knock the word off the page and count up; leaving the mode puts every
-   word back exactly as it was, because this is still a handbook. */
+   word back exactly as it was, because this is still a handbook. The title
+   card gets targets of its own: little asteroids drift over the cover, blow
+   into pixel debris when shot, and float back in from the edges. */
 
 (function () {
   var main = document.querySelector('main');
@@ -4777,6 +4779,114 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     wrapped = [];
   }
 
+  /* --- the asteroid field: the title card is mostly empty sky, so it gets
+         targets of its own. Little rocks drift over the cover while the mode
+         is on; a hit blows one into pixel debris and another floats in from
+         the edge a beat later. They live in cover-local coordinates so they
+         ride the page under the fixed overlay. */
+
+  var cover = document.querySelector('.cover');
+  var ROCKS = 6;
+  var rocks = [], respawns = [];
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function makeRock(fromEdge) {
+    var rect = cover.getBoundingClientRect();
+    var r = 9 + Math.random() * 9;                                  // css px
+    var x, y;
+    if (fromEdge) {
+      var side = (Math.random() * 4) | 0;
+      x = side === 1 ? -r : side === 3 ? rect.width + r : Math.random() * rect.width;
+      y = side === 0 ? -r : side === 2 ? rect.height + r : Math.random() * rect.height;
+    } else {
+      x = Math.random() * rect.width;
+      y = Math.random() * rect.height;
+    }
+    var motion = !(reduce && reduce.matches);
+    var sp = motion ? 8 + Math.random() * 16 : 0;                   // css px/s
+    var dir = Math.random() * Math.PI * 2;
+    var verts = [];                       // radius jitter, one entry per vertex
+    var n = 7 + ((Math.random() * 3) | 0);
+    for (var i = 0; i < n; i++) verts.push(0.66 + Math.random() * 0.52);
+    return {
+      x: x, y: y, r: r,
+      vx: Math.cos(dir) * sp, vy: Math.sin(dir) * sp,
+      rot: Math.random() * Math.PI * 2,
+      vr: motion ? (Math.random() - 0.5) * 1.1 : 0,
+      verts: verts
+    };
+  }
+
+  function seedRocks() {
+    rocks = [];
+    respawns = [];
+    if (!cover) return;
+    for (var i = 0; i < ROCKS; i++) rocks.push(makeRock(false));
+  }
+
+  function rockAt(x, y) {
+    if (!cover) return -1;
+    var rect = cover.getBoundingClientRect();
+    for (var i = 0; i < rocks.length; i++) {
+      var rk = rocks[i];
+      var dx = x - (rect.left + rk.x), dy = y - (rect.top + rk.y);
+      if (dx * dx + dy * dy <= rk.r * rk.r * 1.35) return i;        // a shade generous
+    }
+    return -1;
+  }
+
+  function drawRocks(dt, orange) {
+    if (!cover || (!rocks.length && !respawns.length)) return;
+    for (var i = respawns.length - 1; i >= 0; i--) {
+      respawns[i] -= dt;
+      if (respawns[i] <= 0) { respawns.splice(i, 1); rocks.push(makeRock(true)); }
+    }
+    var rect = cover.getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > window.innerHeight) return;   // cover scrolled away
+    ctx.fillStyle = orange;
+    for (i = 0; i < rocks.length; i++) {
+      var rk = rocks[i];
+      rk.rot += rk.vr * dt;
+      /* wrap a full radius past the cover edge, so a rock leaves before it re-enters */
+      var mw = rect.width + rk.r * 2, mh = rect.height + rk.r * 2;
+      rk.x = ((rk.x + rk.vx * dt + rk.r) % mw + mw) % mw - rk.r;
+      rk.y = ((rk.y + rk.vy * dt + rk.r) % mh + mh) % mh - rk.r;
+      var sx = rect.left + rk.x, sy = rect.top + rk.y;
+      /* a jagged pixel ring: walk the circle one block of arc at a time and
+         bend the radius between the vertex jitters */
+      var n = rk.verts.length;
+      var step = CELL / rk.r;
+      for (var t = 0; t < Math.PI * 2; t += step) {
+        var f = t / (Math.PI * 2) * n;
+        var v = f | 0, frac = f - v;
+        var rad = rk.r * (rk.verts[v % n] * (1 - frac) + rk.verts[(v + 1) % n] * frac);
+        ctx.fillRect(((sx + Math.cos(t + rk.rot) * rad) / CELL) | 0,
+                     ((sy + Math.sin(t + rk.rot) * rad) / CELL) | 0, 1, 1);
+      }
+      /* one crater block, riding the spin */
+      ctx.fillRect(((sx + Math.cos(rk.rot) * rk.r * 0.35) / CELL) | 0,
+                   ((sy + Math.sin(rk.rot) * rk.r * 0.35) / CELL) | 0, 1, 1);
+    }
+  }
+
+  function explode(i) {
+    var rk = rocks[i];
+    rocks.splice(i, 1);
+    respawns.push(1.2 + Math.random() * 1.6);
+    var rect = cover.getBoundingClientRect();
+    var ex = rect.left + rk.x, ey = rect.top + rk.y;
+    var n = 16 + Math.round(rk.r);
+    for (var k = 0; k < n; k++) {
+      var a = Math.random() * Math.PI * 2, sp = 30 + Math.random() * 130;
+      bursts.push({
+        x: ex, y: ey,
+        vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+        life: 0.7 + Math.random() * 0.3, hit: true,
+        big: Math.random() < 0.3                    // a few 2x2 chunks in the debris
+      });
+    }
+  }
+
   /* --- shooting ---------------------------------------------------------- */
 
   function burst(x, y, hit) {
@@ -4789,8 +4899,15 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
 
   function fire(x, y) {
     shots++;
-    var range = wordAt(x, y);
-    var hit = range ? knock(range, x, y) : false;
+    var hit = false;
+    var ri = rockAt(x, y);            // rocks overlay the page, so they go first
+    if (ri >= 0) {
+      explode(ri);
+      hit = true;
+    } else {
+      var range = wordAt(x, y);
+      hit = range ? knock(range, x, y) : false;
+    }
     if (hit) hits++;
     burst(x, y, hit);
     paintHud();
@@ -4824,6 +4941,8 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     ctx.clearRect(0, 0, W, H);
     var orange = ink('--orange', '#e8590c'), pale = ink('--ink', '#1c1917');
 
+    if (on) drawRocks(dt, orange);
+
     var cx = Math.round(px / CELL), cy = Math.round(py / CELL);
     if (px > -50) {
       ctx.fillStyle = orange;
@@ -4841,9 +4960,10 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
       var b = bursts[i];
       b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt * 2.2;
       if (b.life <= 0) { bursts.splice(i, 1); continue; }
+      var s = b.big ? 2 : 1;
       ctx.fillStyle = b.hit ? orange : pale;
-      ctx.globalAlpha = Math.max(0, b.life);
-      ctx.fillRect(Math.round(b.x / CELL), Math.round(b.y / CELL), 1, 1);
+      ctx.globalAlpha = Math.max(0, Math.min(1, b.life));
+      ctx.fillRect(Math.round(b.x / CELL), Math.round(b.y / CELL), s, s);
       ctx.globalAlpha = 1;
     }
   }
@@ -4865,6 +4985,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     document.body.classList.add('is-playing');
     toggle.setAttribute('aria-pressed', 'true');
     size();
+    seedRocks();
     paintHud();
     last = performance.now();
     raf = requestAnimationFrame(loop);
@@ -4882,6 +5003,8 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     hud.classList.add('is-summary');
     window.setTimeout(function () { hud.classList.remove('is-summary'); }, 3200);
     restore();
+    rocks = [];
+    respawns = [];
     px = py = -99;
   }
 
@@ -4911,7 +5034,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   /* exposed so the state can be driven in a test without synthesising input */
   window.__targets = {
     start: start, stop: stop, fire: fire, unlock: unlock,
-    score: function () { return { hits: hits, shots: shots, live: wrapped.length }; }
+    score: function () { return { hits: hits, shots: shots, live: wrapped.length, rocks: rocks.length }; }
   };
 })();
 </script>
