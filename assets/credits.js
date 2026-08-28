@@ -45,6 +45,11 @@
   document.addEventListener('warp:held', unlock);
   if (window.__warpHeld) unlock();
 
+  /* The drive arriving is the cue, but it must not be the only one: if the
+     cover never finishes its sequence — scrolled away, a tab left in the
+     background — the crosshair would never appear at all. */
+  window.setTimeout(unlock, 8000);
+
   /* --- the target field: a word is found under the shot, not marked up in
          advance. Wrapping every word in 21 chapters would cost more than the
          whole book; caretRangeFromPoint finds the one that was actually hit. */

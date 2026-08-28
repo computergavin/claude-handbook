@@ -833,7 +833,7 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
     <div><dt>Compiled by</dt><dd>Gavin</dd></div>
     <div><dt>Edition</dt><dd>First edition</dd></div>
     <div><dt>Last updated</dt><dd>2026-08-26</dd></div>
-    <div><dt>Built</dt><dd>2026-08-27</dd></div>
+    <div><dt>Built</dt><dd>2026-08-28</dd></div>
     <div><dt>Chapters</dt><dd>21</dd></div>
   </dl>
   <p class="cover__note">This handbook describes tools that change monthly. Every chapter
@@ -4242,12 +4242,12 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
    scales it up with image-rendering: pixelated, so every star is a real pixel
    rather than a drawn square.
 
-   The jump runs once on load and then comes to rest. At rest the field keeps
-   living — stars breathe and are retired and replaced — but nothing moves
-   across the grid, because below one block of travel per frame a star holds
-   still and then jumps a whole block, which is what made the old slow drift
-   stutter. Brightness has no such floor, so resting costs nothing to look at.
-   Under reduced motion a single static field is drawn instead. */
+   The jump runs once on load and then decays into a drift the field keeps
+   forever, so the cover always has a sky. The drift has a floor: below about
+   one block of travel per rendered frame a star holds still and then jumps a
+   whole block, which stutters, so frames are pooled to a fixed 60 a second and
+   the decay bottoms out above that line. Under reduced motion a single static
+   field is drawn instead. */
 
 (function () {
   var cover = document.querySelector('.cover');
@@ -4260,16 +4260,25 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   var CHARGE = 700, SPOOL = 800, JUMP = 420, SETTLE = 1600;
   var TOTAL = CHARGE + SPOOL + JUMP + SETTLE;
 
-  /* What the field settles to and holds. ARRIVE_WARP is a floor, not a crawl:
-     stars are drawn on a 4px grid, so below about one block of movement per
-     frame a star sits still for several frames and then jumps a whole block —
-     the field stutters instead of slowing. A cubic decay spends its last
-     quarter under that line whatever its length, so the decay bottoms out
-     above it and the sequence stops while still gliding. */
-  var ARRIVE_WARP = 0.55, CRUISE_ALPHA = 0.6;
-  /* at rest a star is a single block rather than a streak, so it needs more
-     weight than the moving field to read as the same starfield */
-  var REST_ALPHA = 1, REST_FLOOR = 0.3;
+  /* The field never stops: it decays into a slow drift and keeps floating.
+     CRUISE_WARP is a floor, not a crawl — stars sit on a 4px grid, so below
+     about one block of travel per rendered frame a star holds still and then
+     jumps a whole block, which is what stutters. The decay bottoms out above
+     that line and stays there. */
+  var CRUISE_WARP = 0.45, CRUISE_ALPHA = 0.6;
+
+  /* Two different jobs, so two different speeds. The settle is watched, so it
+     bottoms out above the pixel grid and reads as a smooth arrival. The float
+     afterwards is background nobody is timing, so it eases down to something
+     much slower over the following seconds — the drift this had originally,
+     which was the point of it. */
+  var FLOAT_WARP = 0.05, FLOAT_EASE = 4000;
+  var floatWarp = CRUISE_WARP, sinceArrive = 0;
+
+  /* Rendered at a fixed 60 a second whatever the display does. A 120Hz panel
+     was halving the travel per frame, dropping the drift under the pixel grid
+     exactly where the settle slows — and doing twice the work to do it. */
+  var FRAME = 1 / 75;    // gate: 60Hz passes every frame, 120Hz every other
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -4289,8 +4298,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   var W = 0, H = 0, cx = 0, cy = 0, maxR = 1, jolted = false;
   var stars = [];
   var raf = 0, elapsed = 0, last = 0, running = false, seeded = false;
-  var resting = false, restAcc = 0, motionless = false;
-  var REST_STEP = 0.07;                                // ~14 redraws a second at rest
+  var arrived = false, motionless = false, acc = 0;
 
   /* the starfield takes its colours from the live theme tokens, so the jump
      reads the same in dark as it does on paper */
@@ -4336,11 +4344,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
       a: Math.random() * Math.PI * 2,
       r: r,
       s: 0.45 + Math.random() * 1.15,                                  // speed
-      c: Math.random() < 0.72 ? 0 : (Math.random() < 0.7 ? 1 : 2),     // colour
-      tw: Math.random() * Math.PI * 2,        // breath phase, used at rest
-      tr: 0.5 + Math.random() * 1.4,          // breath rate
-      fd: 1,                                  // 0 while being replaced
-      dy: false
+      c: Math.random() < 0.72 ? 0 : (Math.random() < 0.7 ? 1 : 2)      // colour
     };
   }
 
@@ -4354,7 +4358,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   /* warp factor over the sequence: a tremor while charging, a cubed ramp while
      spooling, a hard spike on the jump, an eased coast down — then cruise */
   function warpAt(t) {
-    if (t >= TOTAL) return ARRIVE_WARP;
+    if (t >= TOTAL) return floatWarp;
     if (t < CHARGE) return 0.05 + 0.025 * Math.sin(t / 38);
     if (t < CHARGE + SPOOL) {
       var p = (t - CHARGE) / SPOOL;
@@ -4365,10 +4369,10 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
       return 1.2 + 7.5 * Math.pow(j, 0.55);
     }
     var d = (t - CHARGE - SPOOL - JUMP) / SETTLE;
-    return ARRIVE_WARP + 8.6 * Math.pow(1 - d, 3);
+    return CRUISE_WARP + 8.6 * Math.pow(1 - d, 3);
   }
 
-  /* fades up at the start, then down to the resting level — never to nothing */
+  /* fades up at the start, then down to the drifting level — never to nothing */
   function alphaAt(t) {
     if (t >= TOTAL) return CRUISE_ALPHA;
     var inn = Math.min(1, t / 260);
@@ -4468,9 +4472,19 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     var raw = now - last;
     last = now;
     var dt = raw > 120 ? 0.016 : Math.min(0.033, raw / 1000);
+
+    /* A 120Hz panel delivers twice the frames, which halved the travel per
+       frame and dropped the drift under the pixel grid — the stutter near the
+       end — while doing twice the work. Frames are pooled to a 60th of a
+       second so a rendered step is the same everywhere. */
+    acc += dt;
+    if (acc < FRAME) { raf = requestAnimationFrame(frame); return; }
+    var step = acc;
+    acc = 0;
+
     if (elapsed < TOTAL) {
-      elapsed += dt * 1000;
-      if (elapsed >= TOTAL) elapsed = TOTAL;      // arrived: this frame is the held one
+      elapsed += step * 1000;
+      if (elapsed >= TOTAL) elapsed = TOTAL;
     }
 
     var t = elapsed;
@@ -4483,23 +4497,17 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
       }
     }
 
-    if (resting) {
-      /* a breath does not need 60fps, and redrawing less often keeps the page
-         idle enough to read on top of */
-      restAcc += dt;
-      if (restAcc >= REST_STEP) {
-        renderRest(restAcc);
-        restAcc = 0;
-      }
-    } else {
-      render(t, dt);
-      if (elapsed >= TOTAL) {               // arrived: hand over to the rest loop
-        resting = true;
-        restAcc = 0;
-        announce();
-        button.disabled = false;
-        cover.classList.remove('is-warping');
-      }
+    render(t, step);
+    if (elapsed >= TOTAL) {                 // ease the drift down out of sight
+      sinceArrive += step * 1000;
+      var e = Math.min(1, sinceArrive / FLOAT_EASE);
+      floatWarp = CRUISE_WARP + (FLOAT_WARP - CRUISE_WARP) * e * e;
+    }
+    if (!arrived && elapsed >= TOTAL) {
+      arrived = true;
+      announce();
+      button.disabled = false;
+      cover.classList.remove('is-warping');
     }
     raf = requestAnimationFrame(frame);
   }
@@ -4508,52 +4516,6 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   function announce() {
     window.__warpHeld = true;
     if (window.CustomEvent) document.dispatchEvent(new CustomEvent('warp:held'));
-  }
-
-  /* At rest nothing travels. Stars breathe, and a few at a time are retired
-     and replaced somewhere else, fading out and back in so the field keeps
-     populating without anything ever crossing the pixel grid a fraction at a
-     time. Redrawn a few times a second, which is all a breath needs. */
-  function renderRest(step) {
-    data.fill(0);
-    for (var i = 0; i < stars.length; i++) {
-      var st = stars[i];
-      st.tw += step * st.tr;
-
-      if (st.dy) {
-        st.fd -= step * 1.6;
-        if (st.fd <= 0) {                     // gone: come back somewhere new
-          st.fd = 0;
-          st.dy = false;
-          st.a = Math.random() * Math.PI * 2;
-          st.r = 6 + Math.random() * (maxR - 8);
-          st.c = Math.random() < 0.72 ? 0 : (Math.random() < 0.7 ? 1 : 2);
-          st.tr = 0.5 + Math.random() * 1.4;
-        }
-      } else if (st.fd < 1) {
-        st.fd = Math.min(1, st.fd + step * 1.2);
-      }
-
-      var mask = Math.min(1, Math.max(REST_FLOOR, (st.r / maxR - 0.06) / 0.32));
-      var breath = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(st.tw));
-      var a = REST_ALPHA * mask * breath * st.fd;
-      var bx = cx + Math.cos(st.a) * st.r, by = cy + Math.sin(st.a) * st.r;
-      block(bx, by, st.c, a);
-      if (a > 0.62) {                       // the brightest few get a tick of glow
-        block(bx + 1, by, st.c, a * 0.28);
-        block(bx - 1, by, st.c, a * 0.28);
-        block(bx, by + 1, st.c, a * 0.28);
-        block(bx, by - 1, st.c, a * 0.28);
-      }
-    }
-
-    /* retire roughly one star a second, so the field turns over slowly */
-    if (stars.length && Math.random() < step) {
-      var pick = stars[(Math.random() * stars.length) | 0];
-      if (!pick.dy && pick.fd === 1) pick.dy = true;
-    }
-
-    ctx.putImageData(img, 0, 0);
   }
 
   /* pause leaves the pixels on the canvas; only the loop stops */
@@ -4575,8 +4537,10 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     resize();
     seed();
     running = true;
-    resting = false;
+    arrived = false;
     jolted = false;
+    sinceArrive = 0;
+    floatWarp = CRUISE_WARP;
     cover.classList.remove('is-jumped');
     button.disabled = true;
     canvas.classList.add('is-live');
@@ -4592,11 +4556,12 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     resize();
     seed();
     elapsed = TOTAL;
-    resting = true;
+    arrived = true;
     motionless = true;                      // no loop may start behind this
+    announce();
     cover.classList.add('is-jumped');
     canvas.classList.add('is-live');
-    renderRest(0);                          // step 0: draws, advances nothing
+    render(TOTAL, 0.016);
   }
 
   button.addEventListener('click', play);
@@ -4604,11 +4569,11 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   window.addEventListener('resize', function () {
     if (!seeded) return;
     resize();
-    if (!running) (resting ? renderRest(0) : render(elapsed, 0.016));
+    if (!running) render(elapsed, 0.016);
   });
 
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) pause(); else resume();
+    if (document.hidden) { if (arrived) pause(); } else resume();
   });
 
   /* the field is permanent now, so a theme flip has to recolour it in place
@@ -4616,13 +4581,14 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   if (window.MutationObserver) {
     new MutationObserver(function () {
       readTheme();
-      if (!running && seeded) (resting ? renderRest(0) : render(elapsed, 0.016));
+      if (!running && seeded) render(elapsed, 0.016);
     }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   }
 
   if (window.IntersectionObserver) {
     new IntersectionObserver(function (entries) {
-      if (entries[entries.length - 1].isIntersecting) resume(); else pause();
+      if (entries[entries.length - 1].isIntersecting) resume();
+      else if (arrived) pause();          // never pause mid-sequence: the end unlocks things
     }, { threshold: 0 }).observe(cover);
   }
 
@@ -4731,6 +4697,11 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
 
   document.addEventListener('warp:held', unlock);
   if (window.__warpHeld) unlock();
+
+  /* The drive arriving is the cue, but it must not be the only one: if the
+     cover never finishes its sequence — scrolled away, a tab left in the
+     background — the crosshair would never appear at all. */
+  window.setTimeout(unlock, 8000);
 
   /* --- the target field: a word is found under the shot, not marked up in
          advance. Wrapping every word in 21 chapters would cost more than the
