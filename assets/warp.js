@@ -221,10 +221,13 @@
     }
 
     var t = elapsed;
-    if (!jolted && t > CHARGE + SPOOL - 60 && t < TOTAL && !reduce.matches) {
+    if (!jolted && t > CHARGE + SPOOL - 60 && t < TOTAL) {
       jolted = true;
-      cover.classList.add('is-warping');
-      window.setTimeout(function () { cover.classList.remove('is-warping'); }, JUMP + 200);
+      cover.classList.add('is-jumped');       // the rule stays out from here on
+      if (!reduce.matches) {
+        cover.classList.add('is-warping');
+        window.setTimeout(function () { cover.classList.remove('is-warping'); }, JUMP + 200);
+      }
     }
 
     render(t, dt);
@@ -251,6 +254,7 @@
     seed();
     running = true;
     jolted = false;
+    cover.classList.remove('is-jumped');
     button.disabled = true;
     canvas.classList.add('is-live');
     elapsed = 0;
@@ -265,6 +269,7 @@
     resize();
     seed();
     elapsed = TOTAL;
+    cover.classList.add('is-jumped');
     canvas.classList.add('is-live');
     render(TOTAL, 0.016);
   }

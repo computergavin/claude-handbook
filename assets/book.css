@@ -398,7 +398,10 @@ body {
 }
 .is-warping .cover__title,
 .is-warping .cover__stamp { animation: warp-jolt .42s steps(1, end) 1; }
-.is-warping .cover__title::after { background: var(--orange-deep); width: 100%; }
+.is-warping .cover__title::after { background: var(--orange-deep); }
+/* the rule is drawn out by the jump and stays there afterwards */
+.is-warping .cover__title::after,
+.is-jumped .cover__title::after { width: 100%; }
 .cover__title::after { transition: width .35s ease-out, background .35s linear; }
 
 /* --- contents ----------------------------------------------------------- */
