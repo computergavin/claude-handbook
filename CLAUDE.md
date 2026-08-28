@@ -82,6 +82,15 @@ Changing a light color must not change the light rendering by accident. Verify b
 building the previous version and diffing full-page screenshots; the light book is
 expected to come back pixel-identical.
 
+## The minigame
+
+Nothing in the play path sets `touch-action`, and that omission is load-bearing.
+The shooter fires on `click` rather than `pointerdown` so that a touch drag stays
+a scroll and you can work down the chapters between shots. Setting
+`touch-action: none` on `.reticle`, `main`, or `body` takes that away and leaves
+the page frozen under the crosshair. The touch listeners in `assets/credits.js`
+are passive and never call `preventDefault` for the same reason. Leave both alone.
+
 ## Compact instructions
 
 When summarising this conversation, preserve: chapter edits and why they were made,
