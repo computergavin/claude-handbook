@@ -291,18 +291,6 @@ body {
 
 .cover { padding-top: 3.5rem; }
 
-.cover__stamp {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: .66rem;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--orange);
-  border: 1px dashed var(--orange-line);
-  padding: .3rem .6rem;
-  margin: 0 0 2rem;
-}
-
 .cover__title {
   font-family: var(--sans);
   font-weight: 700;
@@ -406,8 +394,7 @@ body {
   75%  { transform: translate(-1px, 0); }
   100% { transform: translate(0, 0); }
 }
-.is-warping .cover__title,
-.is-warping .cover__stamp { animation: warp-jolt .42s steps(1, end) 1; }
+.is-warping .cover__title { animation: warp-jolt .42s steps(1, end) 1; }
 .is-warping .cover__title::after { background: var(--orange-deep); }
 /* the rule is drawn out by the jump and stays there afterwards */
 .is-warping .cover__title::after,
@@ -826,7 +813,6 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
 <div class="results" id="results"><div class="results__inner" id="results-inner"></div></div>
 
 <section class="sheet cover">
-  <p class="cover__stamp">Internal &middot; living document</p>
   <h1 class="cover__title">Working With Claude</h1>
   <p class="cover__sub">A field handbook for agentic engineering</p>
   <dl class="cover__plate">

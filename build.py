@@ -242,7 +242,6 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
 <div class="results" id="results"><div class="results__inner" id="results-inner"></div></div>
 
 <section class="sheet cover">
-  <p class="cover__stamp">Internal &middot; living document</p>
   <h1 class="cover__title">{html.escape(book["title"])}</h1>
   <p class="cover__sub">{html.escape(book.get("subtitle", ""))}</p>
   <dl class="cover__plate">
