@@ -4242,12 +4242,12 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
    scales it up with image-rendering: pixelated, so every star is a real pixel
    rather than a drawn square.
 
-   The jump runs once on load and then holds: the settled field stays on the
-   cover as its background and the loop stops dead, so the page goes idle and
-   costs nothing to keep the stars there. Leaving it looping at 60fps to drift
-   was visible as a stutter the moment the motion slowed. Under reduced motion
-   nothing animates, but the same static field is drawn, so the cover is never
-   bare. */
+   The jump runs once on load and then comes to rest. At rest the field keeps
+   living — stars breathe and are retired and replaced — but nothing moves
+   across the grid, because below one block of travel per frame a star holds
+   still and then jumps a whole block, which is what made the old slow drift
+   stutter. Brightness has no such floor, so resting costs nothing to look at.
+   Under reduced motion a single static field is drawn instead. */
 
 (function () {
   var cover = document.querySelector('.cover');
@@ -4267,6 +4267,9 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
      quarter under that line whatever its length, so the decay bottoms out
      above it and the sequence stops while still gliding. */
   var ARRIVE_WARP = 0.55, CRUISE_ALPHA = 0.6;
+  /* at rest a star is a single block rather than a streak, so it needs more
+     weight than the moving field to read as the same starfield */
+  var REST_ALPHA = 1, REST_FLOOR = 0.3;
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -4285,7 +4288,9 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
 
   var W = 0, H = 0, cx = 0, cy = 0, maxR = 1, jolted = false;
   var stars = [];
-  var raf = 0, elapsed = 0, last = 0, running = false, seeded = false, held = false;
+  var raf = 0, elapsed = 0, last = 0, running = false, seeded = false;
+  var resting = false, restAcc = 0, motionless = false;
+  var REST_STEP = 0.07;                                // ~14 redraws a second at rest
 
   /* the starfield takes its colours from the live theme tokens, so the jump
      reads the same in dark as it does on paper */
@@ -4306,7 +4311,10 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
       return channels(cs.getPropertyValue(name) || '');
     });
     for (var i = 0; i < 3; i++) if (picked[i]) HUE[i] = picked[i];
-    styleCache = [];
+    for (i = 0; i < 3; i++) {
+      var parts = HUE[i].split(',');
+      RGB[i] = [parseInt(parts[0], 10) || 0, parseInt(parts[1], 10) || 0, parseInt(parts[2], 10) || 0];
+    }
   }
 
   function resize() {
@@ -4319,6 +4327,8 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     cy = H / 2;
     maxR = Math.sqrt(cx * cx + cy * cy) + 2;
     ctx.imageSmoothingEnabled = false;
+    img = ctx.createImageData(W, H);
+    data = img.data;
   }
 
   function star(r) {
@@ -4326,7 +4336,11 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
       a: Math.random() * Math.PI * 2,
       r: r,
       s: 0.45 + Math.random() * 1.15,                                  // speed
-      c: Math.random() < 0.72 ? 0 : (Math.random() < 0.7 ? 1 : 2)      // colour
+      c: Math.random() < 0.72 ? 0 : (Math.random() < 0.7 ? 1 : 2),     // colour
+      tw: Math.random() * Math.PI * 2,        // breath phase, used at rest
+      tr: 0.5 + Math.random() * 1.4,          // breath rate
+      fd: 1,                                  // 0 while being replaced
+      dy: false
     };
   }
 
@@ -4364,49 +4378,43 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     return inn * (1 - (1 - CRUISE_ALPHA) * d);
   }
 
-  /* Blocks are queued by colour and quantised alpha, then flushed a bucket at a
-     time. Setting fillStyle per block meant building and parsing a fresh rgba
-     string for every pixel — over a hundred thousand of them in one run, and
-     ~3700 in the frames either side of the jump, which is where it stuttered.
-     There are only BUCKETS x 3 possible colours, so they are built once. */
-  var BUCKETS = 32;
-  var queue = [], styleCache = [];
+  /* One fillRect per block meant thousands of canvas calls in the frames
+     either side of the jump. The field is written into a pixel buffer instead
+     and blitted once, so a frame is one canvas call whatever the star count.
+     Bytes are composited by hand because putImageData replaces rather than
+     blends, and overlapping streaks have to add up. */
+  var img = null, data = null;
+  var RGB = [[232, 89, 12], [184, 67, 10], [28, 25, 23]];
 
   function block(x, y, hueIdx, a) {
-    if (a <= 0.02 || x < -1 || y < -1 || x > W || y > H) return;
-    var q = a >= 1 ? BUCKETS - 1 : (a * BUCKETS) | 0;
-    var k = hueIdx * BUCKETS + q;
-    var arr = queue[k] || (queue[k] = []);
-    arr.push(x | 0, y | 0);
-  }
-
-  function flush() {
-    for (var k = 0; k < queue.length; k++) {
-      var arr = queue[k];
-      if (!arr || !arr.length) continue;
-      var style = styleCache[k];
-      if (!style) {
-        style = styleCache[k] =
-          'rgba(' + HUE[(k / BUCKETS) | 0] + ',' + ((k % BUCKETS) + 0.5) / BUCKETS + ')';
-      }
-      ctx.fillStyle = style;
-      for (var j = 0; j < arr.length; j += 2) ctx.fillRect(arr[j], arr[j + 1], 1, 1);
-      arr.length = 0;
+    x |= 0; y |= 0;
+    if (a <= 0.02 || x < 0 || y < 0 || x >= W || y >= H) return;
+    if (a > 1) a = 1;
+    var c = RGB[hueIdx], i = (y * W + x) * 4, da = data[i + 3] / 255;
+    if (da === 0) {
+      data[i] = c[0]; data[i + 1] = c[1]; data[i + 2] = c[2]; data[i + 3] = a * 255;
+      return;
     }
+    var oa = a + da * (1 - a), f = a / oa, g = da * (1 - a) / oa;
+    data[i]     = c[0] * f + data[i]     * g;
+    data[i + 1] = c[1] * f + data[i + 1] * g;
+    data[i + 2] = c[2] * f + data[i + 2] * g;
+    data[i + 3] = oa * 255;
   }
 
   function ring(radius, a) {
     if (radius < 1 || a <= 0.02) return;
+    ctx.fillStyle = 'rgba(' + HUE[0] + ',' + (a > 1 ? 1 : a) + ')';
     var step = 1.4 / radius;   // thinner ring, ~30% fewer blocks
     for (var t = 0; t < Math.PI * 2; t += step) {
-      block(cx + Math.cos(t) * radius, cy + Math.sin(t) * radius, 0, a);
+      ctx.fillRect((cx + Math.cos(t) * radius) | 0, (cy + Math.sin(t) * radius) | 0, 1, 1);
     }
   }
 
   function render(t, dt) {
     var w = warpAt(t);
     var alpha = alphaAt(t);
-    ctx.clearRect(0, 0, W, H);
+    data.fill(0);
 
     for (var i = 0; i < stars.length; i++) {
       var st = stars[i];
@@ -4433,7 +4441,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
       }
     }
 
-    flush();
+    ctx.putImageData(img, 0, 0);          // the whole field, in one call
 
     /* the jump itself: a bloom at the origin and one expanding pixel ring */
     var since = t - (CHARGE + SPOOL);
@@ -4446,7 +4454,6 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
       ctx.fillStyle = bloom;
       ctx.fillRect(cx - br, cy - br, br * 2, br * 2);   // only what the gradient covers
       ring(maxR * 1.15 * p, (1 - p) * 0.85 * alpha);
-      flush();
     }
   }
 
@@ -4476,17 +4483,23 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
       }
     }
 
-    render(t, dt);
-
-    /* the settled field is the last thing drawn; the loop stops here and the
-       pixels simply stay on the canvas until a replay, resize or theme flip */
-    if (elapsed >= TOTAL) {
-      running = false;
-      held = true;
-      announce();
-      button.disabled = false;
-      cover.classList.remove('is-warping');
-      return;
+    if (resting) {
+      /* a breath does not need 60fps, and redrawing less often keeps the page
+         idle enough to read on top of */
+      restAcc += dt;
+      if (restAcc >= REST_STEP) {
+        renderRest(restAcc);
+        restAcc = 0;
+      }
+    } else {
+      render(t, dt);
+      if (elapsed >= TOTAL) {               // arrived: hand over to the rest loop
+        resting = true;
+        restAcc = 0;
+        announce();
+        button.disabled = false;
+        cover.classList.remove('is-warping');
+      }
     }
     raf = requestAnimationFrame(frame);
   }
@@ -4497,6 +4510,52 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     if (window.CustomEvent) document.dispatchEvent(new CustomEvent('warp:held'));
   }
 
+  /* At rest nothing travels. Stars breathe, and a few at a time are retired
+     and replaced somewhere else, fading out and back in so the field keeps
+     populating without anything ever crossing the pixel grid a fraction at a
+     time. Redrawn a few times a second, which is all a breath needs. */
+  function renderRest(step) {
+    data.fill(0);
+    for (var i = 0; i < stars.length; i++) {
+      var st = stars[i];
+      st.tw += step * st.tr;
+
+      if (st.dy) {
+        st.fd -= step * 1.6;
+        if (st.fd <= 0) {                     // gone: come back somewhere new
+          st.fd = 0;
+          st.dy = false;
+          st.a = Math.random() * Math.PI * 2;
+          st.r = 6 + Math.random() * (maxR - 8);
+          st.c = Math.random() < 0.72 ? 0 : (Math.random() < 0.7 ? 1 : 2);
+          st.tr = 0.5 + Math.random() * 1.4;
+        }
+      } else if (st.fd < 1) {
+        st.fd = Math.min(1, st.fd + step * 1.2);
+      }
+
+      var mask = Math.min(1, Math.max(REST_FLOOR, (st.r / maxR - 0.06) / 0.32));
+      var breath = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(st.tw));
+      var a = REST_ALPHA * mask * breath * st.fd;
+      var bx = cx + Math.cos(st.a) * st.r, by = cy + Math.sin(st.a) * st.r;
+      block(bx, by, st.c, a);
+      if (a > 0.62) {                       // the brightest few get a tick of glow
+        block(bx + 1, by, st.c, a * 0.28);
+        block(bx - 1, by, st.c, a * 0.28);
+        block(bx, by + 1, st.c, a * 0.28);
+        block(bx, by - 1, st.c, a * 0.28);
+      }
+    }
+
+    /* retire roughly one star a second, so the field turns over slowly */
+    if (stars.length && Math.random() < step) {
+      var pick = stars[(Math.random() * stars.length) | 0];
+      if (!pick.dy && pick.fd === 1) pick.dy = true;
+    }
+
+    ctx.putImageData(img, 0, 0);
+  }
+
   /* pause leaves the pixels on the canvas; only the loop stops */
   function pause() {
     running = false;
@@ -4504,7 +4563,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   }
 
   function resume() {
-    if (running || held || !seeded) return;
+    if (running || motionless || !seeded) return;
     running = true;
     last = performance.now();
     raf = requestAnimationFrame(frame);
@@ -4516,7 +4575,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     resize();
     seed();
     running = true;
-    held = false;
+    resting = false;
     jolted = false;
     cover.classList.remove('is-jumped');
     button.disabled = true;
@@ -4533,10 +4592,11 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     resize();
     seed();
     elapsed = TOTAL;
-    held = true;
+    resting = true;
+    motionless = true;                      // no loop may start behind this
     cover.classList.add('is-jumped');
     canvas.classList.add('is-live');
-    render(TOTAL, 0.016);
+    renderRest(0);                          // step 0: draws, advances nothing
   }
 
   button.addEventListener('click', play);
@@ -4544,7 +4604,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   window.addEventListener('resize', function () {
     if (!seeded) return;
     resize();
-    if (!running) render(elapsed, 0.016);       // repaint the held field
+    if (!running) (resting ? renderRest(0) : render(elapsed, 0.016));
   });
 
   document.addEventListener('visibilitychange', function () {
@@ -4556,7 +4616,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   if (window.MutationObserver) {
     new MutationObserver(function () {
       readTheme();
-      if (!running && seeded) render(elapsed, 0.016);
+      if (!running && seeded) (resting ? renderRest(0) : render(elapsed, 0.016));
     }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   }
 
