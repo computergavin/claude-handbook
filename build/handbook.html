@@ -4216,9 +4216,9 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   var anchor = cover.querySelector('.cover__sub') || cover.querySelector('.cover__title');
   anchor.parentNode.insertBefore(button, anchor.nextSibling);
 
-  var W = 0, H = 0, cx = 0, cy = 0, maxR = 1;
+  var W = 0, H = 0, cx = 0, cy = 0, maxR = 1, jolted = false;
   var stars = [];
-  var raf = 0, start = 0, last = 0, running = false;
+  var raf = 0, elapsed = 0, last = 0, running = false;
 
   function resize() {
     var rect = cover.getBoundingClientRect();
@@ -4285,9 +4285,13 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   }
 
   function frame(now) {
-    var t = now - start;
+    /* elapsed accumulates from the frames actually delivered rather than from
+       the clock. On a phone the first frame can arrive a second or more after
+       play() — off the wall clock that skips the jump outright. */
     var dt = Math.min(0.05, (now - last) / 1000);
     last = now;
+    elapsed += dt * 1000;
+    var t = elapsed;
 
     if (t >= TOTAL) return stop();
 
@@ -4317,6 +4321,11 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
 
     /* the jump itself: a bloom at the origin and one expanding pixel ring */
     var since = t - (CHARGE + SPOOL);
+    if (!jolted && since > -60 && !reduce.matches) {
+      jolted = true;
+      cover.classList.add('is-warping');
+      window.setTimeout(function () { cover.classList.remove('is-warping'); }, JUMP + 200);
+    }
     if (since > 0 && since < 900) {
       var p = since / 900;
       var bloom = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR * 0.6);
@@ -4347,14 +4356,10 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
     running = true;
     button.disabled = true;
     canvas.classList.add('is-live');
-    start = last = performance.now();
+    elapsed = 0;
+    last = performance.now();
     raf = requestAnimationFrame(frame);
-    window.setTimeout(function () {
-      if (running && !reduce.matches) cover.classList.add('is-warping');
-    }, CHARGE + SPOOL - 60);
-    window.setTimeout(function () {
-      cover.classList.remove('is-warping');
-    }, CHARGE + SPOOL + JUMP + 200);
+    jolted = false;
   }
 
   button.addEventListener('click', play);
@@ -4364,7 +4369,17 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   });
 
   resize();
-  if (!reduce.matches) window.setTimeout(play, 260);
+
+  function autoplay() {
+    if (reduce.matches) return;          // the button stays the deliberate way in
+    if (H < 8 || W < 8) { window.setTimeout(autoplay, 400); return; }  // not laid out yet
+    play();
+  }
+
+  function armAutoplay() { window.setTimeout(function () { resize(); autoplay(); }, 220); }
+
+  if (document.readyState === 'complete') armAutoplay();
+  else window.addEventListener('load', armAutoplay);
 })();
 
 /* Theme toggle. Dark is the default and is set on <html> at build time, with a
