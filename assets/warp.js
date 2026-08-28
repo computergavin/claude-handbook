@@ -2,11 +2,12 @@
    scales it up with image-rendering: pixelated, so every star is a real pixel
    rather than a drawn square.
 
-   The jump runs once on load and then settles into cruise: the field stays on
-   the cover for good as its background, drifting slowly. Cruise is paused
-   whenever the cover scrolls off screen or the tab is hidden — the pixels stay
-   on the canvas, only the loop stops. Under reduced motion nothing animates,
-   but a single static field is still drawn, so the cover is never bare. */
+   The jump runs once on load and then holds: the settled field stays on the
+   cover as its background and the loop stops dead, so the page goes idle and
+   costs nothing to keep the stars there. Leaving it looping at 60fps to drift
+   was visible as a stutter the moment the motion slowed. Under reduced motion
+   nothing animates, but the same static field is drawn, so the cover is never
+   bare. */
 
 (function () {
   var cover = document.querySelector('.cover');
@@ -19,9 +20,13 @@
   var CHARGE = 700, SPOOL = 800, JUMP = 420, SETTLE = 1600;
   var TOTAL = CHARGE + SPOOL + JUMP + SETTLE;
 
-  /* what the field settles to and holds: a slow outward drift, dimmer than the
-     jump so it reads as background behind the type */
-  var CRUISE_WARP = 0.02, CRUISE_ALPHA = 0.6;
+  /* What the field settles to and holds. ARRIVE_WARP is a floor, not a crawl:
+     stars are drawn on a 4px grid, so below about one block of movement per
+     frame a star sits still for several frames and then jumps a whole block —
+     the field stutters instead of slowing. A cubic decay spends its last
+     quarter under that line whatever its length, so the decay bottoms out
+     above it and the sequence stops while still gliding. */
+  var ARRIVE_WARP = 0.55, CRUISE_ALPHA = 0.6;
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -40,7 +45,7 @@
 
   var W = 0, H = 0, cx = 0, cy = 0, maxR = 1, jolted = false;
   var stars = [];
-  var raf = 0, elapsed = 0, last = 0, running = false, seeded = false;
+  var raf = 0, elapsed = 0, last = 0, running = false, seeded = false, held = false;
 
   /* the starfield takes its colours from the live theme tokens, so the jump
      reads the same in dark as it does on paper */
@@ -95,7 +100,7 @@
   /* warp factor over the sequence: a tremor while charging, a cubed ramp while
      spooling, a hard spike on the jump, an eased coast down — then cruise */
   function warpAt(t) {
-    if (t >= TOTAL) return CRUISE_WARP;
+    if (t >= TOTAL) return ARRIVE_WARP;
     if (t < CHARGE) return 0.05 + 0.025 * Math.sin(t / 38);
     if (t < CHARGE + SPOOL) {
       var p = (t - CHARGE) / SPOOL;
@@ -106,7 +111,7 @@
       return 1.2 + 7.5 * Math.pow(j, 0.55);
     }
     var d = (t - CHARGE - SPOOL - JUMP) / SETTLE;
-    return CRUISE_WARP + 8.6 * Math.pow(1 - d, 3);
+    return ARRIVE_WARP + 8.6 * Math.pow(1 - d, 3);
   }
 
   /* fades up at the start, then down to the resting level — never to nothing */
@@ -209,19 +214,20 @@
     /* elapsed accumulates from the frames actually delivered rather than from
        the clock. On a phone the first frame can arrive a second or more after
        play() — off the wall clock that skips the jump outright. */
-    var dt = Math.min(0.05, (now - last) / 1000);
+    /* A long gap means the main thread was busy — a font swap reflow, a GC, an
+       extension reprocessing the DOM. Taking the whole gap as one step makes
+       the field lurch on the next frame, which reads as a freeze and then a
+       snap. Resync at a normal step instead and let the sequence run late. */
+    var raw = now - last;
     last = now;
+    var dt = raw > 120 ? 0.016 : Math.min(0.033, raw / 1000);
     if (elapsed < TOTAL) {
       elapsed += dt * 1000;
-      if (elapsed >= TOTAL) {                      // arrived: hold at cruise
-        elapsed = TOTAL;
-        button.disabled = false;
-        cover.classList.remove('is-warping');
-      }
+      if (elapsed >= TOTAL) elapsed = TOTAL;      // arrived: this frame is the held one
     }
 
     var t = elapsed;
-    if (!jolted && t > CHARGE + SPOOL - 60 && t < TOTAL) {
+    if (!jolted && t > CHARGE + SPOOL - 60 && t <= TOTAL) {
       jolted = true;
       cover.classList.add('is-jumped');       // the rule stays out from here on
       if (!reduce.matches) {
@@ -231,7 +237,24 @@
     }
 
     render(t, dt);
+
+    /* the settled field is the last thing drawn; the loop stops here and the
+       pixels simply stay on the canvas until a replay, resize or theme flip */
+    if (elapsed >= TOTAL) {
+      running = false;
+      held = true;
+      announce();
+      button.disabled = false;
+      cover.classList.remove('is-warping');
+      return;
+    }
     raf = requestAnimationFrame(frame);
+  }
+
+  /* the drive has arrived: whatever wants to wake up on that can listen */
+  function announce() {
+    window.__warpHeld = true;
+    if (window.CustomEvent) document.dispatchEvent(new CustomEvent('warp:held'));
   }
 
   /* pause leaves the pixels on the canvas; only the loop stops */
@@ -241,7 +264,7 @@
   }
 
   function resume() {
-    if (running || !seeded) return;
+    if (running || held || !seeded) return;
     running = true;
     last = performance.now();
     raf = requestAnimationFrame(frame);
@@ -253,6 +276,7 @@
     resize();
     seed();
     running = true;
+    held = false;
     jolted = false;
     cover.classList.remove('is-jumped');
     button.disabled = true;
@@ -269,6 +293,7 @@
     resize();
     seed();
     elapsed = TOTAL;
+    held = true;
     cover.classList.add('is-jumped');
     canvas.classList.add('is-live');
     render(TOTAL, 0.016);
@@ -309,7 +334,21 @@
     else play();
   }
 
-  function arm() { window.setTimeout(function () { resize(); autoplay(); }, 220); }
+  /* The webfonts arrive after load and relayout the whole book when they swap
+     in — a long task that would stall the animation mid-flight. Wait for them,
+     but never longer than it takes to notice. */
+  function arm() {
+    var started = false;
+    function go() {
+      if (started) return;
+      started = true;
+      window.setTimeout(function () { resize(); autoplay(); }, 220);
+    }
+    if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+      document.fonts.ready.then(go);
+      window.setTimeout(go, 2500);
+    } else go();
+  }
 
   if (document.readyState === 'complete') arm();
   else window.addEventListener('load', arm);

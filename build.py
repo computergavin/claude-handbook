@@ -137,7 +137,7 @@ def build() -> Path:
     css = (ASSETS / "book.css").read_text(encoding="utf-8")
     js = "\n".join(
         (ASSETS / name).read_text(encoding="utf-8")
-        for name in ("book.js", "warp.js", "theme.js")
+        for name in ("book.js", "warp.js", "theme.js", "credits.js")
     )
 
     md = markdown.Markdown(
