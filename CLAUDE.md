@@ -20,6 +20,11 @@ here on purpose: solo prose repo, no untrusted code runs, and the permission
 gate plus hooks cover the blast radius. Revisit if this repo ever executes
 fetched or third-party code.
 
+Never ask whether to commit. When work is ready, print the command instead — a
+bash block with `git add -A && git commit -m "..."` and nothing else. A `Stop`
+hook enforces this, but it fires after the message is already on screen, so the
+question still shows before the correction. Don't write it in the first place.
+
 ## House rules for the prose
 
 - **Assertions, not hedges.** "Hooks are deterministic" beats "hooks can be a good

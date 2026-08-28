@@ -1,8 +1,12 @@
 /* Cover warp jump. The canvas backing store is one pixel per block and CSS
    scales it up with image-rendering: pixelated, so every star is a real pixel
-   rather than a drawn square. It runs once on load and then stops — this is a
-   title card, not a screensaver — and re-runs on demand from the engage
-   button, which is also the only way to run it under reduced-motion. */
+   rather than a drawn square.
+
+   The jump runs once on load and then settles into cruise: the field stays on
+   the cover for good as its background, drifting slowly. Cruise is paused
+   whenever the cover scrolls off screen or the tab is hidden — the pixels stay
+   on the canvas, only the loop stops. Under reduced motion nothing animates,
+   but a single static field is still drawn, so the cover is never bare. */
 
 (function () {
   var cover = document.querySelector('.cover');
@@ -10,6 +14,33 @@
 
   var CELL = 4;                       // css px per pixel block
   var HUE = ['232,89,12', '184,67,10', '28,25,23'];   // orange, deep, ink
+
+  /* phase lengths, ms: tremble, spool up, the jump itself, coast down */
+  var CHARGE = 700, SPOOL = 800, JUMP = 420, SETTLE = 1600;
+  var TOTAL = CHARGE + SPOOL + JUMP + SETTLE;
+
+  /* what the field settles to and holds: a slow outward drift, dimmer than the
+     jump so it reads as background behind the type */
+  var CRUISE_WARP = 0.02, CRUISE_ALPHA = 0.6;
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  var canvas = document.createElement('canvas');
+  canvas.className = 'cover__warp';
+  canvas.setAttribute('aria-hidden', 'true');
+  cover.insertBefore(canvas, cover.firstChild);
+  var ctx = canvas.getContext('2d');
+
+  var button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'cover__engage';
+  button.innerHTML = '<span>&#9654;</span> engage warp drive';
+  var anchor = cover.querySelector('.cover__sub') || cover.querySelector('.cover__title');
+  anchor.parentNode.insertBefore(button, anchor.nextSibling);
+
+  var W = 0, H = 0, cx = 0, cy = 0, maxR = 1, jolted = false;
+  var stars = [];
+  var raf = 0, elapsed = 0, last = 0, running = false, seeded = false;
 
   /* the starfield takes its colours from the live theme tokens, so the jump
      reads the same in dark as it does on paper */
@@ -31,29 +62,6 @@
     });
     for (var i = 0; i < 3; i++) if (picked[i]) HUE[i] = picked[i];
   }
-
-  /* phase lengths, ms: tremble, spool up, the jump itself, coast down */
-  var CHARGE = 700, SPOOL = 800, JUMP = 420, SETTLE = 1600;
-  var TOTAL = CHARGE + SPOOL + JUMP + SETTLE;
-
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  var canvas = document.createElement('canvas');
-  canvas.className = 'cover__warp';
-  canvas.setAttribute('aria-hidden', 'true');
-  cover.insertBefore(canvas, cover.firstChild);
-  var ctx = canvas.getContext('2d');
-
-  var button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'cover__engage';
-  button.innerHTML = '<span>&#9654;</span> engage warp drive';
-  var anchor = cover.querySelector('.cover__sub') || cover.querySelector('.cover__title');
-  anchor.parentNode.insertBefore(button, anchor.nextSibling);
-
-  var W = 0, H = 0, cx = 0, cy = 0, maxR = 1, jolted = false;
-  var stars = [];
-  var raf = 0, elapsed = 0, last = 0, running = false;
 
   function resize() {
     var rect = cover.getBoundingClientRect();
@@ -80,11 +88,13 @@
     var count = Math.min(300, Math.max(90, Math.round(W * H / 26)));
     stars = [];
     for (var i = 0; i < count; i++) stars.push(star(Math.random() * maxR));
+    seeded = true;
   }
 
-  /* warp factor over the sequence: a tremor while charging, a cubed ramp
-     while spooling, a hard spike on the jump, then an eased coast down. */
+  /* warp factor over the sequence: a tremor while charging, a cubed ramp while
+     spooling, a hard spike on the jump, an eased coast down — then cruise */
   function warpAt(t) {
+    if (t >= TOTAL) return CRUISE_WARP;
     if (t < CHARGE) return 0.05 + 0.025 * Math.sin(t / 38);
     if (t < CHARGE + SPOOL) {
       var p = (t - CHARGE) / SPOOL;
@@ -95,14 +105,17 @@
       return 1.2 + 7.5 * Math.pow(j, 0.55);
     }
     var d = (t - CHARGE - SPOOL - JUMP) / SETTLE;
-    return 0.08 + 8.6 * Math.pow(1 - d, 3);
+    return CRUISE_WARP + 8.6 * Math.pow(1 - d, 3);
   }
 
+  /* fades up at the start, then down to the resting level — never to nothing */
   function alphaAt(t) {
+    if (t >= TOTAL) return CRUISE_ALPHA;
     var inn = Math.min(1, t / 260);
     var tail = CHARGE + SPOOL + JUMP + SETTLE * 0.45;
-    var out = t < tail ? 1 : Math.max(0, 1 - (t - tail) / (SETTLE * 0.55));
-    return inn * out;
+    if (t < tail) return inn;
+    var d = Math.min(1, (t - tail) / (SETTLE * 0.55));
+    return inn * (1 - (1 - CRUISE_ALPHA) * d);
   }
 
   function block(x, y, hue, a) {
@@ -119,17 +132,7 @@
     }
   }
 
-  function frame(now) {
-    /* elapsed accumulates from the frames actually delivered rather than from
-       the clock. On a phone the first frame can arrive a second or more after
-       play() — off the wall clock that skips the jump outright. */
-    var dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
-    elapsed += dt * 1000;
-    var t = elapsed;
-
-    if (t >= TOTAL) return stop();
-
+  function render(t, dt) {
     var w = warpAt(t);
     var alpha = alphaAt(t);
     ctx.clearRect(0, 0, W, H);
@@ -156,11 +159,6 @@
 
     /* the jump itself: a bloom at the origin and one expanding pixel ring */
     var since = t - (CHARGE + SPOOL);
-    if (!jolted && since > -60 && !reduce.matches) {
-      jolted = true;
-      cover.classList.add('is-warping');
-      window.setTimeout(function () { cover.classList.remove('is-warping'); }, JUMP + 200);
-    }
     if (since > 0 && since < 900) {
       var p = since / 900;
       var bloom = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR * 0.6);
@@ -170,17 +168,45 @@
       ctx.fillRect(0, 0, W, H);
       ring(maxR * 1.15 * p, (1 - p) * 0.85 * alpha);
     }
+  }
 
+  function frame(now) {
+    /* elapsed accumulates from the frames actually delivered rather than from
+       the clock. On a phone the first frame can arrive a second or more after
+       play() — off the wall clock that skips the jump outright. */
+    var dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (elapsed < TOTAL) {
+      elapsed += dt * 1000;
+      if (elapsed >= TOTAL) {                      // arrived: hold at cruise
+        elapsed = TOTAL;
+        button.disabled = false;
+        cover.classList.remove('is-warping');
+      }
+    }
+
+    var t = elapsed;
+    if (!jolted && t > CHARGE + SPOOL - 60 && t < TOTAL && !reduce.matches) {
+      jolted = true;
+      cover.classList.add('is-warping');
+      window.setTimeout(function () { cover.classList.remove('is-warping'); }, JUMP + 200);
+    }
+
+    render(t, dt);
     raf = requestAnimationFrame(frame);
   }
 
-  function stop() {
+  /* pause leaves the pixels on the canvas; only the loop stops */
+  function pause() {
     running = false;
     cancelAnimationFrame(raf);
-    ctx.clearRect(0, 0, W, H);
-    canvas.classList.remove('is-live');
-    cover.classList.remove('is-warping');
-    button.disabled = false;
+  }
+
+  function resume() {
+    if (running || !seeded) return;
+    running = true;
+    last = performance.now();
+    raf = requestAnimationFrame(frame);
   }
 
   function play() {
@@ -189,30 +215,53 @@
     resize();
     seed();
     running = true;
+    jolted = false;
     button.disabled = true;
     canvas.classList.add('is-live');
     elapsed = 0;
     last = performance.now();
     raf = requestAnimationFrame(frame);
-    jolted = false;
+  }
+
+  /* reduced motion: one static field, drawn once, so the cover still has a
+     background without anything ever moving */
+  function still() {
+    readTheme();
+    resize();
+    seed();
+    elapsed = TOTAL;
+    canvas.classList.add('is-live');
+    render(TOTAL, 0.016);
   }
 
   button.addEventListener('click', play);
-  window.addEventListener('resize', function () { if (running) resize(); });
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden && running) stop();
+
+  window.addEventListener('resize', function () {
+    if (!seeded) return;
+    resize();
+    if (!running) render(elapsed, 0.016);       // repaint the held field
   });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) pause(); else resume();
+  });
+
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (entries) {
+      if (entries[entries.length - 1].isIntersecting) resume(); else pause();
+    }, { threshold: 0 }).observe(cover);
+  }
 
   resize();
 
   function autoplay() {
-    if (reduce.matches) return;          // the button stays the deliberate way in
     if (H < 8 || W < 8) { window.setTimeout(autoplay, 400); return; }  // not laid out yet
-    play();
+    if (reduce.matches) still();                 // the button stays the way in
+    else play();
   }
 
-  function armAutoplay() { window.setTimeout(function () { resize(); autoplay(); }, 220); }
+  function arm() { window.setTimeout(function () { resize(); autoplay(); }, 220); }
 
-  if (document.readyState === 'complete') armAutoplay();
-  else window.addEventListener('load', armAutoplay);
+  if (document.readyState === 'complete') arm();
+  else window.addEventListener('load', arm);
 })();
