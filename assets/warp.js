@@ -13,6 +13,31 @@
   var cover = document.querySelector('.cover');
   if (!cover || !window.requestAnimationFrame) return;
 
+  /* ?warpdebug turns on a tiny on-page log, because a phone has no console
+     to read. Every call is guarded by DEBUG so the normal path pays nothing
+     but one boolean check per call site — no behaviour changes, nothing is
+     ever sent anywhere. */
+  var DEBUG = /(^|[?&])warpdebug(=|&|$)/.test(location.search);
+  var debugStart = 0, debugBox = null;
+  function debugLog(msg) {
+    if (!DEBUG) return;
+    if (!debugBox) {
+      debugStart = Date.now();
+      debugBox = document.createElement('div');
+      debugBox.id = 'warpdebug';
+      debugBox.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99999;' +
+        'max-height:46vh;overflow:auto;margin:0;padding:.5em .6em;' +
+        'background:rgba(10,8,6,.88);color:#7dffb0;' +
+        'font:10px/1.45 monospace;white-space:pre-wrap;pointer-events:auto;';
+      cover.appendChild(debugBox);
+    }
+    var line = document.createElement('div');
+    line.textContent = 'WARPBOOT +' + (Date.now() - debugStart) + 'ms ' + msg;
+    debugBox.appendChild(line);
+    debugBox.scrollTop = debugBox.scrollHeight;
+  }
+  debugLog('script running, readyState=' + document.readyState);
+
   var CELL = 4;                       // css px per pixel block
   var HUE = ['232,89,12', '184,67,10', '28,25,23'];   // orange, deep, ink
 
@@ -29,6 +54,8 @@
   var STAR_CAP = shortSide <= 480 ? 110 : (shortSide <= 820 ? 190 : 300);
   var MOBILE = shortSide <= 480 || lowCores || lowMem;
   if (MOBILE) STAR_CAP = Math.min(STAR_CAP, 130);
+  debugLog('shortSide=' + shortSide + ' MOBILE=' + MOBILE + ' STAR_CAP=' + STAR_CAP +
+    ' cores=' + navigator.hardwareConcurrency + ' mem=' + navigator.deviceMemory);
 
   /* phase lengths, ms: tremble, spool up, the jump itself, coast down */
   var CHARGE = 700, SPOOL = 800, JUMP = 420, SETTLE = 1600;
@@ -251,7 +278,12 @@
     }
   }
 
+  var firstFrame = true;
   function frame(now) {
+    if (DEBUG && firstFrame) {
+      firstFrame = false;
+      debugLog('first rAF tick, now=' + now.toFixed(1));
+    }
     /* elapsed accumulates from the frames actually delivered rather than from
        the clock. On a phone the first frame can arrive a second or more after
        play() — off the wall clock that skips the jump outright. */
@@ -294,6 +326,7 @@
     render(t, step);
     if (!arrived && elapsed >= TOTAL) {
       arrived = true;
+      debugLog('arrived: elapsed=' + elapsed.toFixed(0) + '/' + TOTAL);
       announce();
       button.disabled = false;
       cover.classList.remove('is-warping');
@@ -334,6 +367,15 @@
     elapsed = 0;
     last = performance.now();
     raf = requestAnimationFrame(frame);
+    debugLog('play() started, W=' + W + ' H=' + H);
+    /* a watchdog rather than another rAF: if the sequence stalls partway,
+       this still fires on the setTimeout clock even when rAF has stopped */
+    if (DEBUG) {
+      window.setTimeout(function () {
+        debugLog('watchdog +' + (TOTAL + 2000) + 'ms: elapsed=' + elapsed.toFixed(0) +
+          '/' + TOTAL + ' arrived=' + arrived + ' running=' + running);
+      }, TOTAL + 2000);
+    }
   }
 
   /* reduced motion: one static field, drawn once, so the cover still has a
@@ -349,6 +391,7 @@
     cover.classList.add('is-jumped');
     canvas.classList.add('is-live');
     render(TOTAL, 0.016);
+    debugLog('still() drawn (reduced motion), W=' + W + ' H=' + H);
   }
 
   button.addEventListener('click', play);
@@ -360,6 +403,7 @@
   });
 
   document.addEventListener('visibilitychange', function () {
+    debugLog('visibilitychange: hidden=' + document.hidden);
     if (document.hidden) { if (arrived) pause(); } else resume();
   });
 
@@ -374,7 +418,9 @@
 
   if (window.IntersectionObserver) {
     new IntersectionObserver(function (entries) {
-      if (entries[entries.length - 1].isIntersecting) resume();
+      var hit = entries[entries.length - 1].isIntersecting;
+      debugLog('IntersectionObserver: isIntersecting=' + hit);
+      if (hit) resume();
       else if (arrived) pause();          // never pause mid-sequence: the end unlocks things
     }, { threshold: 0 }).observe(cover);
   }
@@ -382,27 +428,34 @@
   resize();
 
   function autoplay() {
-    if (H < 8 || W < 8) { window.setTimeout(autoplay, 400); return; }  // not laid out yet
-    if (reduce.matches) still();                 // the button stays the way in
-    else play();
+    debugLog('autoplay() check W=' + W + ' H=' + H);
+    if (H < 8 || W < 8) { debugLog('not laid out yet, retry in 400ms'); window.setTimeout(autoplay, 400); return; }  // not laid out yet
+    debugLog('reduce.matches=' + reduce.matches);
+    if (reduce.matches) { debugLog('branch: still()'); still(); }               // the button stays the way in
+    else { debugLog('branch: play()'); play(); }
   }
 
   /* The webfonts arrive after load and relayout the whole book when they swap
      in — a long task that would stall the animation mid-flight. Wait for them,
      but never longer than it takes to notice. */
   function arm() {
+    debugLog('arm() entered');
     var started = false;
-    function go() {
+    function go(via) {
       if (started) return;
       started = true;
+      debugLog('fonts phase resolved via ' + via);
       window.setTimeout(function () { resize(); autoplay(); }, 220);
     }
     if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
-      document.fonts.ready.then(go);
-      window.setTimeout(go, 2500);
-    } else go();
+      document.fonts.ready.then(function () { go('fonts.ready'); });
+      window.setTimeout(function () { go('2500ms fallback'); }, 2500);
+    } else { debugLog('document.fonts unsupported'); go('no-fonts-api'); }
   }
 
-  if (document.readyState === 'complete') arm();
-  else window.addEventListener('load', arm);
+  if (document.readyState === 'complete') { debugLog('readyState already complete'); arm(); }
+  else {
+    debugLog('waiting for load event');
+    window.addEventListener('load', function () { debugLog('load event fired'); arm(); });
+  }
 })();

@@ -2,7 +2,17 @@
 
 **Read it: https://computergavin.github.io/claude-handbook/**
 
-A living handbook. Markdown chapters in, one self-contained HTML book out.
+A field handbook for agentic engineering — hooks, subagents, skills, prompting,
+evals, cost, security — written while doing the work, not after it. Claims about
+Claude Code and the API are checked against primary documentation and carry a
+verification date; lessons from real projects land as dated FIELD notes. These
+tools ship weekly, so the book treats staleness as a bug the build can catch.
+
+The repo is the other half of the argument: the `.claude/` directory — the
+hooks, subagents, and skills that maintain the book — is public on purpose.
+It is the workflow layer the chapters describe, running on the book itself.
+
+Markdown chapters in, one self-contained HTML book out.
 
 ```bash
 pip install -r requirements.txt
