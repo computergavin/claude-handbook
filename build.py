@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the handbook: chapters/*.md -> build/handbook.html (single self-contained file).
+"""Build the handbook: chapters/*.md -> index.html (single self-contained file).
 
 Usage:
     python build.py              # build once
@@ -28,6 +28,13 @@ ASSETS = ROOT / "assets"
 BUILD = ROOT / "build"
 
 CALLOUT_KINDS = {"warning", "caution", "note", "pattern", "field"}
+
+MOVED = """<!doctype html>
+<meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url=../">
+<title>Working With Claude</title>
+<a href="../">Open the handbook</a>
+"""
 
 
 # --------------------------------------------------------------------------
@@ -271,9 +278,15 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
 <script>{js}</script>
 </body></html>"""
 
-    BUILD.mkdir(exist_ok=True)
-    out = BUILD / "handbook.html"
+    # The book is the site: Pages serves this repo's root, so writing the
+    # output as index.html makes the published URL the repo's own address
+    # with no /build/handbook.html tail and no redirect hop through it.
+    out = ROOT / "index.html"
     out.write_text(doc, encoding="utf-8")
+
+    # The old path stays, generated, so links already shared keep landing.
+    BUILD.mkdir(exist_ok=True)
+    (BUILD / "handbook.html").write_text(MOVED, encoding="utf-8")
 
     print(f"  built {out}  ({len(chapters_html)} chapters, {len(doc) // 1024} KB)")
     if stale:
@@ -311,8 +324,8 @@ if __name__ == "__main__":
 
         class Handler(http.server.SimpleHTTPRequestHandler):
             def __init__(self, *a, **kw):
-                super().__init__(*a, directory=str(BUILD), **kw)
+                super().__init__(*a, directory=str(ROOT), **kw)
 
-        print("serving http://localhost:8000/handbook.html — Ctrl+C to stop")
+        print("serving http://localhost:8000/ — Ctrl+C to stop")
         with socketserver.TCPServer(("", 8000), Handler) as httpd:
             httpd.serve_forever()

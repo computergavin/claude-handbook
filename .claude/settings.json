@@ -43,7 +43,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'Handbook repo. Never edit build/handbook.html - it is generated. House rules and callout semantics are in CLAUDE.md; re-read before writing prose.'"
+            "command": "echo 'Handbook repo. Never edit index.html or build/ - both are generated. House rules and callout semantics are in CLAUDE.md; re-read before writing prose.'"
           }
         ]
       }

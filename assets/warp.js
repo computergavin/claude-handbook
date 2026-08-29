@@ -41,13 +41,13 @@
      that line and stays there. */
   var CRUISE_WARP = 0.45, CRUISE_ALPHA = 0.6;
 
-  /* Two different jobs, so two different speeds. The settle is watched, so it
-     bottoms out above the pixel grid and reads as a smooth arrival. The float
-     afterwards is background nobody is timing, so it eases down to something
-     much slower over the following seconds — the drift this had originally,
-     which was the point of it. */
-  var FLOAT_WARP = 0.05, FLOAT_EASE = 4000;
-  var floatWarp = CRUISE_WARP, sinceArrive = 0;
+  /* The drift used to ease down to a much slower float over the four seconds
+     after arrival. Held against the widened gate below it broke the floor the
+     line above describes: at 20 renders a second a star at radius 40 traveled
+     0.45 of a block per rendered frame and one at radius 100 traveled 0.99,
+     so the whole field froze and hopped a block every quarter second. Either
+     optimization is safe alone; the two are not safe together. The drift stays
+     at CRUISE_WARP. */
 
   /* Rendered at a fixed 60 a second whatever the display does. A 120Hz panel
      was halving the travel per frame, dropping the drift under the pixel grid
@@ -63,11 +63,11 @@
   var DRIFT_FRAME = MOBILE ? 1 / 10 : 1 / 24;
 
   /* The jump's visible streak length is the whole point of the burst; the
-     drift's is not — it collapses to one step anyway once FLOAT_WARP takes
-     over (see below). A phone doesn't need 32 samples to read as continuous
-     at 4px a block, so the cap that only ever binds during the burst (an
-     edge star under full warp) can drop by more than half there and cost
-     nothing the eye can find during the slow drift after. */
+     drift's is not — at cruise a step is a few blocks at most, well under the
+     cap. A phone doesn't need 32 samples to read as continuous at 4px a block,
+     so the cap that only ever binds during the burst (an edge star under full
+     warp) can drop by more than half there and cost nothing the eye can find
+     during the slow drift after. */
   var STEP_CAP = MOBILE ? 14 : 32;
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -148,7 +148,7 @@
   /* warp factor over the sequence: a tremor while charging, a cubed ramp while
      spooling, a hard spike on the jump, an eased coast down — then cruise */
   function warpAt(t) {
-    if (t >= TOTAL) return floatWarp;
+    if (t >= TOTAL) return CRUISE_WARP;
     if (t < CHARGE) return 0.05 + 0.025 * Math.sin(t / 38);
     if (t < CHARGE + SPOOL) {
       var p = (t - CHARGE) / SPOOL;
@@ -292,11 +292,6 @@
     }
 
     render(t, step);
-    if (elapsed >= TOTAL) {                 // ease the drift down out of sight
-      sinceArrive += step * 1000;
-      var e = Math.min(1, sinceArrive / FLOAT_EASE);
-      floatWarp = CRUISE_WARP + (FLOAT_WARP - CRUISE_WARP) * e * e;
-    }
     if (!arrived && elapsed >= TOTAL) {
       arrived = true;
       announce();
@@ -333,8 +328,6 @@
     running = true;
     arrived = false;
     jolted = false;
-    sinceArrive = 0;
-    floatWarp = CRUISE_WARP;
     cover.classList.remove('is-jumped');
     button.disabled = true;
     canvas.classList.add('is-live');

@@ -1,10 +1,12 @@
 # Working With Claude
 
+**Read it: https://computergavin.github.io/claude-handbook/**
+
 A living handbook. Markdown chapters in, one self-contained HTML book out.
 
 ```bash
 pip install -r requirements.txt
-python build.py --serve     # http://localhost:8000/handbook.html
+python build.py --serve     # http://localhost:8000/
 python build.py --watch     # rebuild on save
 ```
 
@@ -19,7 +21,8 @@ chapters/*.md        the book — front matter + markdown
 assets/book.css      the design
 assets/book.js       client-side search (indexes the DOM at load)
 build.py             renderer
-build/handbook.html  output — one file, no external assets except webfonts
+index.html           output — one file, no external assets except webfonts
+                     (published as-is; build/handbook.html redirects here)
 .claude/             skills, subagents and hooks for maintaining the book
 ```
 

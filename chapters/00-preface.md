@@ -46,7 +46,7 @@ tokens.
 
 ```bash
 pip install -r requirements.txt
-python build.py --serve     # http://localhost:8000/handbook.html
+python build.py --serve     # http://localhost:8000/
 python build.py --watch     # rebuild on every save
 ```
 

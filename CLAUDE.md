@@ -10,8 +10,12 @@ python build.py            # build once
 python build.py --watch    # rebuild on save
 ```
 
-Never hand-edit `build/handbook.html`. It is generated. Edit `chapters/*.md`,
-`assets/book.css`, or `assets/book.js` and rebuild.
+Never hand-edit `index.html` or anything under `build/`. Both are generated:
+`index.html` is the book, `build/handbook.html` a redirect kept for old links.
+Edit `chapters/*.md`, `assets/book.css`, or `assets/book.js` and rebuild.
+
+Pages serves this repo's root, so `index.html` is the published page. A build
+changes the live site the moment it is pushed.
 
 ## Session policy
 
