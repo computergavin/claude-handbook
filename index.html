@@ -2041,7 +2041,16 @@ watching the run, the incognito check, the extension bisect.</p>
 <p><strong>What changed.</strong> Debugging handoffs here now carry three things: the
 theories already disproven, so they are not relitigated; the single next
 measurement and the exact output it must produce; and access to the
-environment that shows the bug, not a secondhand account of it.</p></aside>
+environment that shows the bug, not a secondhand account of it.</p>
+<p><strong>Addendum, 2026-08-29.</strong> The same discipline closed two more bugs within a
+day — a mobile no-autoplay that turned out to be iOS Reduce Motion doing its
+job, and a first-paint flash of empty sky. Three for three, and twice the
+answer was outside the code. Same repo, same author, same day: correlated
+runs, not replication. The part that transfers is the third case — it was
+diagnosed and fixed by a subagent on a smaller model whose brief was little
+more than this note plus "every claim cites a line, every fix ships with its
+acceptance measurement." The discipline survives being handed down as a
+written constraint.</p></aside>
 <h2 id="prefilling-is-dead-migrate"><span class="rail" aria-hidden="true">7.5</span><span class="h2-text">Prefilling is dead — migrate</span></h2>
 <p>Prefilling the assistant turn (starting Claude's reply with <code>{</code> to force JSON, or
 "Here is the summary:" to kill preambles) was the classic format-control trick.

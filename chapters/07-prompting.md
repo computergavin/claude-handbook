@@ -129,6 +129,16 @@ Claude's own decomposition frequently exceeds what you would prescribe.
 > theories already disproven, so they are not relitigated; the single next
 > measurement and the exact output it must produce; and access to the
 > environment that shows the bug, not a secondhand account of it.
+>
+> **Addendum, 2026-08-29.** The same discipline closed two more bugs within a
+> day — a mobile no-autoplay that turned out to be iOS Reduce Motion doing its
+> job, and a first-paint flash of empty sky. Three for three, and twice the
+> answer was outside the code. Same repo, same author, same day: correlated
+> runs, not replication. The part that transfers is the third case — it was
+> diagnosed and fixed by a subagent on a smaller model whose brief was little
+> more than this note plus "every claim cites a line, every fix ships with its
+> acceptance measurement." The discipline survives being handed down as a
+> written constraint.
 
 ## Prefilling is dead — migrate
 
