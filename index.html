@@ -839,7 +839,7 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
     <div><dt>Compiled by</dt><dd>Gavin</dd></div>
     <div><dt>Edition</dt><dd>First edition</dd></div>
     <div><dt>Last updated</dt><dd>2026-08-28</dd></div>
-    <div><dt>Built</dt><dd>2026-08-28</dd></div>
+    <div><dt>Built</dt><dd>2026-08-29</dd></div>
     <div><dt>Chapters</dt><dd>21</dd></div>
   </dl>
   <p class="cover__note">This handbook describes tools that change monthly. Every chapter
@@ -1433,7 +1433,21 @@ graph, StoreKit compliance). Two agents independently converged on the same
 unlisted gap — no privacy-policy URL existed. When agents with disjoint briefs
 agree on a finding neither was asked about, that finding has effectively been
 verified twice for free. Promote convergent findings past the candidate stage;
-hold solo findings to the check-against-source rule.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch4"><p class="chapter__tab">04</p><header class="chapter__head"><h1>Hooks</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-28</span><span class="sources"><a href="https://code.claude.com/docs/en/hooks-guide">code.claude.com/docs/en/hooks-guide</a></span></p></header><p>Hooks are commands Claude Code runs at fixed points in its lifecycle. They exist so
+hold solo findings to the check-against-source rule.</p></aside>
+<aside class="callout callout--field"><p class="callout__label">2026-08-29 — Convergence proves nothing about a shared premise</p><p>A landing-page review fanned out four agents over one <code>BRIEF.md</code> carrying the
+orchestrator's own measurements. Two of those numbers were wrong: the brief put
+a section at y≈810 when it starts at 908, and a mobile form ending at y≈740 when
+it ends at 609. Three agents built findings on them and none pushed back. The
+fourth, whose claims rested on files on disk, measured the images itself with
+<code>sips</code> and rejected a brief premise outright. The variable is not credulity, it
+is whether independent verification was cheap for that agent: the orchestrator
+held the only browser, so re-measuring geometry was expensive and three agents
+took the numbers on trust. Convergence is free cross-validation only when the
+inputs are disjoint, and a shared brief is the most efficient way to correlate
+them. The human caught this, not the fan-out. That is one observation, not a
+frequency claim. The test that settles it: give one agent in the next fan-out no
+shared measurements and make it derive its own. If it reliably collides with the
+others, promote this to body text. If it never does, delete the note.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch4"><p class="chapter__tab">04</p><header class="chapter__head"><h1>Hooks</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-28</span><span class="sources"><a href="https://code.claude.com/docs/en/hooks-guide">code.claude.com/docs/en/hooks-guide</a></span></p></header><p>Hooks are commands Claude Code runs at fixed points in its lifecycle. They exist so
 that certain things always happen instead of depending on the model choosing to do
 them.</p>
 <p>That sentence is the whole chapter. Instructions are advisory; hooks are the control

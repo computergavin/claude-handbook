@@ -238,3 +238,19 @@ cheap to check — one more reason to demand structured returns.
 > agree on a finding neither was asked about, that finding has effectively been
 > verified twice for free. Promote convergent findings past the candidate stage;
 > hold solo findings to the check-against-source rule.
+
+> [!FIELD] 2026-08-29 — Convergence proves nothing about a shared premise
+> A landing-page review fanned out four agents over one `BRIEF.md` carrying the
+> orchestrator's own measurements. Two of those numbers were wrong: the brief put
+> a section at y≈810 when it starts at 908, and a mobile form ending at y≈740 when
+> it ends at 609. Three agents built findings on them and none pushed back. The
+> fourth, whose claims rested on files on disk, measured the images itself with
+> `sips` and rejected a brief premise outright. The variable is not credulity, it
+> is whether independent verification was cheap for that agent: the orchestrator
+> held the only browser, so re-measuring geometry was expensive and three agents
+> took the numbers on trust. Convergence is free cross-validation only when the
+> inputs are disjoint, and a shared brief is the most efficient way to correlate
+> them. The human caught this, not the fan-out. That is one observation, not a
+> frequency claim. The test that settles it: give one agent in the next fan-out no
+> shared measurements and make it derive its own. If it reliably collides with the
+> others, promote this to body text. If it never does, delete the note.
