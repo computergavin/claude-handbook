@@ -1,7 +1,7 @@
 ---
 title: Hooks
 status: stable
-verified: 2026-08-26
+verified: 2026-08-28
 sources:
   - https://code.claude.com/docs/en/hooks-guide
 ---
@@ -34,7 +34,10 @@ edit the JSON, or ask Claude to.
 
 ## The events that earn their keep
 
-There are roughly thirty. These are the ones worth setting up first.
+There are roughly thirty, and the roster grows most releases — `PermissionDenied`,
+`PostToolUseFailure`, `TaskCreated` / `TaskCompleted`, `ConfigChange` and the
+worktree pair are all recent arrivals. Read the lifecycle table before concluding
+the hook point you want doesn't exist. These are the ones worth setting up first.
 
 - `PreToolUse` — fires before a tool call and can block it. The security checkpoint.
 - `PostToolUse` — after success. Formatters, linters, logging.
@@ -42,7 +45,10 @@ There are roughly thirty. These are the ones worth setting up first.
 - `SessionStart` — matchers include `startup`, `resume`, `clear`, `compact`, `fork`.
 - `Stop` / `SubagentStop` — can refuse to let the turn end.
 - `PreCompact` / `PostCompact` — around context compaction.
-- `FileChanged` / `CwdChanged` — react to the filesystem, whatever wrote it.
+- `FileChanged` — a watched file changed on disk, whatever wrote it. The `matcher`
+  is a `|`-separated list of literal filenames, not a regex.
+- `CwdChanged` — the working directory moved, as when Claude runs `cd`. Pair it with
+  `SessionStart` for direnv-style environment reloading.
 - `PermissionRequest` — auto-approve or deny specific prompts.
 
 ## Enforcement, not suggestion
@@ -52,7 +58,9 @@ A hook returning `deny` blocks the tool even under `bypassPermissions` or
 `--dangerously-skip-permissions`.
 
 The reverse does not hold: a hook returning `allow` cannot loosen a deny rule from
-settings. Hooks tighten, never loosen.
+settings, and it cannot suppress the prompt for an MCP tool marked
+`requiresUserInteraction` or a connector tool your organization set to `ask`. Hooks
+tighten, never loosen.
 
 > [!WARNING] This is your last line of defense
 > Because a hook survives bypass mode, it is the only mechanism that holds when
@@ -64,13 +72,18 @@ settings. Hooks tighten, never loosen.
 Hooks read event JSON on stdin and answer through exit codes or structured stdout.
 
 - **Exit 0** — no objection. For `PreToolUse` this does *not* approve; the normal
-  permission flow still runs. For `UserPromptSubmit` and `SessionStart`, stdout is
-  added to Claude's context as plain text.
-- **Exit 2** — block. stderr becomes the feedback, usually shown to Claude so it can
-  adjust.
-- **Structured JSON on exit 0** — full control, including
-  `permissionDecision` of `allow` / `deny` / `ask`, and
-  `hookSpecificOutput.additionalContext` to inject text.
+  permission flow still runs. For `UserPromptSubmit`, `UserPromptExpansion`, and
+  `SessionStart`, stdout is added to Claude's context as plain text.
+- **Exit 2** — block. stderr becomes the feedback, but where it lands is per-event:
+  most feed it to Claude so it can adjust, `SessionStart` and a few others show it to
+  the user and continue anyway, and `ConfigChange` and `Elicitation` surface no
+  message at all. Check the per-event table before relying on a block being seen.
+- **Structured JSON on exit 0** — full control, including `permissionDecision` of
+  `allow` / `deny` / `ask`, plus `defer` in `-p` mode, which exits with the tool call
+  preserved so an SDK wrapper can collect input and resume. When several hooks answer,
+  the most restrictive wins: `deny`, then `defer`, then `ask`, then `allow`. Inject
+  text with `additionalContext`, and nest it inside `hookSpecificOutput` — at the top
+  level it is silently ignored.
 
 Pick one style per hook. Mixing exit-2 and JSON produces surprises.
 
@@ -113,7 +126,9 @@ adapts rather than retrying.
 > [!CAUTION] The Stop hook block cap
 > Claude Code overrides a `Stop` hook after it blocks eight consecutive times without
 > progress. Parse `stop_hook_active` from stdin and exit early when it's true, or the
-> loop burns tokens and then dies anyway.
+> loop burns tokens and then dies anyway. Raise the cap with
+> `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` only when a hook genuinely needs more iterations
+> to converge — it is a cap on a runaway loop, not a budget to spend.
 
 ## Debugging
 

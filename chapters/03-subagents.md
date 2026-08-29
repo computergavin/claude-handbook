@@ -1,7 +1,7 @@
 ---
 title: Subagents
 status: draft
-verified: 2026-08-26
+verified: 2026-08-28
 sources:
   - https://code.claude.com/docs/en/sub-agents
   - https://www.anthropic.com/engineering/multi-agent-research-system
@@ -66,29 +66,52 @@ Fields worth knowing beyond the obvious:
   spawn subagents of its own while the depth limit allows it — but the
   `Agent(agent_type)` syntax that restricts *which* types can be spawned only applies
   to an agent running as the main thread via `claude --agent`. Inside a subagent's
-  own `tools` field, any type list in the parentheses is ignored.
+  own `tools` field, any type list in the parentheses is ignored. In an interactive
+  session this is usually moot: background is the default there, and the background
+  tool set has no `Agent` in it, so the subagent can't delegate whatever you list.
 - `model` — `sonnet`, `opus`, `haiku`, `fable`, a full model ID, or `inherit` (the
-  default).
+  default). `CLAUDE_CODE_SUBAGENT_MODEL` overrides it, and a per-invocation model
+  overrides the field too, so a definition's `model` is the weakest of the three.
 - `effort` — `low`, `medium`, `high`, `xhigh`, or `max`. Effort is a knob separate
   from model choice: a Sonnet agent at `low` effort is the cheapest worker you can
   field.
 - `maxTurns` — hard cap on agentic turns before the agent stops. Set it on anything
-  that could loop.
+  that could loop. Hitting it marks the output partial and returns an agent ID, so
+  the work can be resumed rather than restarted.
 - `skills` — skills preloaded into the agent's context at startup, with their full
   content injected rather than merely made available.
-- `hooks` — lifecycle hooks scoped to only this subagent while it runs.
+- `hooks` — lifecycle hooks scoped to only this subagent while it runs. Plugin-loaded
+  subagents ignore this field, along with `mcpServers` and `permissionMode` — silently,
+  so a plugin agent you thought was fenced isn't.
+- `permissionMode` — `default`, `acceptEdits`, `auto`, `dontAsk`, `bypassPermissions`,
+  `plan`, or `manual`, set per agent rather than per session.
+- `mcpServers` — server names, or inline definitions. The narrow way to give one agent
+  a server without attaching it to everything.
+- `isolation: worktree` — runs the agent in its own git worktree on a temporary branch.
+  This is the fan-out pattern below, made structural instead of instructed.
 - `memory` — `user`, `project`, or `local`. Gives the agent a persistent directory;
   the first 200 lines / 25KB of its `MEMORY.md` are injected into its system prompt
   each run. A reviewer agent that remembers past false positives is a different
   tool than one that starts amnesiac.
 - `background: true` — keeps the agent in the background even when Claude wants it
   foreground.
+- `color`, `initialPrompt`, `experimental` — display color in the task list; a first
+  turn auto-submitted when the agent runs as the main session; and a map whose
+  `cacheTtl` (`5m` or `1h`) is worth setting on an agent you resume repeatedly.
 
 Definitions resolve by precedence: managed settings, then the `--agents` CLI flag,
 then `.claude/agents/` (project, commit it), then `~/.claude/agents/` (personal,
 every project), then plugin agents. Same name, higher location wins. Both agent
-directories are scanned recursively, and edits are picked up within seconds — no
-restart, except for the first agent in a brand-new `agents/` directory.
+directories are scanned recursively, and edits are picked up within seconds. Three
+cases still need a restart: the first agent in a brand-new `agents/` directory, any
+agent under a path added with `--add-dir` (those are never watched), and any session
+started with `--disable-slash-commands`.
+
+Delegation is not the only way in. `@agent-<name>` guarantees a specific subagent
+runs rather than leaving the choice to Claude; `claude --agent <name>` or the `agent`
+setting gives a whole session that agent's prompt, tools, and model; and
+`--agents '<json>'` defines one inline for a single session, which is how you test a
+definition before committing it.
 
 > [!PATTERN] Builder / verifier split
 > The verifier's power comes entirely from not having watched the code get written.
@@ -101,9 +124,11 @@ restart, except for the first agent in a brand-new `agents/` directory.
 Context isolation is precise, and knowing the exact boundary changes how you write
 delegations. A subagent starts with its own system prompt, the delegation message
 Claude writes, the full CLAUDE.md hierarchy, and a git-status snapshot from parent
-session start. It does not get the conversation history, the main session's auto
-memory, or anything the main session has read. The built-in Explore and Plan agents
-skip even CLAUDE.md and git status — they are cheaper to start but blinder.
+session start, and a roster of the other named agents in the session. It does not get
+the conversation history, the main session's auto memory, your output style, or
+anything the main session has read — including skills invoked earlier in the session,
+which it has to rediscover. The built-in Explore and Plan agents skip even CLAUDE.md
+and git status — they are cheaper to start but blinder.
 
 The economics follow from that boundary. Anthropic's multi-agent research post
 reports that agents use about 4× the tokens of a chat interaction, and multi-agent
@@ -133,7 +158,9 @@ Three shapes cover almost every multi-agent job:
 
 **Fan-out with disjoint file ownership.** For a batch change that cross-cuts many
 files, dispatch N agents that each own a non-overlapping set of files, forbid them
-from committing or building, and run exactly one integration build afterward.
+from committing or building, and run exactly one integration build afterward. Where
+the agents would collide anyway, `isolation: worktree` gives each its own checkout
+and makes the partition a property of the filesystem rather than of your prompt.
 Partition by file, never by finding: findings overlap on shared files and produce
 write collisions; file ownership guarantees zero collisions by construction. The
 integration build exists to catch *your* edits too — in one project's fleet runs, the
@@ -173,8 +200,10 @@ Foreground agents block the conversation; background agents run concurrently and
 report back when done. Backgrounding is the default when fork mode is on (delegation to forks that
 inherit the main conversation's context), and any agent can opt in permanently
 with `background: true`. Two limits to know: 20
-concurrent subagents (raise with `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) and a
-spawn depth of 3 (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Background agents also
+concurrent subagents (raise with `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`; sessions
+running at ultracode effort are exempt) and a spawn depth of 3
+(`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`), at which point the `Agent` tool is withheld
+outright. Background agents also
 run with a reduced built-in tool set — file tools, Bash, web tools, and messaging
 survive; interactive tools don't — and their permission prompts surface in the main
 session, so a background agent that needs approvals will stall silently until you

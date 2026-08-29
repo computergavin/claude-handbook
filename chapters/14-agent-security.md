@@ -1,12 +1,13 @@
 ---
 title: Agent security
 status: draft
-verified: 2026-08-26
+verified: 2026-08-28
 sources:
   - https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/
   - https://arxiv.org/abs/2503.18813
   - https://owasp.org/www-project-top-10-for-large-language-model-applications/
   - https://code.claude.com/docs/en/security
+  - https://code.claude.com/docs/en/permission-modes
   - https://code.claude.com/docs/en/sandboxing
   - https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices
   - https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
@@ -105,11 +106,17 @@ Read and one fetch tool. It does not need Bash, your mail MCP server, or write
 access outside its output directory. Every tool you leave attached is a
 capability you have granted to whoever wrote the page it reads.
 
-**Human approval gates on irreversible actions.** Deterministic gates, not
-instructions. This handbook's hooks chapter covers the mechanics. The property that matters
-here is that a `PreToolUse` hook returning deny blocks the tool even under
-`--dangerously-skip-permissions`. Instructions are advisory and
-injectable. Hooks are neither.
+**Deterministic gates on irreversible actions.** Check which gate you actually
+have. On Pro, Max, and Team plans the starting permission mode is `auto`, where
+a second model — the classifier — reviews actions instead of you. That is a real
+defense, and it is not the one most people picture: nobody is reading every
+command. The gate that holds regardless is a `PreToolUse` hook returning deny,
+which blocks the tool in every permission mode, `auto` and
+`--dangerously-skip-permissions` included. This handbook's hooks chapter covers
+the mechanics. Instructions are advisory and injectable. Hooks are neither — in
+one direction. A hook returning allow cannot loosen a deny rule, and cannot
+suppress the prompt for an MCP tool marked `requiresUserInteraction`. Hooks
+tighten.
 
 > [!FIELD] The push guardrail — 2026-08-26
 > **What happened.** Repeated close calls with agents treating "commit" as
@@ -120,7 +127,10 @@ injectable. Hooks are neither.
 >
 > **What changed.** A machine-level `PreToolUse` hook now blocks `git push`
 > without explicit per-action approval, and the hooks directory itself is
-> off-limits to the agent — a guardrail the agent can edit is a suggestion.
+> off-limits to the agent: `Edit` and `Write` deny rules on `.claude/hooks/**`,
+> which hold in every permission mode, rather than the built-in protected-path
+> prompt, which `bypassPermissions` waves through. A guardrail the agent can
+> edit is a suggestion.
 
 **Treat fetched content as data, not instructions.** Do this structurally
 where you can. Fetch in one process, extract the fields you need with plain
@@ -132,24 +142,47 @@ never lands directly in the main agent's context.
 
 **Sandboxing and egress control.** The trifecta's third leg is the easiest to
 amputate mechanically. Claude Code's Bash sandbox enforces OS-level isolation
-(Seatbelt on macOS, bubblewrap plus a network proxy on Linux) and routes all
-egress through a domain allowlist:
+(Seatbelt on macOS, bubblewrap plus a network proxy on Linux and WSL2) and
+routes egress through a domain allowlist. It does nothing until you turn it on —
+`/sandbox`, or `sandbox.enabled`:
 
 ```json
 {
   "sandbox": {
-    "network": { "allowedDomains": ["api.github.com", "*.npmjs.org"] }
+    "enabled": true,
+    "network": {
+      "tlsTerminate": {},
+      "allowedDomains": ["api.github.com", "*.npmjs.org"]
+    },
+    "credentials": {
+      "envVars": [
+        { "name": "GH_TOKEN", "mode": "mask", "injectHosts": ["api.github.com"] }
+      ]
+    }
   }
 }
 ```
 
-A command that tries to POST your data to `attacker.example` never connects. A
-lesser-known layer sits on top. Credential masking (`"mode": "mask"` under
-`sandbox.credentials`) shows sandboxed commands a per-session sentinel instead
-of the real token, and the sandbox proxy substitutes the real value only on
-requests to listed `injectHosts`. The command never holds the credential at
-all, and neither does anything injected into it, which weakens leg 1 as well
-as leg 3.
+A command that tries to POST your data to `attacker.example` never connects — as
+long as the allowlist stays narrow. The proxy decides from the hostname the
+client supplies and does not terminate TLS by default, so allowing something
+broad like `github.com` opens a channel; the docs name domain fronting
+explicitly. An allowlist is a fence, not a seal.
+
+Credential masking is the layer on top. A `mask` entry shows sandboxed commands
+a per-session sentinel instead of the real token, and the proxy substitutes the
+real value on the way out. Scope that substitution with `injectHosts`: an entry
+without one is substituted on requests to every domain in `allowedDomains`,
+which is wider than most people intend. Masking also needs
+`network.tlsTerminate`, because the proxy has to see inside a request to rewrite
+it. Without it the sentinel reaches the server unchanged and authentication
+fails — nothing leaks, but nothing works either, and Claude Code reports the
+misconfiguration at startup. Mind where the config lives: masking authorizes the
+proxy to send your real credential, so Claude Code honors `mask` entries only
+from user settings, managed settings, or `--settings`, and ignores them in a
+repository's `.claude/settings.json`. The command never holds the credential at
+all, and neither does anything injected into it, which weakens leg 1 as well as
+leg 3.
 
 ## Defenses that don't hold
 

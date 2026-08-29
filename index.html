@@ -838,7 +838,7 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
   <dl class="cover__plate">
     <div><dt>Compiled by</dt><dd>Gavin</dd></div>
     <div><dt>Edition</dt><dd>First edition</dd></div>
-    <div><dt>Last updated</dt><dd>2026-08-26</dd></div>
+    <div><dt>Last updated</dt><dd>2026-08-28</dd></div>
     <div><dt>Built</dt><dd>2026-08-28</dd></div>
     <div><dt>Chapters</dt><dd>21</dd></div>
   </dl>
@@ -1236,7 +1236,7 @@ levers, all of which this handbook already institutionalizes: compaction
 (above), structured notes outside the window (auto memory, handoff docs), and
 subagents that burn their own context and return a 1,000–2,000-token summary
 — see Subagents. Long-horizon capacity is not a bigger window; it is a
-discipline about what never enters the window at all.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch3"><p class="chapter__tab">03</p><header class="chapter__head"><h1>Subagents</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/en/sub-agents">code.claude.com/docs/en/sub-agents</a> · <a href="https://www.anthropic.com/engineering/multi-agent-research-system">www.anthropic.com/engineering/multi-agent-research-s</a></span></p></header><p>A subagent is a separate Claude Code session you delegate a task to, with its
+discipline about what never enters the window at all.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch3"><p class="chapter__tab">03</p><header class="chapter__head"><h1>Subagents</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-28</span><span class="sources"><a href="https://code.claude.com/docs/en/sub-agents">code.claude.com/docs/en/sub-agents</a> · <a href="https://www.anthropic.com/engineering/multi-agent-research-system">www.anthropic.com/engineering/multi-agent-research-s</a></span></p></header><p>A subagent is a separate Claude Code session you delegate a task to, with its
 own context window, its own system prompt, and optionally its own tool
 allowlist and model. It reports back a summary. Everything it read to produce that summary stays
 behind.</p>
@@ -1288,29 +1288,51 @@ Never edit a file. Never suggest an approach. Report and stop.
   spawn subagents of its own while the depth limit allows it — but the
   <code>Agent(agent_type)</code> syntax that restricts <em>which</em> types can be spawned only applies
   to an agent running as the main thread via <code>claude --agent</code>. Inside a subagent's
-  own <code>tools</code> field, any type list in the parentheses is ignored.</li>
+  own <code>tools</code> field, any type list in the parentheses is ignored. In an interactive
+  session this is usually moot: background is the default there, and the background
+  tool set has no <code>Agent</code> in it, so the subagent can't delegate whatever you list.</li>
 <li><code>model</code> — <code>sonnet</code>, <code>opus</code>, <code>haiku</code>, <code>fable</code>, a full model ID, or <code>inherit</code> (the
-  default).</li>
+  default). <code>CLAUDE_CODE_SUBAGENT_MODEL</code> overrides it, and a per-invocation model
+  overrides the field too, so a definition's <code>model</code> is the weakest of the three.</li>
 <li><code>effort</code> — <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, or <code>max</code>. Effort is a knob separate
   from model choice: a Sonnet agent at <code>low</code> effort is the cheapest worker you can
   field.</li>
 <li><code>maxTurns</code> — hard cap on agentic turns before the agent stops. Set it on anything
-  that could loop.</li>
+  that could loop. Hitting it marks the output partial and returns an agent ID, so
+  the work can be resumed rather than restarted.</li>
 <li><code>skills</code> — skills preloaded into the agent's context at startup, with their full
   content injected rather than merely made available.</li>
-<li><code>hooks</code> — lifecycle hooks scoped to only this subagent while it runs.</li>
+<li><code>hooks</code> — lifecycle hooks scoped to only this subagent while it runs. Plugin-loaded
+  subagents ignore this field, along with <code>mcpServers</code> and <code>permissionMode</code> — silently,
+  so a plugin agent you thought was fenced isn't.</li>
+<li><code>permissionMode</code> — <code>default</code>, <code>acceptEdits</code>, <code>auto</code>, <code>dontAsk</code>, <code>bypassPermissions</code>,
+  <code>plan</code>, or <code>manual</code>, set per agent rather than per session.</li>
+<li><code>mcpServers</code> — server names, or inline definitions. The narrow way to give one agent
+  a server without attaching it to everything.</li>
+<li><code>isolation: worktree</code> — runs the agent in its own git worktree on a temporary branch.
+  This is the fan-out pattern below, made structural instead of instructed.</li>
 <li><code>memory</code> — <code>user</code>, <code>project</code>, or <code>local</code>. Gives the agent a persistent directory;
   the first 200 lines / 25KB of its <code>MEMORY.md</code> are injected into its system prompt
   each run. A reviewer agent that remembers past false positives is a different
   tool than one that starts amnesiac.</li>
 <li><code>background: true</code> — keeps the agent in the background even when Claude wants it
   foreground.</li>
+<li><code>color</code>, <code>initialPrompt</code>, <code>experimental</code> — display color in the task list; a first
+  turn auto-submitted when the agent runs as the main session; and a map whose
+  <code>cacheTtl</code> (<code>5m</code> or <code>1h</code>) is worth setting on an agent you resume repeatedly.</li>
 </ul>
 <p>Definitions resolve by precedence: managed settings, then the <code>--agents</code> CLI flag,
 then <code>.claude/agents/</code> (project, commit it), then <code>~/.claude/agents/</code> (personal,
 every project), then plugin agents. Same name, higher location wins. Both agent
-directories are scanned recursively, and edits are picked up within seconds — no
-restart, except for the first agent in a brand-new <code>agents/</code> directory.</p>
+directories are scanned recursively, and edits are picked up within seconds. Three
+cases still need a restart: the first agent in a brand-new <code>agents/</code> directory, any
+agent under a path added with <code>--add-dir</code> (those are never watched), and any session
+started with <code>--disable-slash-commands</code>.</p>
+<p>Delegation is not the only way in. <code>@agent-&lt;name&gt;</code> guarantees a specific subagent
+runs rather than leaving the choice to Claude; <code>claude --agent &lt;name&gt;</code> or the <code>agent</code>
+setting gives a whole session that agent's prompt, tools, and model; and
+<code>--agents '&lt;json&gt;'</code> defines one inline for a single session, which is how you test a
+definition before committing it.</p>
 <aside class="callout callout--pattern"><p class="callout__label">Builder / verifier split</p><p>The verifier's power comes entirely from not having watched the code get written.
 If it inherits the builder's reasoning it will inherit the builder's blind spots.
 Give it read-only tools so it physically cannot "just fix it" and collapse the two
@@ -1319,9 +1341,11 @@ roles back together.</p></aside>
 <p>Context isolation is precise, and knowing the exact boundary changes how you write
 delegations. A subagent starts with its own system prompt, the delegation message
 Claude writes, the full CLAUDE.md hierarchy, and a git-status snapshot from parent
-session start. It does not get the conversation history, the main session's auto
-memory, or anything the main session has read. The built-in Explore and Plan agents
-skip even CLAUDE.md and git status — they are cheaper to start but blinder.</p>
+session start, and a roster of the other named agents in the session. It does not get
+the conversation history, the main session's auto memory, your output style, or
+anything the main session has read — including skills invoked earlier in the session,
+which it has to rediscover. The built-in Explore and Plan agents skip even CLAUDE.md
+and git status — they are cheaper to start but blinder.</p>
 <p>The economics follow from that boundary. Anthropic's multi-agent research post
 reports that agents use about 4× the tokens of a chat interaction, and multi-agent
 systems about 15× — you are buying fresh context windows, and they are not free.
@@ -1343,7 +1367,9 @@ the delegation: "return the exact error strings, not a description of them."</p>
 <p>Three shapes cover almost every multi-agent job:</p>
 <p><strong>Fan-out with disjoint file ownership.</strong> For a batch change that cross-cuts many
 files, dispatch N agents that each own a non-overlapping set of files, forbid them
-from committing or building, and run exactly one integration build afterward.
+from committing or building, and run exactly one integration build afterward. Where
+the agents would collide anyway, <code>isolation: worktree</code> gives each its own checkout
+and makes the partition a property of the filesystem rather than of your prompt.
 Partition by file, never by finding: findings overlap on shared files and produce
 write collisions; file ownership guarantees zero collisions by construction. The
 integration build exists to catch <em>your</em> edits too — in one project's fleet runs, the
@@ -1375,8 +1401,10 @@ discipline, enforced by schema instead of prompt.</p></aside>
 report back when done. Backgrounding is the default when fork mode is on (delegation to forks that
 inherit the main conversation's context), and any agent can opt in permanently
 with <code>background: true</code>. Two limits to know: 20
-concurrent subagents (raise with <code>CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS</code>) and a
-spawn depth of 3 (<code>CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH</code>). Background agents also
+concurrent subagents (raise with <code>CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS</code>; sessions
+running at ultracode effort are exempt) and a spawn depth of 3
+(<code>CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH</code>), at which point the <code>Agent</code> tool is withheld
+outright. Background agents also
 run with a reduced built-in tool set — file tools, Bash, web tools, and messaging
 survive; interactive tools don't — and their permission prompts surface in the main
 session, so a background agent that needs approvals will stall silently until you
@@ -1405,7 +1433,7 @@ graph, StoreKit compliance). Two agents independently converged on the same
 unlisted gap — no privacy-policy URL existed. When agents with disjoint briefs
 agree on a finding neither was asked about, that finding has effectively been
 verified twice for free. Promote convergent findings past the candidate stage;
-hold solo findings to the check-against-source rule.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch4"><p class="chapter__tab">04</p><header class="chapter__head"><h1>Hooks</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://code.claude.com/docs/en/hooks-guide">code.claude.com/docs/en/hooks-guide</a></span></p></header><p>Hooks are commands Claude Code runs at fixed points in its lifecycle. They exist so
+hold solo findings to the check-against-source rule.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch4"><p class="chapter__tab">04</p><header class="chapter__head"><h1>Hooks</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-28</span><span class="sources"><a href="https://code.claude.com/docs/en/hooks-guide">code.claude.com/docs/en/hooks-guide</a></span></p></header><p>Hooks are commands Claude Code runs at fixed points in its lifecycle. They exist so
 that certain things always happen instead of depending on the model choosing to do
 them.</p>
 <p>That sentence is the whole chapter. Instructions are advisory; hooks are the control
@@ -1451,7 +1479,10 @@ change — all hooks.</p></aside>
 <p><code>/hooks</code> lists everything currently registered, grouped by event. It's read-only —
 edit the JSON, or ask Claude to.</p>
 <h2 id="the-events-that-earn-their-keep"><span class="rail" aria-hidden="true">4.2</span><span class="h2-text">The events that earn their keep</span></h2>
-<p>There are roughly thirty. These are the ones worth setting up first.</p>
+<p>There are roughly thirty, and the roster grows most releases — <code>PermissionDenied</code>,
+<code>PostToolUseFailure</code>, <code>TaskCreated</code> / <code>TaskCompleted</code>, <code>ConfigChange</code> and the
+worktree pair are all recent arrivals. Read the lifecycle table before concluding
+the hook point you want doesn't exist. These are the ones worth setting up first.</p>
 <ul>
 <li><code>PreToolUse</code> — fires before a tool call and can block it. The security checkpoint.</li>
 <li><code>PostToolUse</code> — after success. Formatters, linters, logging.</li>
@@ -1459,7 +1490,10 @@ edit the JSON, or ask Claude to.</p>
 <li><code>SessionStart</code> — matchers include <code>startup</code>, <code>resume</code>, <code>clear</code>, <code>compact</code>, <code>fork</code>.</li>
 <li><code>Stop</code> / <code>SubagentStop</code> — can refuse to let the turn end.</li>
 <li><code>PreCompact</code> / <code>PostCompact</code> — around context compaction.</li>
-<li><code>FileChanged</code> / <code>CwdChanged</code> — react to the filesystem, whatever wrote it.</li>
+<li><code>FileChanged</code> — a watched file changed on disk, whatever wrote it. The <code>matcher</code>
+  is a <code>|</code>-separated list of literal filenames, not a regex.</li>
+<li><code>CwdChanged</code> — the working directory moved, as when Claude runs <code>cd</code>. Pair it with
+  <code>SessionStart</code> for direnv-style environment reloading.</li>
 <li><code>PermissionRequest</code> — auto-approve or deny specific prompts.</li>
 </ul>
 <h2 id="enforcement-not-suggestion"><span class="rail" aria-hidden="true">4.3</span><span class="h2-text">Enforcement, not suggestion</span></h2>
@@ -1467,7 +1501,9 @@ edit the JSON, or ask Claude to.</p>
 A hook returning <code>deny</code> blocks the tool even under <code>bypassPermissions</code> or
 <code>--dangerously-skip-permissions</code>.</p>
 <p>The reverse does not hold: a hook returning <code>allow</code> cannot loosen a deny rule from
-settings. Hooks tighten, never loosen.</p>
+settings, and it cannot suppress the prompt for an MCP tool marked
+<code>requiresUserInteraction</code> or a connector tool your organization set to <code>ask</code>. Hooks
+tighten, never loosen.</p>
 <aside class="callout callout--warning"><p class="callout__label">This is your last line of defense</p><p>Because a hook survives bypass mode, it is the only mechanism that holds when
 someone — including you at 1am — decides to skip permissions to move faster. Put
 the genuinely destructive commands here and nowhere else.</p></aside>
@@ -1475,13 +1511,18 @@ the genuinely destructive commands here and nowhere else.</p></aside>
 <p>Hooks read event JSON on stdin and answer through exit codes or structured stdout.</p>
 <ul>
 <li><strong>Exit 0</strong> — no objection. For <code>PreToolUse</code> this does <em>not</em> approve; the normal
-  permission flow still runs. For <code>UserPromptSubmit</code> and <code>SessionStart</code>, stdout is
-  added to Claude's context as plain text.</li>
-<li><strong>Exit 2</strong> — block. stderr becomes the feedback, usually shown to Claude so it can
-  adjust.</li>
-<li><strong>Structured JSON on exit 0</strong> — full control, including
-  <code>permissionDecision</code> of <code>allow</code> / <code>deny</code> / <code>ask</code>, and
-  <code>hookSpecificOutput.additionalContext</code> to inject text.</li>
+  permission flow still runs. For <code>UserPromptSubmit</code>, <code>UserPromptExpansion</code>, and
+  <code>SessionStart</code>, stdout is added to Claude's context as plain text.</li>
+<li><strong>Exit 2</strong> — block. stderr becomes the feedback, but where it lands is per-event:
+  most feed it to Claude so it can adjust, <code>SessionStart</code> and a few others show it to
+  the user and continue anyway, and <code>ConfigChange</code> and <code>Elicitation</code> surface no
+  message at all. Check the per-event table before relying on a block being seen.</li>
+<li><strong>Structured JSON on exit 0</strong> — full control, including <code>permissionDecision</code> of
+  <code>allow</code> / <code>deny</code> / <code>ask</code>, plus <code>defer</code> in <code>-p</code> mode, which exits with the tool call
+  preserved so an SDK wrapper can collect input and resume. When several hooks answer,
+  the most restrictive wins: <code>deny</code>, then <code>defer</code>, then <code>ask</code>, then <code>allow</code>. Inject
+  text with <code>additionalContext</code>, and nest it inside <code>hookSpecificOutput</code> — at the top
+  level it is silently ignored.</li>
 </ul>
 <p>Pick one style per hook. Mixing exit-2 and JSON produces surprises.</p>
 <h2 id="beyond-shell"><span class="rail" aria-hidden="true">4.5</span><span class="h2-text">Beyond shell</span></h2>
@@ -1515,7 +1556,9 @@ matches <code>.env</code>, <code>.git/</code>, or a lockfile. The blocked reason
 adapts rather than retrying.</p>
 <aside class="callout callout--caution"><p class="callout__label">The Stop hook block cap</p><p>Claude Code overrides a <code>Stop</code> hook after it blocks eight consecutive times without
 progress. Parse <code>stop_hook_active</code> from stdin and exit early when it's true, or the
-loop burns tokens and then dies anyway.</p></aside>
+loop burns tokens and then dies anyway. Raise the cap with
+<code>CLAUDE_CODE_STOP_HOOK_BLOCK_CAP</code> only when a hook genuinely needs more iterations
+to converge — it is a cap on a runaway loop, not a budget to spend.</p></aside>
 <h2 id="debugging"><span class="rail" aria-hidden="true">4.7</span><span class="h2-text">Debugging</span></h2>
 <div class="codehilite"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">'{"tool_name":"Bash","tool_input":{"command":"ls"}}'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>./my-hook.sh<span class="p">;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$?</span>
 claude<span class="w"> </span>--debug-file<span class="w"> </span>/tmp/claude.log<span class="w">      </span><span class="c1"># then: tail -f /tmp/claude.log</span>
@@ -2478,7 +2521,7 @@ retrieval structurally can't. The decision rule: vector store for one-shot looku
 scale, long context for small corpora, agentic search for questions that require
 reading and reasoning across documents.</p>
 <p>Nothing above has been run against the quote-generator yet. When it is, the recall@k
-numbers land here as a dated field note, and this chapter earns <code>stable</code>.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch11"><p class="chapter__tab">11</p><header class="chapter__head"><h1>Agent security</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-26</span><span class="sources"><a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">simonwillison.net/2025/Jun/16/the-lethal-trifecta/</a> · <a href="https://arxiv.org/abs/2503.18813">arxiv.org/abs/2503.18813</a> · <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">owasp.org/www-project-top-10-for-large-language-mode</a> · <a href="https://code.claude.com/docs/en/security">code.claude.com/docs/en/security</a> · <a href="https://code.claude.com/docs/en/sandboxing">code.claude.com/docs/en/sandboxing</a> · <a href="https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices">modelcontextprotocol.io/specification/2025-06-18/bas</a> · <a href="https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks">invariantlabs.ai/blog/mcp-security-notification-tool</a></span></p></header><p>An agent that reads untrusted content will eventually follow instructions hidden
+numbers land here as a dated field note, and this chapter earns <code>stable</code>.</p><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch11"><p class="chapter__tab">11</p><header class="chapter__head"><h1>Agent security</h1><p class="chapter__meta"><span class="tag tag--draft">draft</span><span class="verified">verified 2026-08-28</span><span class="sources"><a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">simonwillison.net/2025/Jun/16/the-lethal-trifecta/</a> · <a href="https://arxiv.org/abs/2503.18813">arxiv.org/abs/2503.18813</a> · <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">owasp.org/www-project-top-10-for-large-language-mode</a> · <a href="https://code.claude.com/docs/en/security">code.claude.com/docs/en/security</a> · <a href="https://code.claude.com/docs/en/permission-modes">code.claude.com/docs/en/permission-modes</a> · <a href="https://code.claude.com/docs/en/sandboxing">code.claude.com/docs/en/sandboxing</a> · <a href="https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices">modelcontextprotocol.io/specification/2025-06-18/bas</a> · <a href="https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks">invariantlabs.ai/blog/mcp-security-notification-tool</a></span></p></header><p>An agent that reads untrusted content will eventually follow instructions hidden
 in it, so security comes from limiting what the agent <em>can do</em> when that happens
 — never from hoping it won't.</p>
 <p>Every scraper pipeline in your stack qualifies as a target: lead-gen tools feed
@@ -2555,18 +2598,27 @@ cron-driven scrapers run in.</p>
 Read and one fetch tool. It does not need Bash, your mail MCP server, or write
 access outside its output directory. Every tool you leave attached is a
 capability you have granted to whoever wrote the page it reads.</p>
-<p><strong>Human approval gates on irreversible actions.</strong> Deterministic gates, not
-instructions. This handbook's hooks chapter covers the mechanics. The property that matters
-here is that a <code>PreToolUse</code> hook returning deny blocks the tool even under
-<code>--dangerously-skip-permissions</code>. Instructions are advisory and
-injectable. Hooks are neither.</p>
+<p><strong>Deterministic gates on irreversible actions.</strong> Check which gate you actually
+have. On Pro, Max, and Team plans the starting permission mode is <code>auto</code>, where
+a second model — the classifier — reviews actions instead of you. That is a real
+defense, and it is not the one most people picture: nobody is reading every
+command. The gate that holds regardless is a <code>PreToolUse</code> hook returning deny,
+which blocks the tool in every permission mode, <code>auto</code> and
+<code>--dangerously-skip-permissions</code> included. This handbook's hooks chapter covers
+the mechanics. Instructions are advisory and injectable. Hooks are neither — in
+one direction. A hook returning allow cannot loosen a deny rule, and cannot
+suppress the prompt for an MCP tool marked <code>requiresUserInteraction</code>. Hooks
+tighten.</p>
 <aside class="callout callout--field"><p class="callout__label">The push guardrail — 2026-08-26</p><p><strong>What happened.</strong> Repeated close calls with agents treating "commit" as
 implying "push" on public repos.</p>
 <p><strong>Why it happened.</strong> Instructions drift out of context; an injected or merely
 overeager agent follows the local gradient toward "finish the job."</p>
 <p><strong>What changed.</strong> A machine-level <code>PreToolUse</code> hook now blocks <code>git push</code>
 without explicit per-action approval, and the hooks directory itself is
-off-limits to the agent — a guardrail the agent can edit is a suggestion.</p></aside>
+off-limits to the agent: <code>Edit</code> and <code>Write</code> deny rules on <code>.claude/hooks/**</code>,
+which hold in every permission mode, rather than the built-in protected-path
+prompt, which <code>bypassPermissions</code> waves through. A guardrail the agent can
+edit is a suggestion.</p></aside>
 <p><strong>Treat fetched content as data, not instructions.</strong> Do this structurally
 where you can. Fetch in one process, extract the fields you need with plain
 code, and hand the model only the extracted fields. When the model must see
@@ -2576,22 +2628,44 @@ internally: web fetch runs in an isolated context window so page content
 never lands directly in the main agent's context.</p>
 <p><strong>Sandboxing and egress control.</strong> The trifecta's third leg is the easiest to
 amputate mechanically. Claude Code's Bash sandbox enforces OS-level isolation
-(Seatbelt on macOS, bubblewrap plus a network proxy on Linux) and routes all
-egress through a domain allowlist:</p>
+(Seatbelt on macOS, bubblewrap plus a network proxy on Linux and WSL2) and
+routes egress through a domain allowlist. It does nothing until you turn it on —
+<code>/sandbox</code>, or <code>sandbox.enabled</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">"sandbox"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"network"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"allowedDomains"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"api.github.com"</span><span class="p">,</span><span class="w"> </span><span class="s2">"*.npmjs.org"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="nt">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"network"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"tlsTerminate"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">      </span><span class="nt">"allowedDomains"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"api.github.com"</span><span class="p">,</span><span class="w"> </span><span class="s2">"*.npmjs.org"</span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"credentials"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"envVars"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GH_TOKEN"</span><span class="p">,</span><span class="w"> </span><span class="nt">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mask"</span><span class="p">,</span><span class="w"> </span><span class="nt">"injectHosts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"api.github.com"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 
-<p>A command that tries to POST your data to <code>attacker.example</code> never connects. A
-lesser-known layer sits on top. Credential masking (<code>"mode": "mask"</code> under
-<code>sandbox.credentials</code>) shows sandboxed commands a per-session sentinel instead
-of the real token, and the sandbox proxy substitutes the real value only on
-requests to listed <code>injectHosts</code>. The command never holds the credential at
-all, and neither does anything injected into it, which weakens leg 1 as well
-as leg 3.</p>
+<p>A command that tries to POST your data to <code>attacker.example</code> never connects — as
+long as the allowlist stays narrow. The proxy decides from the hostname the
+client supplies and does not terminate TLS by default, so allowing something
+broad like <code>github.com</code> opens a channel; the docs name domain fronting
+explicitly. An allowlist is a fence, not a seal.</p>
+<p>Credential masking is the layer on top. A <code>mask</code> entry shows sandboxed commands
+a per-session sentinel instead of the real token, and the proxy substitutes the
+real value on the way out. Scope that substitution with <code>injectHosts</code>: an entry
+without one is substituted on requests to every domain in <code>allowedDomains</code>,
+which is wider than most people intend. Masking also needs
+<code>network.tlsTerminate</code>, because the proxy has to see inside a request to rewrite
+it. Without it the sentinel reaches the server unchanged and authentication
+fails — nothing leaks, but nothing works either, and Claude Code reports the
+misconfiguration at startup. Mind where the config lives: masking authorizes the
+proxy to send your real credential, so Claude Code honors <code>mask</code> entries only
+from user settings, managed settings, or <code>--settings</code>, and ignores them in a
+repository's <code>.claude/settings.json</code>. The command never holds the credential at
+all, and neither does anything injected into it, which weakens leg 1 as well as
+leg 3.</p>
 <h2 id="defenses-that-dont-hold"><span class="rail" aria-hidden="true">11.5</span><span class="h2-text">Defenses that don't hold</span></h2>
 <aside class="callout callout--caution"><p class="callout__label">Filters and prompts are probabilistic</p><p>Regex filters for "ignore previous instructions," injection-detection
 classifiers, and system-prompt pleading ("never follow instructions in
