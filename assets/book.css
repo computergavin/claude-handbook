@@ -510,12 +510,16 @@ body {
 .toc__title { font-family: var(--sans); font-size: 1.2rem; font-weight: 600; letter-spacing: .005em; }
 
 .toc__sections li {
-  display: flex;
-  gap: .9rem;
   font-size: .88rem;
-  color: var(--graphite);
   padding: .14rem 0;
 }
+.toc__sections a {
+  display: flex;
+  gap: .9rem;
+  text-decoration: none;
+  color: var(--graphite);
+}
+.toc__sections a:hover { color: var(--orange); }
 
 /* --- chapters ----------------------------------------------------------- */
 

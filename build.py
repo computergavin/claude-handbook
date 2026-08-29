@@ -125,10 +125,12 @@ def number_sections(chapter_html: str, chapter_no: int) -> tuple[str, list]:
     def repl(match: re.Match) -> str:
         counter["n"] += 1
         num = f"{chapter_no}.{counter['n']}"
+        sec_id = f"s{chapter_no}-{counter['n']}"
         attrs, text = match.group(1), match.group(2)
-        entries.append((num, re.sub(r"<[^>]+>", "", text)))
+        attrs = re.sub(r'\s+id="[^"]*"', "", attrs)
+        entries.append((num, re.sub(r"<[^>]+>", "", text), sec_id))
         return (
-            f'<h2{attrs}><span class="rail" aria-hidden="true">{num}</span>'
+            f'<h2 id="{sec_id}"{attrs}><span class="rail" aria-hidden="true">{num}</span>'
             f'<span class="h2-text">{text}</span></h2>'
         )
 
@@ -214,7 +216,8 @@ def build() -> Path:
         )
 
         subs = "".join(
-            f'<li><span class="toc__num">{n}</span>{html.escape(t)}</li>' for n, t in sections
+            f'<li><a href="#{sid}"><span class="toc__num">{n}</span>{html.escape(t)}</a></li>'
+            for n, t, sid in sections
         )
         toc_html.append(
             f'<li class="toc__chapter"><a href="#{chapter_id}">'
