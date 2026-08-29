@@ -1,0 +1,51 @@
+# License
+
+This repository is licensed in two parts, because it is two things.
+
+## The book — CC BY 4.0
+
+Everything under `chapters/`, plus `book.json` and the rendered `index.html`, is
+licensed under the Creative Commons Attribution 4.0 International License. You
+may copy, quote, adapt, translate, and build on it, including commercially, so
+long as you credit the source and say if you changed it.
+
+To view a copy of this license, visit https://creativecommons.org/licenses/by/4.0/
+
+Suggested attribution:
+
+> "Working With Claude" by Gavin Jordan, CC BY 4.0 —
+> https://computergavin.github.io/claude-handbook/
+
+## The machinery — MIT
+
+`build.py`, everything under `assets/`, and everything under `.claude/` are
+licensed under the MIT License:
+
+Copyright (c) 2026 Gavin Jordan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## What these licenses do not cover
+
+The handbook is distilled from primary documentation and quotes it in places.
+Material quoted from Anthropic's documentation, or from any other source cited
+in a chapter's `sources`, belongs to its owner and is used here under fair use /
+fair dealing. Those quotes are not relicensed by anything above — if you reuse
+them, go to the source. Product names and trademarks belong to their owners;
+this is an independent handbook and is not affiliated with or endorsed by
+Anthropic.

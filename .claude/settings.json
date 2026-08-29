@@ -3,6 +3,8 @@
     "deny": [
       "Edit(.claude/hooks/**)",
       "Write(.claude/hooks/**)",
+      "Write(index.html)",
+      "Edit(index.html)",
       "Edit(build/**)",
       "Write(build/**)"
     ],

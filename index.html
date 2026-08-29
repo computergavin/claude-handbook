@@ -4752,7 +4752,15 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   toggle.className = 'playtoggle';
   toggle.title = 'Target practice';
   toggle.setAttribute('aria-label', 'Target practice');
-  toggle.textContent = '⌖';
+  /* Drawn, not typed. U+2316 — the crosshair this was — is outside every
+     subset Google serves for IBM Plex, so painting it sent the browser
+     through a system-wide font fallback search. This button's first paint is
+     the frame the drive arrives on, which put that search on top of the
+     settling starfield: the field froze, then the button appeared. Once per
+     load, which is why a replayed jump never showed it. */
+  toggle.innerHTML = '<svg viewBox="0 0 20 20" width="1em" height="1em" fill="none" '
+    + 'stroke="currentColor" stroke-width="1.4" aria-hidden="true" focusable="false">'
+    + '<circle cx="10" cy="10" r="5"/><path d="M10 1v4M10 15v4M1 10h4M15 10h4"/></svg>';
 
   document.body.appendChild(canvas);
   document.body.appendChild(hud);

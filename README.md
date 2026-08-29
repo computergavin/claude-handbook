@@ -57,3 +57,11 @@ sources:
 - `/capture-lesson` — file whatever just happened as a dated field note
 - `handbook-researcher` subagent — re-verify a chapter against primary sources
 - `/handbook-audit <path>` — audit a repo's Claude-workflow setup against the book
+
+## License
+
+The book (`chapters/`, `book.json`, the rendered `index.html`) is
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — quote it, adapt it,
+translate it, sell it, just credit it. The machinery (`build.py`, `assets/`,
+`.claude/`) is MIT. Material quoted from Anthropic's docs or any other cited
+source belongs to its owner and is not relicensed by either. See [LICENSE](LICENSE).
