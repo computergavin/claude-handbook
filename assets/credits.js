@@ -24,7 +24,7 @@
   var px = -99, py = -99, raf = 0, bursts = [];
 
   /* getComputedStyle(document.documentElement) forces a style recalc across
-     all 21 chapters. draw() used to pay that twice a frame for two values
+     the whole book. draw() used to pay that twice a frame for two values
      that only move on a theme flip. Read them once and cache them. */
   var colOrange = '#e8590c', colInk = '#1c1917';
 
@@ -73,7 +73,7 @@
   window.setTimeout(unlock, 8000);
 
   /* --- the target field: a word is found under the shot, not marked up in
-         advance. Wrapping every word in 21 chapters would cost more than the
+         advance. Wrapping every word in the book would cost more than the
          whole book; caretRangeFromPoint finds the one that was actually hit. */
 
   function caretAt(x, y) {

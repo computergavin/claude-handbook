@@ -137,7 +137,7 @@ body {
    book. The overlay minigame wraps a hit word in display: inline-block,
    which invalidates layout for its line — without containment, the browser
    has to consider whether that changes anything below it, all the way to
-   the last of 21 chapters. Layout containment stops that walk at the sheet's
+   the last chapter. Layout containment stops that walk at the sheet's
    own border box. It is deliberately not `paint`: the die-cut tab overlaps
    the top edge by 1px on purpose, and paint containment clips that overlap
    (box-shadow itself is unaffected — only a box's own overflowing
@@ -783,7 +783,7 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
     box-shadow: none;
     background: none;
     /* Containment earns its keep on screen, where a shot has to not reflow
-       21 chapters. Printing has no shots and no scrolling, so it buys
+       the whole book. Printing has no shots and no scrolling, so it buys
        nothing here — and a contained box is one more thing between a
        chapter and the page break it needs. Drop it. */
     contain: none;

@@ -158,6 +158,7 @@ def build() -> Path:
     toc_html: list[str] = []
     stale: list[str] = []
     last_updated: date | None = None
+    numbered = 0  # chapters that get a number — the preface doesn't count
 
     for idx, filename in enumerate(book["chapters"]):
         path = CHAPTERS / filename
@@ -192,6 +193,8 @@ def build() -> Path:
 
         chapter_id = f"ch{idx}"
         num_label = "—" if idx == 0 else f"{idx:02d}"
+        if idx:
+            numbered += 1
 
         meta_bits = [f'<span class="tag tag--{html.escape(status)}">{html.escape(status)}</span>']
         if verified:
@@ -259,7 +262,7 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
     <div><dt>Edition</dt><dd>{html.escape(book.get("edition", ""))}</dd></div>
     <div><dt>Last updated</dt><dd>{last_updated.isoformat() if last_updated else "&mdash;"}</dd></div>
     <div><dt>Built</dt><dd>{date.today().isoformat()}</dd></div>
-    <div><dt>Chapters</dt><dd>{len(chapters_html)}</dd></div>
+    <div><dt>Chapters</dt><dd>{numbered}</dd></div>
   </dl>
   <p class="cover__note">This handbook describes tools that change monthly. Every chapter
   carries a verification date. Anything older than 90 days is suspect until re-checked
@@ -291,7 +294,7 @@ if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)
     BUILD.mkdir(exist_ok=True)
     (BUILD / "handbook.html").write_text(MOVED, encoding="utf-8")
 
-    print(f"  built {out}  ({len(chapters_html)} chapters, {len(doc) // 1024} KB)")
+    print(f"  built {out}  ({numbered} chapters + preface, {len(doc) // 1024} KB)")
     if stale:
         print("  stale (>90 days since verified): " + ", ".join(stale))
     return out

@@ -3,7 +3,7 @@
 
    The script tag sits right after the last chapter, so a synchronous walk
    here runs inline during initial parsing, over every h2/h3/p/li/pre/td in
-   21 chapters, before the browser can finish the page and paint it. None of
+   every chapter, before the browser can finish the page and paint it. None of
    that work is needed until someone actually searches, so it is built once,
    lazily, the first time the box is touched — with an idle-time warm-up so
    it is usually already done by then instead of stalling that first

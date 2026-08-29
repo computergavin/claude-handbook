@@ -147,7 +147,7 @@ body {
    book. The overlay minigame wraps a hit word in display: inline-block,
    which invalidates layout for its line — without containment, the browser
    has to consider whether that changes anything below it, all the way to
-   the last of 21 chapters. Layout containment stops that walk at the sheet's
+   the last chapter. Layout containment stops that walk at the sheet's
    own border box. It is deliberately not `paint`: the die-cut tab overlaps
    the top edge by 1px on purpose, and paint containment clips that overlap
    (box-shadow itself is unaffected — only a box's own overflowing
@@ -793,7 +793,7 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
     box-shadow: none;
     background: none;
     /* Containment earns its keep on screen, where a shot has to not reflow
-       21 chapters. Printing has no shots and no scrolling, so it buys
+       the whole book. Printing has no shots and no scrolling, so it buys
        nothing here — and a contained box is one more thing between a
        chapter and the page break it needs. Drop it. */
     contain: none;
@@ -848,7 +848,7 @@ td { padding: .5rem .6rem; padding-left: 0; border-bottom: 1px dashed var(--rule
     <div><dt>Edition</dt><dd>First edition</dd></div>
     <div><dt>Last updated</dt><dd>2026-08-28</dd></div>
     <div><dt>Built</dt><dd>2026-08-29</dd></div>
-    <div><dt>Chapters</dt><dd>21</dd></div>
+    <div><dt>Chapters</dt><dd>20</dd></div>
   </dl>
   <p class="cover__note">This handbook describes tools that change monthly. Every chapter
   carries a verification date. Anything older than 90 days is suspect until re-checked
@@ -4237,7 +4237,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
 
    The script tag sits right after the last chapter, so a synchronous walk
    here runs inline during initial parsing, over every h2/h3/p/li/pre/td in
-   21 chapters, before the browser can finish the page and paint it. None of
+   every chapter, before the browser can finish the page and paint it. None of
    that work is needed until someone actually searches, so it is built once,
    lazily, the first time the box is touched — with an idle-time warm-up so
    it is usually already done by then instead of stalling that first
@@ -4969,7 +4969,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   var px = -99, py = -99, raf = 0, bursts = [];
 
   /* getComputedStyle(document.documentElement) forces a style recalc across
-     all 21 chapters. draw() used to pay that twice a frame for two values
+     the whole book. draw() used to pay that twice a frame for two values
      that only move on a theme flip. Read them once and cache them. */
   var colOrange = '#e8590c', colInk = '#1c1917';
 
@@ -5018,7 +5018,7 @@ claim to one of the other two tiers.</p></aside><a class="chapter__back" href="#
   window.setTimeout(unlock, 8000);
 
   /* --- the target field: a word is found under the shot, not marked up in
-         advance. Wrapping every word in 21 chapters would cost more than the
+         advance. Wrapping every word in the book would cost more than the
          whole book; caretRangeFromPoint finds the one that was actually hit. */
 
   function caretAt(x, y) {
