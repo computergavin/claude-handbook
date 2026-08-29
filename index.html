@@ -2006,6 +2006,28 @@ for most models, but call out Claude Opus 5 as the one exception that self-check
 unprompted, where carrying the instruction over just adds tokens and latency. Check
 which way a new model moved before touching either instruction — don't assume
 "current models" as a class behave like either extreme.</p></aside>
+<aside class="callout callout--field"><p class="callout__label">Specify the next measurement, not the next theory — 2026-08-28</p><p><strong>What happened.</strong> A cover animation froze for a second, on one machine only,
+on the first run after load only. A day of sessions prompted as "figure out
+the lag" produced three confident diagnoses — GC, pixel-grid quantization,
+120Hz frame doubling — all plausible, all wrong, none tested on the machine
+that showed the bug. The session that closed it was constrained differently:
+the handoff listed the dead theories, pinned the next step to one measurement
+with a named output (a <code>FRAMES</code> line of real rAF gaps), and handed the agent
+the failing environment itself — browser control of the affected Chrome
+profile rather than a description of the symptom. Four falsifiable questions
+later the bug was found in an hour, and it was never in the code: a security
+extension's one-time DOM sweep blocked the main thread for 900ms.</p>
+<p><strong>Why.</strong> "Figure out the lag" has no acceptance criterion, so the model
+satisfies it the cheapest way available: a coherent theory. Theories are
+cheap to produce and expensive to disprove, and a session that cannot reach
+the failing environment can do nothing but theorize. Naming the required
+output inverts the economics — every step has to produce a number that can
+kill it. The human stays in the loop only for what the tools cannot do:
+watching the run, the incognito check, the extension bisect.</p>
+<p><strong>What changed.</strong> Debugging handoffs here now carry three things: the
+theories already disproven, so they are not relitigated; the single next
+measurement and the exact output it must produce; and access to the
+environment that shows the bug, not a secondhand account of it.</p></aside>
 <h2 id="prefilling-is-dead-migrate"><span class="rail" aria-hidden="true">7.5</span><span class="h2-text">Prefilling is dead — migrate</span></h2>
 <p>Prefilling the assistant turn (starting Claude's reply with <code>{</code> to force JSON, or
 "Here is the summary:" to kill preambles) was the classic format-control trick.

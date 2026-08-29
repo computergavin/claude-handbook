@@ -104,6 +104,32 @@ Claude's own decomposition frequently exceeds what you would prescribe.
 > which way a new model moved before touching either instruction — don't assume
 > "current models" as a class behave like either extreme.
 
+> [!FIELD] Specify the next measurement, not the next theory — 2026-08-28
+> **What happened.** A cover animation froze for a second, on one machine only,
+> on the first run after load only. A day of sessions prompted as "figure out
+> the lag" produced three confident diagnoses — GC, pixel-grid quantization,
+> 120Hz frame doubling — all plausible, all wrong, none tested on the machine
+> that showed the bug. The session that closed it was constrained differently:
+> the handoff listed the dead theories, pinned the next step to one measurement
+> with a named output (a `FRAMES` line of real rAF gaps), and handed the agent
+> the failing environment itself — browser control of the affected Chrome
+> profile rather than a description of the symptom. Four falsifiable questions
+> later the bug was found in an hour, and it was never in the code: a security
+> extension's one-time DOM sweep blocked the main thread for 900ms.
+>
+> **Why.** "Figure out the lag" has no acceptance criterion, so the model
+> satisfies it the cheapest way available: a coherent theory. Theories are
+> cheap to produce and expensive to disprove, and a session that cannot reach
+> the failing environment can do nothing but theorize. Naming the required
+> output inverts the economics — every step has to produce a number that can
+> kill it. The human stays in the loop only for what the tools cannot do:
+> watching the run, the incognito check, the extension bisect.
+>
+> **What changed.** Debugging handoffs here now carry three things: the
+> theories already disproven, so they are not relitigated; the single next
+> measurement and the exact output it must produce; and access to the
+> environment that shows the bug, not a secondhand account of it.
+
 ## Prefilling is dead — migrate
 
 Prefilling the assistant turn (starting Claude's reply with `{` to force JSON, or
