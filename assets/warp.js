@@ -115,7 +115,7 @@
   var W = 0, H = 0, cx = 0, cy = 0, maxR = 1, jolted = false;
   var stars = [];
   var raf = 0, elapsed = 0, last = 0, running = false, seeded = false;
-  var arrived = false, motionless = false, acc = 0;
+  var arrived = false, motionless = false, acc = 0, booted = false;
 
   /* the starfield takes its colours from the live theme tokens, so the jump
      reads the same in dark as it does on paper */
@@ -278,6 +278,23 @@
     }
   }
 
+  /* The cover must never show bare ground: the field is seeded and drawn
+     once, synchronously, in the same script that inserts the canvas, so it
+     lands before the browser's first paint rather than waiting on load,
+     fonts and the boot delay. play()/still() below reuse this seed instead
+     of calling seed() again — a reseed swaps every star's position, which
+     is itself a visible pop, just a later one. */
+  var earlyDrawAt = -1;
+  function earlyDraw() {
+    if (W < 8 || H < 8) return;       // not laid out yet; autoplay() seeds for real once it is
+    earlyDrawAt = performance.now();
+    readTheme();
+    seed();
+    render(TOTAL, 0.016);
+    canvas.classList.add('is-live');
+    debugLog('early static field drawn, W=' + W + ' H=' + H);
+  }
+
   var firstFrame = true;
   function frame(now) {
     if (DEBUG && firstFrame) {
@@ -357,7 +374,9 @@
     cancelAnimationFrame(raf);
     readTheme();
     resize();
-    seed();
+    var reused = seeded;
+    if (!seeded) seed();
+    booted = true;
     running = true;
     arrived = false;
     jolted = false;
@@ -367,7 +386,7 @@
     elapsed = 0;
     last = performance.now();
     raf = requestAnimationFrame(frame);
-    debugLog('play() started, W=' + W + ' H=' + H);
+    debugLog('play() started, W=' + W + ' H=' + H + (reused ? ' (reused early field)' : ' (reseeded)'));
     /* a watchdog rather than another rAF: if the sequence stalls partway,
        this still fires on the setTimeout clock even when rAF has stopped */
     if (DEBUG) {
@@ -383,7 +402,9 @@
   function still() {
     readTheme();
     resize();
-    seed();
+    var reused = seeded;
+    if (!seeded) seed();
+    booted = true;
     elapsed = TOTAL;
     arrived = true;
     motionless = true;                      // no loop may start behind this
@@ -391,7 +412,7 @@
     cover.classList.add('is-jumped');
     canvas.classList.add('is-live');
     render(TOTAL, 0.016);
-    debugLog('still() drawn (reduced motion), W=' + W + ' H=' + H);
+    debugLog('still() drawn (reduced motion), W=' + W + ' H=' + H + (reused ? ' (reused early field)' : ' (reseeded)'));
   }
 
   button.addEventListener('click', play);
@@ -399,7 +420,7 @@
   window.addEventListener('resize', function () {
     if (!seeded) return;
     resize();
-    if (!running) render(elapsed, 0.016);
+    if (!running) render(booted ? elapsed : TOTAL, 0.016);
   });
 
   document.addEventListener('visibilitychange', function () {
@@ -412,7 +433,7 @@
   if (window.MutationObserver) {
     new MutationObserver(function () {
       readTheme();
-      if (!running && seeded) render(elapsed, 0.016);
+      if (!running && seeded) render(booted ? elapsed : TOTAL, 0.016);
     }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   }
 
@@ -426,6 +447,24 @@
   }
 
   resize();
+  earlyDraw();
+
+  /* the acceptance measurement for the early draw: it must land at or before
+     first contentful paint, not just soon after. FCP hasn't fired yet when
+     earlyDraw() runs above, so the comparison has to wait for the browser to
+     report it. */
+  if (DEBUG && window.PerformanceObserver) {
+    try {
+      new PerformanceObserver(function (list) {
+        list.getEntries().forEach(function (entry) {
+          if (entry.name !== 'first-contentful-paint') return;
+          debugLog('first-contentful-paint at ' + entry.startTime.toFixed(1) + 'ms, early draw at ' +
+            (earlyDrawAt < 0 ? 'n/a (not laid out yet)' : earlyDrawAt.toFixed(1) + 'ms, delta=' +
+            (entry.startTime - earlyDrawAt).toFixed(1) + 'ms'));
+        });
+      }).observe({ type: 'paint', buffered: true });
+    } catch (e) {}
+  }
 
   function autoplay() {
     debugLog('autoplay() check W=' + W + ' H=' + H);
