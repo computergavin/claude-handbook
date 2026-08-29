@@ -254,3 +254,25 @@ cheap to check — one more reason to demand structured returns.
 > frequency claim. The test that settles it: give one agent in the next fan-out no
 > shared measurements and make it derive its own. If it reliably collides with the
 > others, promote this to body text. If it never does, delete the note.
+
+> [!FIELD] The withheld-brief test, run one — 2026-08-29
+> **What happened.** Hunting a rendering bug (field notes in this chapter opening
+> mid-sentence on phones), four agents took disjoint dimensions — build pipeline,
+> deployment skew, CSS, runtime JS — and every brief carried only the reader's
+> verbatim symptom, none of the orchestrator's measurements. Two agents converged
+> unprompted on "markup intact, the loss is presentation-side." The CSS agent,
+> forced to derive its own numbers, found the mechanism and a second bug the
+> orchestrator's direct read had already waved through as innocent: a specificity
+> clash that had made the callout label's declared font-size dead code since the
+> initial commit.
+>
+> **Why.** The orchestrator's own quick read was itself a shared premise — it had
+> pattern-matched the label rules as fine, and any brief carrying that judgment
+> would have steered the one agent positioned to overturn it. Withholding it cost
+> each agent a few minutes of re-derivation and bought a convergence signal that
+> meant something and one finding nobody was looking for.
+>
+> **What changed.** Fan-out briefs now carry the raw symptom, not the diagnosis in
+> progress. This is run one of the test the previous note prescribed, and it came
+> back positive; the promote-or-delete question stays open until the pattern holds
+> across a few more fan-outs.

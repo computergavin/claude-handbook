@@ -1451,7 +1451,25 @@ inputs are disjoint, and a shared brief is the most efficient way to correlate
 them. The human caught this, not the fan-out. That is one observation, not a
 frequency claim. The test that settles it: give one agent in the next fan-out no
 shared measurements and make it derive its own. If it reliably collides with the
-others, promote this to body text. If it never does, delete the note.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch4"><p class="chapter__tab">04</p><header class="chapter__head"><h1>Hooks</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-28</span><span class="sources"><a href="https://code.claude.com/docs/en/hooks-guide">code.claude.com/docs/en/hooks-guide</a></span></p></header><p>Hooks are commands Claude Code runs at fixed points in its lifecycle. They exist so
+others, promote this to body text. If it never does, delete the note.</p></aside>
+<aside class="callout callout--field"><p class="callout__label">The withheld-brief test, run one — 2026-08-29</p><p><strong>What happened.</strong> Hunting a rendering bug (field notes in this chapter opening
+mid-sentence on phones), four agents took disjoint dimensions — build pipeline,
+deployment skew, CSS, runtime JS — and every brief carried only the reader's
+verbatim symptom, none of the orchestrator's measurements. Two agents converged
+unprompted on "markup intact, the loss is presentation-side." The CSS agent,
+forced to derive its own numbers, found the mechanism and a second bug the
+orchestrator's direct read had already waved through as innocent: a specificity
+clash that had made the callout label's declared font-size dead code since the
+initial commit.</p>
+<p><strong>Why.</strong> The orchestrator's own quick read was itself a shared premise — it had
+pattern-matched the label rules as fine, and any brief carrying that judgment
+would have steered the one agent positioned to overturn it. Withholding it cost
+each agent a few minutes of re-derivation and bought a convergence signal that
+meant something and one finding nobody was looking for.</p>
+<p><strong>What changed.</strong> Fan-out briefs now carry the raw symptom, not the diagnosis in
+progress. This is run one of the test the previous note prescribed, and it came
+back positive; the promote-or-delete question stays open until the pattern holds
+across a few more fan-outs.</p></aside><a class="chapter__back" href="#contents">&uarr; Contents</a></section><section class="sheet chapter" id="ch4"><p class="chapter__tab">04</p><header class="chapter__head"><h1>Hooks</h1><p class="chapter__meta"><span class="tag tag--stable">stable</span><span class="verified">verified 2026-08-28</span><span class="sources"><a href="https://code.claude.com/docs/en/hooks-guide">code.claude.com/docs/en/hooks-guide</a></span></p></header><p>Hooks are commands Claude Code runs at fixed points in its lifecycle. They exist so
 that certain things always happen instead of depending on the model choosing to do
 them.</p>
 <p>That sentence is the whole chapter. Instructions are advisory; hooks are the control
